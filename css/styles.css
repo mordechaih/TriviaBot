@@ -1,0 +1,672 @@
+/* Mobile-first responsive design for TriviaBot */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #060CE9;
+  --secondary-color: #FFD700;
+  --text-color: #212121;
+  --bg-color: #FFFFFF;
+  --card-bg: #F5F5F5;
+  --border-color: #E0E0E0;
+  --played-color: #9E9E9E;
+  --touch-target: 44px;
+  --font-size-base: 16px;
+  --font-size-large: 20px;
+  --font-size-small: 14px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --border-radius: 8px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Header */
+header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #1a1aff 100%);
+  color: white;
+  padding: var(--spacing-md);
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+}
+
+header p {
+  font-size: var(--font-size-small);
+  opacity: 0.9;
+}
+
+/* Main container */
+main {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: var(--spacing-md);
+}
+
+/* Game list styles */
+.game-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.game-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  min-height: var(--touch-target);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.game-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.game-card.played {
+  opacity: 0.6;
+  background: #F0F0F0;
+}
+
+.game-card-info {
+  flex: 1;
+}
+
+.game-card h3 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-color);
+}
+
+.game-card .date {
+  font-size: var(--font-size-small);
+  color: #666;
+}
+
+.game-card .status {
+  font-size: var(--font-size-small);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius);
+  background: var(--primary-color);
+  color: white;
+  min-width: 60px;
+  text-align: center;
+}
+
+.game-card.played .status {
+  background: var(--played-color);
+}
+
+/* Filters */
+.filters {
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  border: 1px solid var(--border-color);
+  background: white;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  min-height: var(--touch-target);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.filter-btn:active {
+  background: var(--card-bg);
+}
+
+.filter-btn.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* Generate Game Section */
+.generate-section {
+  margin: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  text-align: center;
+}
+
+.generate-btn {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  border: none;
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  min-height: var(--touch-target);
+  width: 100%;
+  max-width: 300px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.generate-btn:hover {
+  background-color: #FFC700;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.generate-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.generate-btn:disabled {
+  background-color: #CCCCCC;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.generate-status {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-base);
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: 500;
+}
+
+.generate-status.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.generate-status.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.generate-status.info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: var(--spacing-md);
+  color: var(--primary-color);
+}
+
+.modal-content label {
+  display: block;
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-xs);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.modal-content input {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-base);
+  box-sizing: border-box;
+}
+
+.modal-content small {
+  display: block;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-small);
+  color: #666;
+}
+
+.modal-content small a {
+  color: var(--primary-color);
+}
+
+.modal-buttons {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.modal-btn {
+  flex: 1;
+  padding: var(--spacing-md);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  min-height: var(--touch-target);
+  transition: all 0.2s ease;
+}
+
+.modal-btn.primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.modal-btn.primary:hover {
+  background-color: #0508d4;
+}
+
+.modal-btn.secondary {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.modal-btn.secondary:hover {
+  background-color: #e0e0e0;
+}
+
+/* Game display styles */
+.game-header {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.game-header h1 {
+  font-size: var(--font-size-large);
+  margin-bottom: var(--spacing-xs);
+  color: var(--primary-color);
+}
+
+.game-header .date {
+  font-size: var(--font-size-small);
+  color: #666;
+}
+
+.rounds-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.round {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.round-header {
+  background: var(--primary-color);
+  color: white;
+  padding: var(--spacing-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  min-height: var(--touch-target);
+}
+
+.round-header h2 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+}
+
+.round-header .difficulty {
+  font-size: var(--font-size-small);
+  background: rgba(255, 255, 255, 0.2);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius);
+  text-transform: capitalize;
+}
+
+.round-header .toggle {
+  font-size: var(--font-size-large);
+  transition: transform 0.3s;
+}
+
+.round-header.collapsed .toggle {
+  transform: rotate(-90deg);
+}
+
+.round-content {
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.round-content.collapsed {
+  display: none;
+}
+
+.question {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--spacing-md);
+}
+
+.question:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.question-category {
+  font-size: var(--font-size-small);
+  color: #666;
+  margin-bottom: var(--spacing-xs);
+  font-weight: 500;
+}
+
+.question-clue {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.5;
+}
+
+.question-answer {
+  font-size: var(--font-size-base);
+  color: var(--primary-color);
+  font-weight: 600;
+  padding: var(--spacing-sm);
+  background: rgba(6, 12, 233, 0.1);
+  border-radius: var(--border-radius);
+  margin-top: var(--spacing-xs);
+}
+
+.question-answer.hidden {
+  display: none;
+}
+
+.reveal-btn {
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  min-height: var(--touch-target);
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.reveal-btn:active {
+  background: #0500CC;
+}
+
+/* Final Trivia */
+.final-trivia {
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #FFC700 100%);
+  border: 2px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.final-trivia h2 {
+  font-size: var(--font-size-large);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-color);
+  text-align: center;
+}
+
+.final-trivia .category {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: var(--border-radius);
+}
+
+.final-trivia .question {
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+.final-trivia .answer {
+  font-size: var(--font-size-base);
+  color: var(--primary-color);
+  font-weight: 600;
+  padding: var(--spacing-md);
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: var(--border-radius);
+  text-align: center;
+  margin-top: var(--spacing-md);
+}
+
+.final-trivia .answer.hidden {
+  display: none;
+}
+
+/* Navigation */
+.nav {
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+}
+
+.nav-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  min-height: var(--touch-target);
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.2s;
+}
+
+.nav-btn:active {
+  background: #0500CC;
+}
+
+/* Loading state */
+.loading {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: #666;
+}
+
+.error {
+  background: #FFEBEE;
+  color: #C62828;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  margin: var(--spacing-md) 0;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: #666;
+}
+
+.empty-state h3 {
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-color);
+}
+
+/* Legal disclaimer */
+.legal-disclaimer {
+  background: #FFF9E6;
+  border-left: 4px solid var(--secondary-color);
+  padding: var(--spacing-md);
+  margin: var(--spacing-lg) 0;
+  font-size: var(--font-size-small);
+  color: #666;
+  line-height: 1.5;
+}
+
+.legal-disclaimer strong {
+  color: var(--text-color);
+}
+
+/* Tablet and larger screens */
+@media (min-width: 768px) {
+  main {
+    max-width: 768px;
+    padding: var(--spacing-lg);
+  }
+  
+  header h1 {
+    font-size: 28px;
+  }
+  
+  .game-card h3 {
+    font-size: var(--font-size-large);
+  }
+  
+  .round-header h2 {
+    font-size: var(--font-size-large);
+  }
+}
+
+/* Desktop screens */
+@media (min-width: 1024px) {
+  main {
+    max-width: 1024px;
+  }
+  
+  .game-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filter-btn:hover {
+    background: var(--card-bg);
+  }
+  
+  .filter-btn.active:hover {
+    background: var(--primary-color);
+  }
+  
+  .reveal-btn:hover {
+    background: #0500CC;
+  }
+  
+  .nav-btn:hover {
+    background: #0500CC;
+  }
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 767px) {
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Improve touch targets on small screens */
+  .game-card {
+    padding: var(--spacing-lg);
+  }
+  
+  /* Better spacing for small screens */
+  .round-content {
+    padding: var(--spacing-sm);
+  }
+  
+  /* Ensure text is readable */
+  .question-clue,
+  .question-answer {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* Prevent text selection issues */
+  .game-card,
+  .round-header {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .round-content.collapsed {
+    display: flex !important;
+  }
+  
+  .reveal-btn,
+  .nav-btn,
+  .filter-btn {
+    display: none;
+  }
+  
+  .question-answer.hidden {
+    display: block !important;
+  }
+  
+  .final-trivia .answer.hidden {
+    display: block !important;
+  }
+}
+

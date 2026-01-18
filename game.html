@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Play a trivia game">
+  <title>TriviaBot - Game</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>TriviaBot</h1>
+    <p>Weekly Trivia Game</p>
+  </header>
+
+  <main>
+    <div class="legal-disclaimer">
+      <strong>Disclaimer:</strong> This site uses content from J! Archive, a fan-created archive of Jeopardy! games. 
+      The Jeopardy! game show and all elements thereof are the property of Jeopardy Productions, Inc. 
+      This website is not affiliated with, sponsored by, or operated by Jeopardy Productions, Inc. 
+      This site is for non-commercial, educational, and entertainment purposes only.
+    </div>
+
+    <nav class="nav">
+      <a href="index.html" class="nav-btn">← Back to Games</a>
+    </nav>
+
+    <div id="loading" class="loading">Loading game...</div>
+    <div id="error" class="error" style="display: none;"></div>
+    <div id="game-content" style="display: none;">
+      <div class="game-header">
+        <h1 id="game-title">Trivia Game</h1>
+        <p class="date" id="game-date"></p>
+      </div>
+
+      <div id="rounds-container" class="rounds-container"></div>
+
+      <div id="final-trivia" class="final-trivia" style="display: none;">
+        <h2>Final Trivia</h2>
+        <div class="category" id="final-category"></div>
+        <div class="question" id="final-question"></div>
+        <button class="reveal-btn" id="reveal-final-btn">Reveal Answer</button>
+        <div class="answer hidden" id="final-answer"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/game-display.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Weekly trivia games generated from J! Archive data">
+  <title>TriviaBot - Game List</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>TriviaBot</h1>
+    <p>Weekly Trivia Games</p>
+  </header>
+
+  <main>
+    <div class="legal-disclaimer">
+      <strong>Disclaimer:</strong> This site uses content from J! Archive, a fan-created archive of Jeopardy! games. 
+      The Jeopardy! game show and all elements thereof are the property of Jeopardy Productions, Inc. 
+      This website is not affiliated with, sponsored by, or operated by Jeopardy Productions, Inc. 
+      This site is for non-commercial, educational, and entertainment purposes only.
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All Games</button>
+      <button class="filter-btn" data-filter="unplayed">Unplayed</button>
+      <button class="filter-btn" data-filter="played">Played</button>
+    </div>
+
+    <div class="generate-section">
+      <button id="generate-btn" class="generate-btn">Generate New Game</button>
+      <div id="generate-status" class="generate-status" style="display: none;"></div>
+    </div>
+
+    <!-- GitHub Credentials Modal -->
+    <div id="github-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h3>GitHub Configuration</h3>
+        <p>Enter your GitHub information to generate games:</p>
+        <form id="github-form">
+          <label for="github-owner-input">GitHub Username:</label>
+          <input type="text" id="github-owner-input" required>
+          
+          <label for="github-repo-input">Repository Name:</label>
+          <input type="text" id="github-repo-input" value="TriviaBot" required>
+          
+          <label for="github-token-input">Personal Access Token:</label>
+          <input type="password" id="github-token-input" required placeholder="ghp_...">
+          <small>Create one at <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a></small>
+          
+          <div class="modal-buttons">
+            <button type="submit" class="modal-btn primary">Save & Generate</button>
+            <button type="button" class="modal-btn secondary" id="modal-cancel">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="loading" class="loading">Loading games...</div>
+    <div id="error" class="error" style="display: none;"></div>
+    <div id="game-list" class="game-list" style="display: none;"></div>
+    <div id="empty-state" class="empty-state" style="display: none;">
+      <h3>No games found</h3>
+      <p>Games will appear here once they are generated.</p>
+    </div>
+  </main>
+
+  <script src="js/game-list.js"></script>
+</body>
+</html>
+

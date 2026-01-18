@@ -1,0 +1,22 @@
+{
+  "name": "triviabot",
+  "version": "1.0.0",
+  "description": "Weekly trivia game generator from J! Archive data",
+  "type": "module",
+  "scripts": {
+    "scrape": "node scripts/scrape-archive.js",
+    "generate": "node scripts/generate-game.js",
+    "update-index": "node scripts/update-games-index.js",
+    "clean-archive": "node scripts/clean-archive.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "node-fetch": "^3.3.2",
+    "openai": "^4.20.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+
