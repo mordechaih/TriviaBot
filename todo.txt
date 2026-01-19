@@ -6,3 +6,4 @@
 [x] Retheme to use a dark mode and orangey-reddish theme by default. 
 [x] the generate games button should be just an "add" icon button, and inline with the rest of the buttons ("all games" / "unplayed" / "played")
 [x] the refresh games button should be just a refresh icon button, and inline with the rest of the buttons ("all games" / "unplayed" / "played")
+[] track which questions have been asked so that we never re-use questions (unless they actually appear twice in the original database)

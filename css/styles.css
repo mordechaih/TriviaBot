@@ -80,34 +80,20 @@ main {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   padding: var(--spacing-md);
-  transition: box-shadow 0.2s;
+  transition: background 0.2s;
   cursor: pointer;
   min-height: var(--touch-target);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
 }
 
-.game-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0);
-  border-radius: var(--border-radius);
-  pointer-events: none;
-  transition: background 0.2s;
+.game-card:hover {
+  background: #3A3A3A;
 }
 
-.game-card:hover::before {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.game-card:active::before {
-  background: rgba(255, 255, 255, 0.15);
+.game-card:active {
+  background: #404040;
 }
 
 .game-card.played {
@@ -162,29 +148,15 @@ main {
   border-radius: var(--border-radius);
   cursor: pointer;
   min-height: var(--touch-target);
-  transition: box-shadow 0.2s;
-  position: relative;
-}
-
-.filter-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0);
-  border-radius: var(--border-radius);
-  pointer-events: none;
   transition: background 0.2s;
 }
 
-.filter-btn:hover::before {
-  background: rgba(255, 255, 255, 0.1);
+.filter-btn:hover {
+  background: #3A3A3A;
 }
 
-.filter-btn:active::before {
-  background: rgba(255, 255, 255, 0.15);
+.filter-btn:active {
+  background: #404040;
 }
 
 .filter-btn.active {
@@ -217,36 +189,11 @@ main {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
-  position: relative;
-  z-index: 1;
 }
 
 .icon-btn svg {
   width: 20px;
   height: 20px;
-  position: relative;
-  z-index: 1;
-}
-
-.icon-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0);
-  border-radius: var(--border-radius);
-  pointer-events: none;
-  transition: background 0.2s;
-}
-
-.icon-btn:hover::before {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.icon-btn:active::before {
-  background: rgba(255, 255, 255, 0.15);
 }
 
 .icon-btn:disabled {
@@ -255,7 +202,7 @@ main {
 }
 
 .icon-btn:disabled:hover {
-  box-shadow: none;
+  background: var(--card-bg);
 }
 
 /* Generate Game Section */
@@ -280,29 +227,15 @@ main {
   min-height: var(--touch-target);
   width: 100%;
   max-width: 300px;
-  transition: box-shadow 0.2s;
-  position: relative;
-}
-
-.generate-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0);
-  border-radius: var(--border-radius);
-  pointer-events: none;
   transition: background 0.2s;
 }
 
-.generate-btn:hover::before {
-  background: rgba(255, 255, 255, 0.1);
+.generate-btn:hover {
+  background-color: #FFA366;
 }
 
-.generate-btn:active::before {
-  background: rgba(255, 255, 255, 0.15);
+.generate-btn:active {
+  background-color: #FFB380;
 }
 
 .generate-btn:disabled {
@@ -312,7 +245,7 @@ main {
 }
 
 .generate-btn:disabled:hover {
-  box-shadow: none;
+  background-color: var(--border-color);
 }
 
 .generate-status {
@@ -423,8 +356,7 @@ main {
   font-weight: 600;
   cursor: pointer;
   min-height: var(--touch-target);
-  transition: box-shadow 0.2s;
-  position: relative;
+  transition: background 0.2s;
 }
 
 .modal-btn.primary {
@@ -432,25 +364,12 @@ main {
   color: white;
 }
 
-.modal-btn.primary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0);
-  border-radius: var(--border-radius);
-  pointer-events: none;
-  transition: background 0.2s;
+.modal-btn.primary:hover {
+  background-color: #FF8C5A;
 }
 
-.modal-btn.primary:hover::before {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.modal-btn.primary:active::before {
-  background: rgba(255, 255, 255, 0.15);
+.modal-btn.primary:active {
+  background-color: #FF9D6B;
 }
 
 .modal-btn.secondary {
@@ -459,25 +378,12 @@ main {
   border: 1px solid var(--border-color);
 }
 
-.modal-btn.secondary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0);
-  border-radius: var(--border-radius);
-  pointer-events: none;
-  transition: background 0.2s;
+.modal-btn.secondary:hover {
+  background: #3A3A3A;
 }
 
-.modal-btn.secondary:hover::before {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.modal-btn.secondary:active::before {
-  background: rgba(255, 255, 255, 0.15);
+.modal-btn.secondary:active {
+  background: #404040;
 }
 
 /* Game display styles */
@@ -513,17 +419,35 @@ main {
 /* Color coding for rounds: yellow (r1) to red (r8) */
 .round[data-round="1"] .round-header {
   background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
-  color: var(--text-color);
+  color: #2D2D2D; /* Dark grey for better contrast on yellow */
+}
+
+.round[data-round="1"] .round-header h2,
+.round[data-round="1"] .round-header .difficulty,
+.round[data-round="1"] .round-header .toggle {
+  color: #2D2D2D;
 }
 
 .round[data-round="2"] .round-header {
   background: linear-gradient(135deg, #FFC700 0%, #FFB700 100%);
-  color: var(--text-color);
+  color: #2D2D2D; /* Dark grey for better contrast on yellow */
+}
+
+.round[data-round="2"] .round-header h2,
+.round[data-round="2"] .round-header .difficulty,
+.round[data-round="2"] .round-header .toggle {
+  color: #2D2D2D;
 }
 
 .round[data-round="3"] .round-header {
   background: linear-gradient(135deg, #FFB700 0%, #FFA500 100%);
-  color: var(--text-color);
+  color: #2D2D2D; /* Dark grey for better contrast on yellow */
+}
+
+.round[data-round="3"] .round-header h2,
+.round[data-round="3"] .round-header .difficulty,
+.round[data-round="3"] .round-header .toggle {
+  color: #2D2D2D;
 }
 
 .round[data-round="4"] .round-header {
@@ -620,13 +544,59 @@ main {
 
 .question-answer {
   font-size: var(--font-size-base);
-  color: var(--secondary-color);
   font-weight: 600;
   padding: var(--spacing-sm);
-  background: rgba(255, 107, 53, 0.15);
   border-radius: var(--border-radius);
   margin-top: var(--spacing-xs);
-  border: 1px solid rgba(255, 107, 53, 0.3);
+}
+
+/* Color code answers by round */
+.round[data-round="1"] .question-answer {
+  color: #2D2D2D;
+  background: rgba(255, 215, 0, 0.2);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+}
+
+.round[data-round="2"] .question-answer {
+  color: #2D2D2D;
+  background: rgba(255, 199, 0, 0.2);
+  border: 1px solid rgba(255, 199, 0, 0.4);
+}
+
+.round[data-round="3"] .question-answer {
+  color: #2D2D2D;
+  background: rgba(255, 183, 0, 0.2);
+  border: 1px solid rgba(255, 183, 0, 0.4);
+}
+
+.round[data-round="4"] .question-answer {
+  color: white;
+  background: rgba(255, 165, 0, 0.2);
+  border: 1px solid rgba(255, 165, 0, 0.4);
+}
+
+.round[data-round="5"] .question-answer {
+  color: white;
+  background: rgba(255, 140, 0, 0.2);
+  border: 1px solid rgba(255, 140, 0, 0.4);
+}
+
+.round[data-round="6"] .question-answer {
+  color: white;
+  background: rgba(255, 107, 0, 0.2);
+  border: 1px solid rgba(255, 107, 0, 0.4);
+}
+
+.round[data-round="7"] .question-answer {
+  color: white;
+  background: rgba(255, 69, 0, 0.2);
+  border: 1px solid rgba(255, 69, 0, 0.4);
+}
+
+.round[data-round="8"] .question-answer {
+  color: white;
+  background: rgba(220, 20, 60, 0.2);
+  border: 1px solid rgba(220, 20, 60, 0.4);
 }
 
 .question-answer.hidden {
@@ -644,29 +614,81 @@ main {
   cursor: pointer;
   min-height: var(--touch-target);
   flex: 1;
-  transition: box-shadow 0.2s;
-  position: relative;
-}
-
-.reveal-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0);
-  border-radius: var(--border-radius);
-  pointer-events: none;
   transition: background 0.2s;
 }
 
-.reveal-btn:hover::before {
-  background: rgba(255, 255, 255, 0.1);
+/* Color code reveal buttons by round */
+.round[data-round="1"] .reveal-btn {
+  background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+  color: #2D2D2D;
 }
 
-.reveal-btn:active::before {
-  background: rgba(255, 255, 255, 0.15);
+.round[data-round="2"] .reveal-btn {
+  background: linear-gradient(135deg, #FFC700 0%, #FFB700 100%);
+  color: #2D2D2D;
+}
+
+.round[data-round="3"] .reveal-btn {
+  background: linear-gradient(135deg, #FFB700 0%, #FFA500 100%);
+  color: #2D2D2D;
+}
+
+.round[data-round="4"] .reveal-btn {
+  background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+  color: white;
+}
+
+.round[data-round="5"] .reveal-btn {
+  background: linear-gradient(135deg, #FF8C00 0%, #FF6B00 100%);
+  color: white;
+}
+
+.round[data-round="6"] .reveal-btn {
+  background: linear-gradient(135deg, #FF6B00 0%, #FF4500 100%);
+  color: white;
+}
+
+.round[data-round="7"] .reveal-btn {
+  background: linear-gradient(135deg, #FF4500 0%, #DC143C 100%);
+  color: white;
+}
+
+.round[data-round="8"] .reveal-btn {
+  background: linear-gradient(135deg, #DC143C 0%, #C41E3A 100%);
+  color: white;
+}
+
+/* Reveal button hover states by round */
+.round[data-round="1"] .reveal-btn:hover {
+  background: linear-gradient(135deg, #FFE44D 0%, #FFD44D 100%);
+}
+
+.round[data-round="2"] .reveal-btn:hover {
+  background: linear-gradient(135deg, #FFD44D 0%, #FFC84D 100%);
+}
+
+.round[data-round="3"] .reveal-btn:hover {
+  background: linear-gradient(135deg, #FFC84D 0%, #FFB84D 100%);
+}
+
+.round[data-round="4"] .reveal-btn:hover {
+  background: linear-gradient(135deg, #FFB84D 0%, #FFA84D 100%);
+}
+
+.round[data-round="5"] .reveal-btn:hover {
+  background: linear-gradient(135deg, #FFA84D 0%, #FF984D 100%);
+}
+
+.round[data-round="6"] .reveal-btn:hover {
+  background: linear-gradient(135deg, #FF984D 0%, #FF7A4D 100%);
+}
+
+.round[data-round="7"] .reveal-btn:hover {
+  background: linear-gradient(135deg, #FF7A4D 0%, #E62E5C 100%);
+}
+
+.round[data-round="8"] .reveal-btn:hover {
+  background: linear-gradient(135deg, #E62E5C 0%, #D42E5A 100%);
 }
 
 .shuffle-btn {
@@ -680,35 +702,50 @@ main {
   cursor: pointer;
   min-height: var(--touch-target);
   flex: 1;
-  transition: box-shadow 0.2s;
-  position: relative;
-}
-
-.shuffle-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0);
-  border-radius: var(--border-radius);
-  pointer-events: none;
   transition: background 0.2s;
 }
 
-.shuffle-btn:hover::before {
-  background: rgba(255, 255, 255, 0.1);
+.shuffle-btn:hover {
+  background: #FFA366;
 }
 
-.shuffle-btn:active::before {
-  background: rgba(255, 255, 255, 0.15);
+.shuffle-btn:active {
+  background: #FFB380;
 }
 
 .question-buttons {
   display: flex;
   gap: var(--spacing-sm);
   margin-top: var(--spacing-sm);
+}
+
+.shuffle-round-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: inherit;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.shuffle-round-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.shuffle-round-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.shuffle-round-btn i,
+.shuffle-round-btn svg {
+  width: 16px;
+  height: 16px;
 }
 
 /* Final Trivia - Red gradient (final color in sequence) */
@@ -782,29 +819,15 @@ main {
   min-height: var(--touch-target);
   text-decoration: none;
   display: inline-block;
-  transition: box-shadow 0.2s;
-  position: relative;
-}
-
-.nav-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0);
-  border-radius: var(--border-radius);
-  pointer-events: none;
   transition: background 0.2s;
 }
 
-.nav-btn:hover::before {
-  background: rgba(255, 255, 255, 0.1);
+.nav-btn:hover {
+  background: #FF8C5A;
 }
 
-.nav-btn:active::before {
-  background: rgba(255, 255, 255, 0.15);
+.nav-btn:active {
+  background: #FF9D6B;
 }
 
 /* Loading state */
@@ -876,7 +899,7 @@ main {
     max-width: 1024px;
   }
   
-  /* Desktop hover states use the same ::before pseudo-element approach */
+  /* Desktop hover states use background color changes */
   /* No additional styles needed - base styles handle it */
 }
 

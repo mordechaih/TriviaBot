@@ -45,8 +45,25 @@
     </div>
   </main>
 
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/performance.js"></script>
   <script src="js/game-display.js"></script>
+  <script>
+    // Initialize Lucide icons after DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    });
+    
+    if (document.readyState === 'loading') {
+      // DOM is still loading
+    } else {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+  </script>
 </body>
 </html>
 

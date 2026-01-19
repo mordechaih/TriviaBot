@@ -183,8 +183,7 @@ function createRoundElement(round) {
   
   const shuffleRoundBtn = document.createElement('button');
   shuffleRoundBtn.className = 'shuffle-round-btn';
-  shuffleRoundBtn.textContent = '🔄';
-  shuffleRoundBtn.title = 'Shuffle questions in this round';
+  shuffleRoundBtn.title = 'Generate new round';
   shuffleRoundBtn.style.background = 'rgba(255, 255, 255, 0.2)';
   shuffleRoundBtn.style.border = 'none';
   shuffleRoundBtn.style.color = 'inherit';
@@ -192,9 +191,23 @@ function createRoundElement(round) {
   shuffleRoundBtn.style.borderRadius = '4px';
   shuffleRoundBtn.style.cursor = 'pointer';
   shuffleRoundBtn.style.fontSize = '14px';
-  shuffleRoundBtn.onclick = (e) => {
+  shuffleRoundBtn.style.display = 'inline-flex';
+  shuffleRoundBtn.style.alignItems = 'center';
+  shuffleRoundBtn.style.justifyContent = 'center';
+  
+  // Add Lucide shuffle icon
+  const iconElement = document.createElement('i');
+  iconElement.setAttribute('data-lucide', 'shuffle');
+  shuffleRoundBtn.appendChild(iconElement);
+  
+  // Initialize Lucide icon
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+  
+  shuffleRoundBtn.onclick = async (e) => {
     e.stopPropagation(); // Prevent round toggle
-    shuffleRound(roundDiv, round.roundNumber);
+    await generateNewRound(roundDiv, round.roundNumber, round.difficulty);
   };
   
   header.appendChild(title);
@@ -399,31 +412,125 @@ function shuffleQuestion(questionDiv, roundNumber) {
 }
 
 /**
- * Shuffle all questions within a round
+ * Generate a new round from the archive
  */
-function shuffleRound(roundDiv, roundNumber) {
-  const round = currentGame.rounds.find(r => r.roundNumber === roundNumber);
-  if (!round || round.questions.length < 2) {
-    alert('Need at least 2 questions to shuffle');
-    return;
+async function generateNewRound(roundDiv, roundNumber, targetDifficulty) {
+  const shuffleBtn = roundDiv.querySelector('.shuffle-round-btn');
+  const originalContent = shuffleBtn.innerHTML;
+  
+  // Show loading state
+  shuffleBtn.disabled = true;
+  shuffleBtn.innerHTML = '<i data-lucide="loader-2"></i>';
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
   }
   
-  // Fisher-Yates shuffle
-  for (let i = round.questions.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [round.questions[i], round.questions[j]] = [round.questions[j], round.questions[i]];
+  try {
+    // Load archive data
+    const archiveResponse = await fetch('data/archive-backup.json');
+    if (!archiveResponse.ok) {
+      throw new Error('Failed to load archive');
+    }
+    
+    const archive = await archiveResponse.json();
+    
+    // Filter archive for questions matching difficulty
+    // We'll use a simple heuristic: easy rounds get easier questions, etc.
+    const difficultyMap = {
+      'easy': ['easy'],
+      'medium': ['easy', 'medium'],
+      'hard': ['medium', 'hard'],
+      'expert': ['hard', 'expert']
+    };
+    
+    const targetDifficulties = difficultyMap[targetDifficulty] || ['easy', 'medium'];
+    
+    // Calculate difficulty for each question (simple heuristic based on clue length and answer length)
+    const calculateQuestionDifficulty = (question) => {
+      const clueLength = question.clue?.length || 0;
+      const answerLength = question.answer?.length || 0;
+      const totalLength = clueLength + answerLength;
+      
+      if (totalLength < 100) return 'easy';
+      if (totalLength < 200) return 'medium';
+      if (totalLength < 300) return 'hard';
+      return 'expert';
+    };
+    
+    // Filter questions by difficulty
+    const matchingQuestions = archive.filter(q => {
+      if (!q.clue || !q.answer || !q.category) return false;
+      const qDifficulty = calculateQuestionDifficulty(q);
+      return targetDifficulties.includes(qDifficulty);
+    });
+    
+    if (matchingQuestions.length < 3) {
+      throw new Error('Not enough questions in archive for this difficulty');
+    }
+    
+    // Group by category
+    const questionsByCategory = {};
+    matchingQuestions.forEach(q => {
+      if (!questionsByCategory[q.category]) {
+        questionsByCategory[q.category] = [];
+      }
+      questionsByCategory[q.category].push(q);
+    });
+    
+    // Find a category with at least 3 questions
+    const categoriesWithEnough = Object.keys(questionsByCategory).filter(
+      cat => questionsByCategory[cat].length >= 3
+    );
+    
+    if (categoriesWithEnough.length === 0) {
+      throw new Error('No categories with enough questions');
+    }
+    
+    // Pick a random category
+    const selectedCategory = categoriesWithEnough[Math.floor(Math.random() * categoriesWithEnough.length)];
+    const categoryQuestions = questionsByCategory[selectedCategory];
+    
+    // Shuffle and pick 3 questions
+    const shuffled = [...categoryQuestions].sort(() => Math.random() - 0.5);
+    const selectedQuestions = shuffled.slice(0, 3).map(q => ({
+      clue: q.clue,
+      answer: q.answer,
+      category: q.category
+    }));
+    
+    // Update the round in currentGame
+    const round = currentGame.rounds.find(r => r.roundNumber === roundNumber);
+    if (round) {
+      round.questions = selectedQuestions;
+    }
+    
+    // Re-render the round
+    const content = roundDiv.querySelector('.round-content');
+    content.innerHTML = '';
+    
+    const questionFragment = document.createDocumentFragment();
+    selectedQuestions.forEach((question, index) => {
+      const questionElement = createQuestionElement(question, index + 1, roundNumber);
+      questionFragment.appendChild(questionElement);
+    });
+    content.appendChild(questionFragment);
+    
+    // Re-initialize Lucide icons for new content
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+    
+  } catch (error) {
+    console.error('Error generating new round:', error);
+    alert(`Failed to generate new round: ${error.message}`);
+  } finally {
+    // Restore button
+    shuffleBtn.disabled = false;
+    shuffleBtn.innerHTML = originalContent;
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
   }
-  
-  // Re-render the round
-  const content = roundDiv.querySelector('.round-content');
-  content.innerHTML = '';
-  
-  const questionFragment = document.createDocumentFragment();
-  round.questions.forEach((question, index) => {
-    const questionElement = createQuestionElement(question, index + 1, roundNumber);
-    questionFragment.appendChild(questionElement);
-  });
-  content.appendChild(questionFragment);
 }
 
 /**
