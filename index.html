@@ -6,6 +6,7 @@
   <meta name="description" content="Weekly trivia games generated from J! Archive data">
   <title>TriviaBot - Game List</title>
   <link rel="stylesheet" href="css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
   <header>
@@ -25,8 +26,12 @@
       <button class="filter-btn active" data-filter="all">All Games</button>
       <button class="filter-btn" data-filter="unplayed">Unplayed</button>
       <button class="filter-btn" data-filter="played">Played</button>
-      <button id="generate-btn" class="icon-btn" title="Generate New Game">➕</button>
-      <button id="refresh-btn" class="icon-btn" title="Refresh Games List">🔄</button>
+      <button id="generate-btn" class="icon-btn" title="Generate New Game">
+        <i data-lucide="plus"></i>
+      </button>
+      <button id="refresh-btn" class="icon-btn" title="Refresh Games List">
+        <i data-lucide="refresh-cw"></i>
+      </button>
     </div>
 
     <div class="generate-section">
@@ -45,6 +50,24 @@
   <script src="js/performance.js"></script>
   <script src="js/config.js"></script>
   <script src="js/game-list.js"></script>
+  <script>
+    // Initialize Lucide icons after DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    });
+    
+    // Also initialize if DOM is already loaded
+    if (document.readyState === 'loading') {
+      // DOM is still loading, wait for DOMContentLoaded
+    } else {
+      // DOM is already loaded
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+  </script>
 </body>
 </html>
 

@@ -5,6 +5,42 @@ let playedStatus = {};
 let currentFilter = 'all';
 
 /**
+ * Helper function to update icon button state while preserving icon
+ */
+function updateIconButton(button, iconName, text = null) {
+  if (!button) return;
+  
+  // Clear existing content
+  button.innerHTML = '';
+  
+  // Add icon
+  const iconElement = document.createElement('i');
+  iconElement.setAttribute('data-lucide', iconName);
+  button.appendChild(iconElement);
+  
+  // Add text if provided
+  if (text) {
+    const textElement = document.createTextNode(' ' + text);
+    button.appendChild(textElement);
+  }
+  
+  // Re-initialize Lucide icons
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+}
+
+/**
+ * Helper function to restore icon button to default state
+ */
+function restoreIconButton(button, iconName) {
+  if (!button) return;
+  updateIconButton(button, iconName);
+  button.disabled = false;
+  button.style.opacity = '1';
+}
+
+/**
  * Load played status from GitHub or localStorage fallback
  */
 async function loadPlayedStatus() {
@@ -381,7 +417,7 @@ async function triggerGameGeneration() {
   
   // Immediate visual feedback
   generateBtn.disabled = true;
-  generateBtn.textContent = 'Generating...';
+  updateIconButton(generateBtn, 'loader-2', 'Generating...');
   generateBtn.style.opacity = '0.7';
   showGenerateStatus('Preparing to trigger game generation...', 'info');
   
@@ -391,9 +427,7 @@ async function triggerGameGeneration() {
   // Check if credentials are configured
   if (!repoInfo) {
     showGenerateStatus('Error: GitHub configuration not found. Please create js/config.js (see js/config.example.js for template)', 'error');
-    generateBtn.disabled = false;
-    generateBtn.textContent = 'Generate New Game';
-    generateBtn.style.opacity = '1';
+    restoreIconButton(generateBtn, 'plus');
     return;
   }
   
@@ -403,9 +437,7 @@ async function triggerGameGeneration() {
     : null;
   if (!apiEndpoint) {
     showGenerateStatus('Error: API endpoint not configured. Please set apiEndpoint in js/config.js', 'error');
-    generateBtn.disabled = false;
-    generateBtn.textContent = 'Generate New Game';
-    generateBtn.style.opacity = '1';
+    restoreIconButton(generateBtn, 'plus');
     return;
   }
   
@@ -521,9 +553,7 @@ async function triggerGameGeneration() {
         `Error: ${errorMessage}`,
         'error'
       );
-      generateBtn.disabled = false;
-      generateBtn.textContent = 'Generate New Game';
-      generateBtn.style.opacity = '1';
+      restoreIconButton(generateBtn, 'plus');
     }
   } catch (error) {
     console.error('Error triggering workflow:', error);
@@ -532,9 +562,7 @@ async function triggerGameGeneration() {
       `Error: ${errorMessage}. Check browser console for details.`,
       'error'
     );
-    generateBtn.disabled = false;
-    generateBtn.textContent = 'Generate New Game';
-    generateBtn.style.opacity = '1';
+    restoreIconButton(generateBtn, 'plus');
   }
 }
 
@@ -571,7 +599,7 @@ async function init() {
       e.stopPropagation();
       console.log('Refresh button clicked!');
       refreshBtn.disabled = true;
-      refreshBtn.textContent = 'Refreshing...';
+      updateIconButton(refreshBtn, 'loader-2', 'Refreshing...');
       try {
         // Clear cache and reload
         allGames = [];
@@ -585,8 +613,7 @@ async function init() {
         console.error('Error refreshing games:', error);
         showGenerateStatus('Error refreshing games. Please try again.', 'error');
       } finally {
-        refreshBtn.disabled = false;
-        refreshBtn.textContent = '🔄 Refresh Games List';
+        restoreIconButton(refreshBtn, 'refresh-cw');
       }
     });
   }
@@ -594,6 +621,11 @@ async function init() {
   // Load data
   await loadPlayedStatus();
   await loadGames();
+  
+  // Ensure icons are initialized after all DOM updates
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
 }
 
 // Run on page load

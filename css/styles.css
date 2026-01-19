@@ -88,9 +88,12 @@ main {
   align-items: center;
 }
 
+.game-card:hover {
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
+}
+
 .game-card:active {
-  transform: scale(0.98);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.15);
 }
 
 .game-card.played {
@@ -145,15 +148,15 @@ main {
   border-radius: var(--border-radius);
   cursor: pointer;
   min-height: var(--touch-target);
-  transition: background 0.2s, border-color 0.2s;
+  transition: box-shadow 0.2s;
 }
 
 .filter-btn:hover {
-  background: var(--hover-bg);
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
 }
 
 .filter-btn:active {
-  background: var(--hover-bg);
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.15);
 }
 
 .filter-btn.active {
@@ -165,7 +168,7 @@ main {
 /* Icon buttons (inline with filter buttons) */
 .icon-btn {
   padding: var(--spacing-sm);
-  font-size: var(--font-size-large);
+  font-size: var(--font-size-base);
   border: 1px solid var(--border-color);
   background: var(--card-bg);
   color: var(--text-color);
@@ -176,24 +179,37 @@ main {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, border-color 0.2s, transform 0.1s;
+  gap: var(--spacing-xs);
+  transition: box-shadow 0.2s;
   line-height: 1;
 }
 
+.icon-btn i {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
 .icon-btn:hover {
-  background: var(--hover-bg);
-  transform: scale(1.05);
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
 }
 
 .icon-btn:active {
-  transform: scale(0.95);
-  background: var(--hover-bg);
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.15);
 }
 
 .icon-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
+}
+
+.icon-btn:disabled:hover {
+  box-shadow: none;
 }
 
 /* Generate Game Section */
@@ -218,26 +234,25 @@ main {
   min-height: var(--touch-target);
   width: 100%;
   max-width: 300px;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
 }
 
 .generate-btn:hover {
-  background-color: var(--primary-color);
-  color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
 }
 
 .generate-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.15);
 }
 
 .generate-btn:disabled {
   background-color: var(--border-color);
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+.generate-btn:disabled:hover {
+  box-shadow: none;
 }
 
 .generate-status {
@@ -348,7 +363,7 @@ main {
   font-weight: 600;
   cursor: pointer;
   min-height: var(--touch-target);
-  transition: all 0.2s ease;
+  transition: box-shadow 0.2s;
 }
 
 .modal-btn.primary {
@@ -357,7 +372,11 @@ main {
 }
 
 .modal-btn.primary:hover {
-  background-color: var(--accent-color);
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
+}
+
+.modal-btn.primary:active {
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.15);
 }
 
 .modal-btn.secondary {
@@ -367,7 +386,11 @@ main {
 }
 
 .modal-btn.secondary:hover {
-  background-color: var(--hover-bg);
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
+}
+
+.modal-btn.secondary:active {
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.15);
 }
 
 /* Game display styles */
@@ -534,15 +557,15 @@ main {
   cursor: pointer;
   min-height: var(--touch-target);
   flex: 1;
-  transition: background 0.2s;
+  transition: box-shadow 0.2s;
 }
 
 .reveal-btn:hover {
-  background: var(--accent-color);
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
 }
 
 .reveal-btn:active {
-  background: var(--accent-color);
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.15);
 }
 
 .shuffle-btn {
@@ -556,17 +579,15 @@ main {
   cursor: pointer;
   min-height: var(--touch-target);
   flex: 1;
-  transition: background 0.2s;
+  transition: box-shadow 0.2s;
 }
 
 .shuffle-btn:hover {
-  background: var(--primary-color);
-  color: white;
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
 }
 
 .shuffle-btn:active {
-  background: var(--accent-color);
-  color: white;
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.15);
 }
 
 .question-buttons {
@@ -646,15 +667,15 @@ main {
   min-height: var(--touch-target);
   text-decoration: none;
   display: inline-block;
-  transition: background 0.2s;
+  transition: box-shadow 0.2s;
 }
 
 .nav-btn:hover {
-  background: var(--accent-color);
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
 }
 
 .nav-btn:active {
-  background: var(--accent-color);
+  box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.15);
 }
 
 /* Loading state */
@@ -727,24 +748,23 @@ main {
   }
   
   .game-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
   }
   
   .filter-btn:hover {
-    background: var(--card-bg);
+    box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
   }
   
   .filter-btn.active:hover {
-    background: var(--primary-color);
+    box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
   }
   
   .reveal-btn:hover {
-    background: #0500CC;
+    box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
   }
   
   .nav-btn:hover {
-    background: #0500CC;
+    box-shadow: inset 0 0 0 100px rgba(255, 255, 255, 0.1);
   }
 }
 
