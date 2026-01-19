@@ -28,15 +28,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Generate new game
-        run: npm run generate
-        env:
-          NODE_ENV: production
-      
-      - name: Update games index
-        run: node scripts/update-games-index.js
-      
-      - name: Commit and push changes
+      - name: Sync with remote (prevent divergence)
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -47,7 +39,17 @@ jobs:
           # Reset to remote main to ensure we're starting from the latest
           # This prevents divergence by always working from the latest remote state
           git reset --hard origin/main
-          
+      
+      - name: Generate new game
+        run: npm run generate
+        env:
+          NODE_ENV: production
+      
+      - name: Update games index
+        run: node scripts/update-games-index.js
+      
+      - name: Commit and push changes
+        run: |
           # Stage game files
           git add data/games/*.json data/games/index.json data/used-questions.json
           
@@ -55,8 +57,20 @@ jobs:
           if ! git diff --staged --quiet; then
             git commit -m "Generate weekly trivia game for $(date +%Y-%m-%d)"
             
-            # Push - we know we're up to date because we reset to origin/main
-            git push origin main
+            # Pull with rebase before pushing to handle any concurrent changes
+            git pull --rebase origin main || true
+            
+            # Push - retry up to 3 times if there are conflicts
+            for i in 1 2 3; do
+              if git push origin main; then
+                echo "Successfully pushed on attempt $i"
+                break
+              else
+                echo "Push failed on attempt $i, pulling and retrying..."
+                git pull --rebase origin main || true
+                sleep 2
+              fi
+            done
           else
             echo "No changes to commit"
           fi
