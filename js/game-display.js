@@ -29,6 +29,48 @@ function debouncedLocalStorageWrite(key, value) {
 }
 
 /**
+ * Get game number by loading games index and finding position
+ */
+async function getGameNumber(gameId) {
+  try {
+    const response = await fetch('data/games/index.json');
+    if (!response.ok) {
+      return null; // Can't determine number
+    }
+    const index = await response.json();
+    if (!index.games || !Array.isArray(index.games)) {
+      return null;
+    }
+    
+    // Handle both string array and object array formats
+    // Sort games by date (newest first) to match game-list.js logic
+    const sortedGames = [...index.games].sort((a, b) => {
+      // Handle both string IDs and objects with id/date properties
+      const gameA = typeof a === 'string' ? a : (a.id || a);
+      const gameB = typeof b === 'string' ? b : (b.id || b);
+      const dateA = typeof a === 'object' && a.date ? a.date : gameA.replace('game-', '');
+      const dateB = typeof b === 'object' && b.date ? b.date : gameB.replace('game-', '');
+      return new Date(dateB) - new Date(dateA);
+    });
+    
+    // Find the index of current game
+    const gameIndex = sortedGames.findIndex(g => {
+      const gameIdToCheck = typeof g === 'string' ? g : (g.id || g);
+      return gameIdToCheck === gameId;
+    });
+    if (gameIndex === -1) {
+      return null;
+    }
+    
+    // Game number is position from end (newest = #1)
+    return sortedGames.length - gameIndex;
+  } catch (error) {
+    console.warn('Could not determine game number:', error);
+    return null;
+  }
+}
+
+/**
  * Load game from URL parameter
  */
 async function loadGame() {
@@ -59,6 +101,9 @@ async function loadGame() {
       perfLab.end('parseGameData');
       perfLab.end('fetchGameData');
     }
+    
+    // Get game number
+    currentGame.gameNumber = await getGameNumber(gameId);
     
     if (typeof perfLab !== 'undefined') perfLab.start('renderGame');
     renderGame();
@@ -101,8 +146,10 @@ function renderGame() {
   const titleEl = document.getElementById('game-title');
   const dateEl = document.getElementById('game-date');
   if (titleEl && dateEl) {
-    titleEl.textContent = `Game ${currentGame.date}`;
-    const dateObj = new Date(currentGame.date);
+    titleEl.textContent = `Game #${currentGame.gameNumber || '?'}`;
+    // Parse date string as local date to avoid timezone issues
+    const [year, month, day] = currentGame.date.split('-').map(Number);
+    const dateObj = new Date(year, month - 1, day);
     dateEl.textContent = dateObj.toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',

@@ -7,19 +7,19 @@
       "difficulty": "easy",
       "questions": [
         {
-          "clue": "Benny Goodman, who could swing, & Pete Fountain, who could flow",
-          "answer": "the clarinet",
-          "category": "Unknown"
+          "clue": "It's not just oilSaudi Arabia has reserves of over 300 trillion cubic feet of this",
+          "answer": "natural gas",
+          "category": "EARTH SCIENCE"
         },
         {
-          "clue": "To knead tired muscles & the enactment into law of a legislative bill",
-          "answer": "massage & passage",
-          "category": "Unknown"
+          "clue": "This temperature oscillation in the equatorial Pacific Ocean was also a nickname of the young",
+          "answer": "El Niño",
+          "category": "EARTH SCIENCE"
         },
         {
-          "clue": "In July New York Times reporter Judith Miller was jailed for refusing to reveal one of these",
-          "answer": "a source",
-          "category": "Unknown"
+          "clue": "In a mining lode, the gangue is the junk & this is the mineral with the good stuff in it",
+          "answer": "ore",
+          "category": "EARTH SCIENCE"
         }
       ]
     },
@@ -28,19 +28,19 @@
       "difficulty": "easy",
       "questions": [
         {
-          "clue": "With temps reaching 70 below zero, Yakutsk in this region of Russia ranks among the world's coldest cities",
-          "answer": "Siberia",
-          "category": "WORLD CITIES"
+          "clue": "Disturbances in Dijon in 1788 were early signals of this event that really got going in 1789",
+          "answer": "the",
+          "category": "EUROPEAN HISTORY"
         },
         {
-          "clue": "Though its name means \"place of the thunderbolt\", this city in West Bengal is better known as a city of tea",
-          "answer": "Darjeeling",
-          "category": "WORLD CITIES"
+          "clue": "This name of seafaring warriors of around the year 1000 is from a Scandinavian word for \"pirate\"",
+          "answer": "Viking",
+          "category": "EUROPEAN HISTORY"
         },
         {
-          "clue": "Lugano in this country hosted the first Eurovision Song Contest in 1956: Basel is scheduled to host in 2025",
-          "answer": "Switzerland",
-          "category": "WORLD CITIES"
+          "clue": "Symbolizing this new dual monarchy, in 1868, Empress Elisabeth, or Sissi, traveled to have her youngest be born a Buda baby",
+          "answer": "Austro-Hungarian",
+          "category": "EUROPEAN HISTORY"
         }
       ]
     },
@@ -49,19 +49,19 @@
       "difficulty": "medium",
       "questions": [
         {
-          "clue": "One of the world's largest church organs is in Cadet Chapel at this institution in",
-          "answer": "West Point",
-          "category": "ORGAN RECITAL"
+          "clue": "Isotta Nogarola is often said to have been the first major female figure of this people-centric intellectual \"-ism\"",
+          "answer": "humanism",
+          "category": "RENAISSANCE WOMEN"
         },
         {
-          "clue": "Each of these organs has a visceral pleura & a parietal pleura",
-          "answer": "the lungs",
-          "category": "ORGAN RECITAL"
+          "clue": "Victor Hugo's play about this woman popularized her image as a poisoner, though there's no real evidence she was one",
+          "answer": "Lucrezia Borgia",
+          "category": "RENAISSANCE WOMEN"
         },
         {
-          "clue": "The epicardium is its outer layer",
-          "answer": "the heart",
-          "category": "ORGAN RECITAL"
+          "clue": "A contemporary described Isabella d'Este as the this \"of the World\", though she was the wife of a marquess, not a president",
+          "answer": "the",
+          "category": "RENAISSANCE WOMEN"
         }
       ]
     },
@@ -70,40 +70,40 @@
       "difficulty": "medium",
       "questions": [
         {
-          "clue": "Full executive power return to Japan's emperor following the 1867 ascension of Mutsuhito, better known by this name",
-          "answer": "Meiji",
-          "category": "SOMETIME IN THE LAST 300 YEARS"
+          "clue": "These landmark boxing rules are named for the British nobleman who sponsored their 1867 publication",
+          "answer": "the Queensberry rules",
+          "category": "AT THE START OF THE SPORT"
         },
         {
-          "clue": "From 2008 to 2012 he was president of Russia, because Putin sure wasn't still running things, no sir, it was this guy, 100%",
-          "answer": "Medvedev",
-          "category": "SOMETIME IN THE LAST 300 YEARS"
+          "clue": "Long said to have invented baseball, this military man didn't, but he was definitely at Fort Sumter when the first shots were fired",
+          "answer": "Doubleday",
+          "category": "AT THE START OF THE SPORT"
         },
         {
-          "clue": "He told 30,000 at a be-in at Golden Gate Park in 1967 to turn on, tune in, drop out",
-          "answer": "Leary",
-          "category": "SOMETIME IN THE LAST 300 YEARS"
+          "clue": "In 1883 an Englishman patented equipment for playing a form of this \"indoors, say upon a billiard or dining table\"",
+          "answer": "table tennis",
+          "category": "AT THE START OF THE SPORT"
         }
       ]
     },
     {
       "roundNumber": 5,
-      "difficulty": "hard",
+      "difficulty": "medium",
       "questions": [
         {
-          "clue": "Now a museum, the Topkapi Palace in this city was built by Mehmed II in the 15th century",
-          "answer": "Istanbul",
-          "category": "HISTORIC BUILDINGS"
+          "clue": "\"The story had held us round the fire, sufficiently breathless\", is how this author began \"The Turn of the Screw\", about a governess trying to protect children from the effects of malevolent spirits",
+          "answer": "James",
+          "category": "SPOOKY LITERATURE"
         },
         {
-          "clue": "In 1911 & 1969 Caernarfon Castle was the site of investiture ceremonies in which young men received this royal title",
-          "answer": "Prince of Wales",
-          "category": "HISTORIC BUILDINGS"
+          "clue": "The burial of Stephen King's daughter's cat Smucky helped inspire this novel that the author has said is just as dark as can be",
+          "answer": "Pet Sematary",
+          "category": "SPOOKY LITERATURE"
         },
         {
-          "clue": "The Golden Rock, this type of Buddhist structure, has been perching on a mountainside in Myanmar since the 6th century B.C",
-          "answer": "pagoda",
-          "category": "HISTORIC BUILDINGS"
+          "clue": "To pass the time on a rainy day in Geneva, she & her husband & friends were telling each other ghost stories; she came up with \"Frankenstein\"not bad for starting your first novel at age 18",
+          "answer": "Shelley",
+          "category": "SPOOKY LITERATURE"
         }
       ]
     },
@@ -112,40 +112,40 @@
       "difficulty": "medium",
       "questions": [
         {
-          "clue": "Harry Bertram of Ellangowan is the actual hero of the 1815 \"Waverley\" tale \"Guy Mannering\" by this author",
-          "answer": "Sir",
-          "category": "BOOKS & AUTHORS"
+          "clue": "Like Wyatt Earp did, you can still get a drink at the Palace Restaurant & Saloon in Prescott in this state",
+          "answer": "Arizona",
+          "category": "HISTORIC U.S. BUSINESSES"
         },
         {
-          "clue": "In 1986, the 50th anniversary of her bestseller, a stamp of her was released in a ceremony in Atlanta",
-          "answer": "Margaret Mitchell",
-          "category": "BOOKS & AUTHORS"
+          "clue": "The Bismarck Tribune shocked the nation with the first full account of this 1876 event in which one of its correspondents died",
+          "answer": "the Battle of",
+          "category": "HISTORIC U.S. BUSINESSES"
         },
         {
-          "clue": "\"I, Claudius\" author Robert Graves expressed the disillusion of many in \"Goodbye to All That\", his memoir of this war",
-          "answer": "World War I",
-          "category": "BOOKS & AUTHORS"
+          "clue": "Built of bricks of this in 1857, the R&R Market in San Luis, Colorado kept going strong after fires in 1895 & 1947",
+          "answer": "adobe",
+          "category": "HISTORIC U.S. BUSINESSES"
         }
       ]
     },
     {
       "roundNumber": 7,
-      "difficulty": "hard",
+      "difficulty": "medium",
       "questions": [
         {
-          "clue": "Literally sleep with the fishesConrad's all-glass undersea Muraka suite is just four hours by speedboat from this Maldives capital city",
-          "answer": "Malé",
-          "category": "A HOTEL MOST UNUSUAL"
+          "clue": "Look way up in the Himalayas to find this small country of Asia",
+          "answer": "Bhutan",
+          "category": "GEOGRAPHY \"B\""
         },
         {
-          "clue": "Temps hover below freezing in this country's Icehotel built anew each year with ice harvested from the Torne, its northernmost river",
-          "answer": "Sweden",
-          "category": "A HOTEL MOST UNUSUAL"
+          "clue": "The 2 countries of South America that begin with \"B\" are these",
+          "answer": "Bolivia & Brazil",
+          "category": "GEOGRAPHY \"B\""
         },
         {
-          "clue": "Tired of amenities? Book a \"sweat-box\" cell at the prison castle in Tobolsk, Russia, where this author of \"The Idiot\" once did time",
-          "answer": "Dostoyevsky",
-          "category": "A HOTEL MOST UNUSUAL"
+          "clue": "Home to about 5.4 million, it's the province seen here",
+          "answer": "British Columbia",
+          "category": "GEOGRAPHY \"B\""
         }
       ]
     },
@@ -154,26 +154,26 @@
       "difficulty": "hard",
       "questions": [
         {
-          "clue": "This park in northeastern South Africa bears the name of a president of the Transvaal",
-          "answer": "Kruger",
-          "category": "NATIONAL PARKS"
+          "clue": "Captured by the James Webb Space Telescope & featured on a new stamp, are these pillars in the",
+          "answer": "the Pillars of Creation",
+          "category": "NEW U.S. STAMPS FOR 2024"
         },
         {
-          "clue": "A national park in New Zealand is a true \"land\" of these steep-cliffed inlets also found in northern lands, like",
-          "answer": "a fjord",
-          "category": "NATIONAL PARKS"
+          "clue": "On the 250th anniv. of the 1st of these bodies, a stamp quotes its letter to King George III: \"We ask but for peace, liberty & safety\"",
+          "answer": "the",
+          "category": "NEW U.S. STAMPS FOR 2024"
         },
         {
-          "clue": "This centrally located country has Tortuguero National Park on the Caribbean & Corcovado National Park on the Pacific",
-          "answer": "Costa Rica",
-          "category": "NATIONAL PARKS"
+          "clue": "A guitar, fiddle, banjo & mandolin are all featured on the 2024 stamp celebrating this uniquely American genre of music",
+          "answer": "bluegrass",
+          "category": "NEW U.S. STAMPS FOR 2024"
         }
       ]
     }
   ],
   "finalTrivia": {
-    "category": "U.S. HISTORY",
-    "question": "Challenged in a courtroom that same year, 1925's Butler Act in Tennessee outlawed this activity & wasn't repealed until 1967",
-    "answer": "teaching evolution"
+    "category": "NEWER WORDS",
+    "question": "Philosophers use it for language that accompanies an action, like \"I dub thee knight\"; it also means done for show or signal",
+    "answer": "performative"
   }
 }

@@ -114,14 +114,19 @@ function cleanClueText(text, answer = null) {
   // Remove question marks at the end that might be artifacts
   text = text.replace(/\?+\s*$/, '');
   
-  // Remove multiple spaces and clean up
+  // Preserve periods and spaces after them before collapsing spaces
+  // Replace "period + multiple spaces" with "period + single space" to preserve the period
+  text = text.replace(/\.\s+/g, '. ');
+  
+  // Remove multiple spaces and clean up (but preserve the period-space patterns we just fixed)
   text = text.replace(/\s+/g, ' ').trim();
   
-  // Remove trailing punctuation artifacts (but be conservative - only if it's clearly an artifact)
-  // Only remove if it's a single punctuation mark with no context
-  // Don't remove if it's part of a sentence (e.g., "What is X?" should keep the question mark)
-  // Only remove trailing punctuation if it's followed by nothing meaningful
-  text = text.replace(/\s*[.,;:]\s*$/, '');
+  // Don't remove trailing punctuation - preserve periods, commas, etc. that are part of the sentence
+  // Only remove if it's clearly a single isolated punctuation mark with no preceding text
+  // This is very conservative - only remove if text is just a single punctuation mark
+  if (/^[.,;:]\s*$/.test(text)) {
+    text = '';
+  }
   
   // Final cleanup: remove any remaining single letters or numbers at the end that look like artifacts
   // BE MORE CONSERVATIVE: Only remove if it's clearly an artifact (single char with space before)

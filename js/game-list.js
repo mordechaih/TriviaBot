@@ -95,8 +95,12 @@ async function savePlayedStatus() {
 
 /**
  * Load list of available games
+ * @param {Object} options - Optional configuration
+ * @param {string} options.baseUrl - Base URL for fetching (used for production polling)
  */
-async function loadGames() {
+async function loadGames(options = {}) {
+  const baseUrl = options.baseUrl || '';
+  
   // Safely start performance tracking (perfLab might not be loaded)
   if (typeof perfLab !== 'undefined') {
     perfLab.start('loadGames');
@@ -119,7 +123,9 @@ async function loadGames() {
       const perfCounter = performance.now();
       const cacheBuster = `v=${timestamp}&r=${random}&c=${perfCounter}&_=${timestamp}`;
       
-      const indexUrl = `data/games/index.json?${cacheBuster}`;
+      // Use base URL if provided (for production polling), otherwise relative path
+      const indexPath = 'data/games/index.json';
+      const indexUrl = baseUrl ? `${baseUrl}/${indexPath}?${cacheBuster}` : `${indexPath}?${cacheBuster}`;
       console.log('Fetching index from:', indexUrl);
       const indexResponse = await fetch(indexUrl, {
         method: 'GET',
@@ -202,7 +208,10 @@ async function loadGames() {
         if (typeof perfLab !== 'undefined') perfLab.start(`fetchGame-${index}`);
         // Add aggressive cache-busting to prevent stale data from Vercel CDN
         const cacheBuster = `v=${Date.now()}&r=${Math.random()}&c=${performance.now()}`;
-        return fetch(`data/games/${id}.json?${cacheBuster}`, {
+        // Use base URL if provided (for production polling), otherwise relative path
+        const gamePath = `data/games/${id}.json`;
+        const gameUrl = baseUrl ? `${baseUrl}/${gamePath}?${cacheBuster}` : `${gamePath}?${cacheBuster}`;
+        return fetch(gameUrl, {
           method: 'GET',
           cache: 'no-store',
           headers: {
@@ -241,6 +250,10 @@ async function loadGames() {
       allGames = games.filter(g => g !== null).sort((a, b) => 
         new Date(b.date) - new Date(a.date)
       );
+      // Assign game numbers based on sorted order (newest = #1)
+      allGames.forEach((game, index) => {
+        game.gameNumber = allGames.length - index;
+      });
       if (typeof perfLab !== 'undefined') perfLab.end('sortGames');
     } else {
       // Fallback: try to discover games by checking common patterns
@@ -252,6 +265,11 @@ async function loadGames() {
       }
       if (typeof perfLab !== 'undefined') perfLab.start('discoverGames');
       allGames = await discoverGames();
+      // Sort and assign game numbers
+      allGames.sort((a, b) => new Date(b.date) - new Date(a.date));
+      allGames.forEach((game, index) => {
+        game.gameNumber = allGames.length - index;
+      });
       if (typeof perfLab !== 'undefined') perfLab.end('discoverGames');
     }
     
@@ -402,11 +420,13 @@ function createGameCard(game) {
   info.className = 'game-card-info';
   
   const title = document.createElement('h3');
-  title.textContent = `Game ${game.date}`;
+  title.textContent = `Game #${game.gameNumber || '?'}`;
   
   const date = document.createElement('div');
   date.className = 'date';
-  const dateObj = new Date(game.date);
+  // Parse date string as local date to avoid timezone issues
+  const [year, month, day] = game.date.split('-').map(Number);
+  const dateObj = new Date(year, month - 1, day);
   date.textContent = dateObj.toLocaleDateString('en-US', { 
     weekday: 'long', 
     year: 'numeric', 
@@ -619,6 +639,17 @@ async function triggerGameGeneration() {
       let pollCount = 0;
       const maxPolls = 18; // 18 * 10 seconds = 3 minutes
       
+      // Determine if we need to poll from production (when using production API endpoint)
+      const isProductionApi = typeof GITHUB_CONFIG !== 'undefined' && 
+                              GITHUB_CONFIG.productionBaseUrl && 
+                              GITHUB_CONFIG.apiEndpoint && 
+                              GITHUB_CONFIG.apiEndpoint.includes(GITHUB_CONFIG.productionBaseUrl);
+      const pollBaseUrl = isProductionApi ? GITHUB_CONFIG.productionBaseUrl : null;
+      
+      if (pollBaseUrl) {
+        console.log('Using production base URL for polling:', pollBaseUrl);
+      }
+      
       const pollForNewGames = setInterval(async () => {
         pollCount++;
         console.log(`Polling for new games (attempt ${pollCount}/${maxPolls})...`);
@@ -632,7 +663,8 @@ async function triggerGameGeneration() {
           // Force reload games with cache-busting
           // Clear the allGames array first to force fresh load
           allGames = [];
-          await loadGames();
+          // Use production base URL if available (for production workflow triggers)
+          await loadGames({ baseUrl: pollBaseUrl });
           
           // Get current game IDs
           const currentGameIds = new Set(allGames.map(g => g.id));

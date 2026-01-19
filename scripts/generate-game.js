@@ -323,12 +323,12 @@ async function selectQuestions(archive, usedQuestions, targetDate) {
   const numRounds = 8;
   const usedGames = new Set();
   const usedCategories = new Set();
+  const roundDifficulties = []; // Store target difficulty for each round
   
   // Strategy: Start easy, gradually increase difficulty
   // Round 1-2: Easy
-  // Round 3-4: Medium
-  // Round 5-6: Hard
-  // Round 7-8: Expert (with some hard mixed in)
+  // Round 3-7: Medium (extended for more medium questions)
+  // Round 8: Hard (only in final round)
   
   for (let round = 0; round < numRounds; round++) {
     const roundQuestions = [];
@@ -337,15 +337,14 @@ async function selectQuestions(archive, usedQuestions, targetDate) {
     // Determine target difficulty for this round
     if (round < 2) {
       targetDifficulty = 'easy';
-    } else if (round < 4) {
+    } else if (round < 7) {
       targetDifficulty = 'medium';
-    } else if (round < 6) {
-      targetDifficulty = 'hard';
     } else {
-      targetDifficulty = 'expert';
+      targetDifficulty = 'hard';
     }
     
     // Find a game and category with enough questions of target difficulty
+    // Prefer categories that are NOT "Unknown" to avoid rounds with all Unknown categories
     let selectedGame = null;
     let selectedCategory = null;
     
@@ -372,6 +371,7 @@ async function selectQuestions(archive, usedQuestions, targetDate) {
           availableByGameCategory.push({
             gameId,
             category,
+            isUnknown: category === 'Unknown' || !category || category.trim() === '',
             count: available.length,
             rawCount: rawCount // Show original count before filtering
           });
@@ -422,24 +422,34 @@ async function selectQuestions(archive, usedQuestions, targetDate) {
             category,
             count: targetQuestions.length,
             totalAvailable: totalAvailableInCategory, // Total across all difficulties
+            isUnknown: category === 'Unknown' || !category || category.trim() === '',
             isUnusedGame: !usedGames.has(gameId)
           });
         }
       }
     }
     
-    // Sort: prefer unused games, then by total available questions (descending)
+    // Sort: prefer non-Unknown categories, then unused games, then by total available questions (descending)
     candidates.sort((a, b) => {
+      // First priority: avoid "Unknown" categories
+      if (a.isUnknown !== b.isUnknown) {
+        return a.isUnknown ? 1 : -1; // Non-Unknown categories first
+      }
+      // Second priority: prefer unused games
       if (a.isUnusedGame !== b.isUnusedGame) {
         return a.isUnusedGame ? -1 : 1; // Unused games first
       }
-      // Prefer categories with more total available questions (across all difficulties)
+      // Third priority: prefer categories with more total available questions (across all difficulties)
       return (b.totalAvailable || 0) - (a.totalAvailable || 0);
     });
     
     // Find a candidate - we'll allow mixing difficulties if needed
-    // First try to find one with enough questions of target difficulty
-    for (const candidate of candidates) {
+    // STRICT: Only use Unknown categories if absolutely no other options exist
+    const nonUnknownCandidates = candidates.filter(c => !c.isUnknown);
+    const candidatesToUse = nonUnknownCandidates.length > 0 ? nonUnknownCandidates : candidates;
+    
+    // First try to find one with enough questions of target difficulty (prefer non-Unknown)
+    for (const candidate of candidatesToUse) {
       if (candidate.count >= questionsPerRound) {
         selectedGame = candidate.gameId;
         selectedCategory = candidate.category;
@@ -450,15 +460,15 @@ async function selectQuestions(archive, usedQuestions, targetDate) {
     // If we can't find one with enough of target difficulty, 
     // pick one that has enough total questions (we'll mix difficulties)
     if (!selectedGame || !selectedCategory) {
-      // Pick the best candidate (most total available questions)
-      const bestCandidate = candidates.find(c => (c.totalAvailable || 0) >= questionsPerRound);
+      // Pick the best candidate (most total available questions), still preferring non-Unknown
+      const bestCandidate = candidatesToUse.find(c => (c.totalAvailable || 0) >= questionsPerRound);
       if (bestCandidate) {
         selectedGame = bestCandidate.gameId;
         selectedCategory = bestCandidate.category;
-      } else if (candidates.length > 0) {
+      } else if (candidatesToUse.length > 0) {
         // Last resort: pick the one with most total questions
-        selectedGame = candidates[0].gameId;
-        selectedCategory = candidates[0].category;
+        selectedGame = candidatesToUse[0].gameId;
+        selectedCategory = candidatesToUse[0].category;
       } else {
         // More detailed error message
         const topOptions = availableByGameCategory
@@ -538,6 +548,9 @@ async function selectQuestions(archive, usedQuestions, targetDate) {
     if (roundQuestions.length < questionsPerRound) {
       throw new Error(`Could not select enough questions for round ${round + 1}`);
     }
+    
+    // Store the target difficulty for this round
+    roundDifficulties.push(targetDifficulty);
   }
   
   // Select Final Jeopardy question
@@ -555,7 +568,8 @@ async function selectQuestions(archive, usedQuestions, targetDate) {
   return {
     questions: selectedQuestions,
     finalQuestion,
-    usedQuestions: newUsedQuestions
+    usedQuestions: newUsedQuestions,
+    roundDifficulties
   };
 }
 
@@ -587,7 +601,7 @@ function findNextAvailableDate(targetDate = null) {
 /**
  * Generate a game for a specific date
  */
-async function generateGame(targetDate = null) {
+async function generateGame(targetDate = null, forceOverwrite = false) {
   let date;
   let gameId;
   let gameFile;
@@ -604,10 +618,20 @@ async function generateGame(targetDate = null) {
     gameId = `game-${date}`;
     gameFile = path.join(GAMES_DIR, `${gameId}.json`);
     
-    // If game already exists for this specific date, skip
-    if (fs.existsSync(gameFile)) {
-      console.log(`Game ${gameId} already exists`);
+    // Check if we should overwrite (either forceOverwrite parameter or --force flag)
+    const args = process.argv.slice(2);
+    const shouldForce = forceOverwrite || args.includes('--force');
+    
+    // If game already exists for this specific date, skip (unless force is set)
+    if (fs.existsSync(gameFile) && !shouldForce) {
+      console.log(`Game ${gameId} already exists (use --force to overwrite)`);
       return gameId;
+    }
+    
+    // If force is set and game exists, delete it first
+    if (fs.existsSync(gameFile) && shouldForce) {
+      console.log(`Force flag set: overwriting existing game ${gameId}`);
+      fs.unlinkSync(gameFile);
     }
   }
   
@@ -621,7 +645,7 @@ async function generateGame(targetDate = null) {
   console.log(`Archive contains ${archive.length} questions`);
   console.log(`${usedQuestions.size} questions already used`);
   
-  const { questions, finalQuestion, usedQuestions: newUsedQuestions } = 
+  const { questions, finalQuestion, usedQuestions: newUsedQuestions, roundDifficulties } = 
     await selectQuestions(archive, usedQuestions, date);
   
   // Organize questions into rounds
@@ -630,14 +654,12 @@ async function generateGame(targetDate = null) {
   
   for (let i = 0; i < 8; i++) {
     const roundQuestions = questions.slice(i * questionsPerRound, (i + 1) * questionsPerRound);
-    const avgDifficulty = roundQuestions.reduce((sum, q) => {
-      const score = calculateDifficulty(q);
-      return sum + score;
-    }, 0) / roundQuestions.length;
+    // Use the target difficulty for this round instead of calculating from questions
+    const difficulty = roundDifficulties[i] || 'easy';
     
     rounds.push({
       roundNumber: i + 1,
-      difficulty: getDifficultyLevel(avgDifficulty),
+      difficulty: difficulty,
       questions: roundQuestions.map(q => ({
         clue: q.clue,
         answer: q.answer,
@@ -669,22 +691,32 @@ async function generateGame(targetDate = null) {
   return gameId;
 }
 
-// Main execution
-const args = process.argv.slice(2);
-let targetDate = null;
+// Export generateGame for use in other scripts
+export { generateGame };
 
-if (args.includes('--date')) {
-  const dateIndex = args.indexOf('--date');
-  targetDate = args[dateIndex + 1];
-}
-// If no --date flag, targetDate stays null, which tells generateGame to find next available date
+// Main execution (only if run directly, not when imported)
+// Check if this is the main module by comparing the file path
+import { fileURLToPath } from 'url';
+const currentFile = fileURLToPath(import.meta.url);
+const isMainModule = process.argv[1] && (currentFile === process.argv[1] || process.argv[1].endsWith('generate-game.js'));
 
-try {
-  const gameId = await generateGame(targetDate);
-  console.log(`\nSuccessfully generated ${gameId}`);
-} catch (error) {
-  console.error('Error generating game:', error.message);
-  process.exit(1);
+if (isMainModule) {
+  const args = process.argv.slice(2);
+  let targetDate = null;
+
+  if (args.includes('--date')) {
+    const dateIndex = args.indexOf('--date');
+    targetDate = args[dateIndex + 1];
+  }
+  // If no --date flag, targetDate stays null, which tells generateGame to find next available date
+
+  try {
+    const gameId = await generateGame(targetDate);
+    console.log(`\nSuccessfully generated ${gameId}`);
+  } catch (error) {
+    console.error('Error generating game:', error.message);
+    process.exit(1);
+  }
 }
 
 
