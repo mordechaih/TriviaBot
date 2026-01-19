@@ -101,11 +101,33 @@ TriviaBot/
         └── weekly-game.yml    # GitHub Actions automation
 ```
 
-## GitHub Pages Deployment
+## Deployment
 
+### Vercel (Recommended)
+
+The project is configured to deploy to Vercel, which hosts both the static site and the serverless function:
+
+1. **Import your GitHub repository to Vercel**:
+   - Go to https://vercel.com
+   - Click "Add New" → "Project"
+   - Import your GitHub repository
+   - Vercel will auto-detect the settings
+
+2. **Set environment variables** (for the serverless function):
+   - In Vercel dashboard → Your project → Settings → Environment Variables
+   - Add `GITHUB_TOKEN` with your Personal Access Token (with `repo` scope)
+   - (Optional) Add `GITHUB_OWNER` and `GITHUB_REPO`
+
+3. **Deploy**:
+   - Vercel will automatically deploy on every push to `main`
+   - Your site will be available at `https://your-project.vercel.app`
+
+### GitHub Pages (Alternative)
+
+If you prefer GitHub Pages instead:
 1. Push the repository to GitHub
 2. Enable GitHub Pages in repository settings (Settings > Pages)
-3. Select the `main` branch as the source
+3. Select `GitHub Actions` as the source
 4. The site will be available at `https://<username>.github.io/TriviaBot`
 
 ## Automated Weekly Generation
@@ -129,8 +151,8 @@ The webapp includes a "Generate New Game" button that allows you to trigger game
 1. **Deploy the serverless function** (choose one):
    
    **Option A: Vercel (Recommended)**
-   - Install Vercel CLI: `npm i -g vercel`
-   - In your project directory, run: `vercel`
+   - Vercel CLI is already installed locally in the project
+   - In your project directory, run: `npm run deploy` (or `npx vercel`)
    - Follow the prompts to deploy
    - After deployment, go to your Vercel dashboard
    - Navigate to your project → Settings → Environment Variables

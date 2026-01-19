@@ -1,0 +1,3 @@
+[] stick to a single jeopardy category per round
+[] color code each round (r1 yellow to  final trivia red)
+[] add the ability to shuffle / reload per question and per category
