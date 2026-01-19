@@ -254,108 +254,31 @@ function hideGenerateStatus() {
 }
 
 /**
- * Get GitHub repository info from current page
+ * Get GitHub repository info from config file
  */
 function getGitHubRepoInfo() {
-  // Try to extract from window.location
-  // For GitHub Pages: username.github.io/repo-name
-  const hostname = window.location.hostname;
-  const pathname = window.location.pathname;
+  // Check if config is available
+  if (typeof GITHUB_CONFIG !== 'undefined' && GITHUB_CONFIG.owner && GITHUB_CONFIG.repo) {
+    return {
+      owner: GITHUB_CONFIG.owner,
+      repo: GITHUB_CONFIG.repo,
+      branch: GITHUB_CONFIG.branch || 'main'
+    };
+  }
   
-  // If on GitHub Pages, extract from hostname
+  // Fallback: try to extract from window.location (for GitHub Pages)
+  const hostname = window.location.hostname;
   if (hostname.includes('github.io')) {
     const parts = hostname.split('.');
     if (parts.length >= 2) {
       const username = parts[0];
-      // Try to get repo name from pathname or localStorage
-      const repoName = localStorage.getItem('github-repo') || 'TriviaBot';
-      return { owner: username, repo: repoName };
+      return { owner: username, repo: 'TriviaBot', branch: 'main' };
     }
-  }
-  
-  // Fallback: use stored values or prompt
-  const storedOwner = localStorage.getItem('github-owner');
-  const storedRepo = localStorage.getItem('github-repo');
-  
-  if (storedOwner && storedRepo) {
-    return { owner: storedOwner, repo: storedRepo };
   }
   
   return null;
 }
 
-/**
- * Get GitHub token (stored in localStorage)
- */
-function getGitHubToken() {
-  return localStorage.getItem('github-token');
-}
-
-/**
- * Set GitHub token
- */
-function setGitHubToken(token) {
-  if (token) {
-    localStorage.setItem('github-token', token);
-  } else {
-    localStorage.removeItem('github-token');
-  }
-}
-
-/**
- * Show GitHub credentials modal
- */
-function showGitHubModal() {
-  return new Promise((resolve, reject) => {
-    const modal = document.getElementById('github-modal');
-    const form = document.getElementById('github-form');
-    const cancelBtn = document.getElementById('modal-cancel');
-    const ownerInput = document.getElementById('github-owner-input');
-    const repoInput = document.getElementById('github-repo-input');
-    const tokenInput = document.getElementById('github-token-input');
-    
-    // Pre-fill with stored values if available
-    ownerInput.value = localStorage.getItem('github-owner') || '';
-    repoInput.value = localStorage.getItem('github-repo') || 'TriviaBot';
-    tokenInput.value = localStorage.getItem('github-token') || '';
-    
-    modal.style.display = 'flex';
-    
-    const cleanup = () => {
-      modal.style.display = 'none';
-      form.removeEventListener('submit', handleSubmit);
-      cancelBtn.removeEventListener('click', handleCancel);
-    };
-    
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      const owner = ownerInput.value.trim();
-      const repo = repoInput.value.trim();
-      const token = tokenInput.value.trim();
-      
-      if (!owner || !repo || !token) {
-        alert('Please fill in all fields');
-        return;
-      }
-      
-      // Save to localStorage
-      localStorage.setItem('github-owner', owner);
-      localStorage.setItem('github-repo', repo);
-      setGitHubToken(token);
-      
-      cleanup();
-      resolve({ owner, repo, token });
-    };
-    
-    const handleCancel = () => {
-      cleanup();
-      reject(new Error('User cancelled'));
-    };
-    
-    form.addEventListener('submit', handleSubmit);
-    cancelBtn.addEventListener('click', handleCancel);
-  });
-}
 
 /**
  * Trigger GitHub Actions workflow
@@ -379,97 +302,54 @@ async function triggerGameGeneration() {
   console.log('Button found, getting repo info...');
   const repoInfo = getGitHubRepoInfo();
   
-  // Check if we need to collect GitHub credentials
-  if (!repoInfo || !getGitHubToken()) {
-    // Re-enable button temporarily while modal is shown
-    generateBtn.disabled = false;
-    generateBtn.textContent = 'Generate New Game';
-    generateBtn.style.opacity = '1';
-    
-    try {
-      const credentials = await showGitHubModal();
-      repoInfo = { owner: credentials.owner, repo: credentials.repo };
-      // Disable button again now that we have credentials
-      generateBtn.disabled = true;
-      generateBtn.textContent = 'Generating...';
-      generateBtn.style.opacity = '0.7';
-    } catch (error) {
-      // User cancelled
-      showGenerateStatus('GitHub credentials required to generate games', 'error');
-      return;
-    }
-  }
-  
-  console.log('Repo info:', repoInfo);
-  
-  const token = getGitHubToken();
-  if (!token) {
-    showGenerateStatus('GitHub token required to generate games', 'error');
+  // Check if credentials are configured
+  if (!repoInfo) {
+    showGenerateStatus('Error: GitHub configuration not found. Please check js/config.js', 'error');
     generateBtn.disabled = false;
     generateBtn.textContent = 'Generate New Game';
     generateBtn.style.opacity = '1';
     return;
   }
   
-  // Get default branch (stored or default to 'main')
-  const defaultBranch = localStorage.getItem('github-branch') || 'main';
+  // Get API endpoint from config
+  const apiEndpoint = typeof GITHUB_CONFIG !== 'undefined' ? GITHUB_CONFIG.apiEndpoint : null;
+  if (!apiEndpoint) {
+    showGenerateStatus('Error: API endpoint not configured. Please set apiEndpoint in js/config.js', 'error');
+    generateBtn.disabled = false;
+    generateBtn.textContent = 'Generate New Game';
+    generateBtn.style.opacity = '1';
+    return;
+  }
+  
+  console.log('Repo info:', repoInfo);
+  console.log('API endpoint:', apiEndpoint);
+  
+  // Get default branch from config
+  const defaultBranch = repoInfo.branch || 'main';
   
   // Update status
   showGenerateStatus('Triggering game generation...', 'info');
   console.log('Button disabled, status shown, calling API...');
   
   try {
-    // Try to get workflow ID first (more reliable)
-    let workflowPath = 'weekly-game.yml';
-    
-    try {
-      const workflowsResponse = await fetch(
-        `https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/actions/workflows`,
-        {
-          headers: {
-            'Accept': 'application/vnd.github.v3+json',
-            'Authorization': `token ${token}`
-          }
-        }
-      );
-      
-      if (workflowsResponse.ok) {
-        const workflows = await workflowsResponse.json();
-        const workflow = workflows.workflows?.find(w => 
-          w.name === 'Generate Weekly Trivia Game' || 
-          w.path?.includes('weekly-game.yml') ||
-          w.path?.endsWith('weekly-game.yml')
-        );
-        if (workflow) {
-          // Use numeric ID if available, otherwise use path
-          workflowPath = workflow.id || workflow.path || 'weekly-game.yml';
-        }
-      }
-    } catch (e) {
-      // If workflow lookup fails, continue with filename
-      console.log('Could not lookup workflow, using filename');
-    }
-    
-    // Trigger workflow_dispatch via GitHub API
-    const apiUrl = typeof workflowPath === 'number'
-      ? `https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/actions/workflows/${workflowPath}/dispatches`
-      : `https://api.github.com/repos/${repoInfo.owner}/${repoInfo.repo}/actions/workflows/${workflowPath}/dispatches`;
-    
-    const response = await fetch(apiUrl, {
+    // Call our secure serverless function (token is stored server-side)
+    const response = await fetch(apiEndpoint, {
       method: 'POST',
       headers: {
-        'Accept': 'application/vnd.github.v3+json',
-        'Authorization': `token ${token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        ref: defaultBranch
+        owner: repoInfo.owner,
+        repo: repoInfo.repo,
+        branch: defaultBranch
       })
     });
     
+    const responseData = await response.json().catch(() => ({}));
     console.log('API response status:', response.status);
+    console.log('API response data:', responseData);
     
-    if (response.ok) {
+    if (response.ok && (responseData.success || response.status === 204)) {
       console.log('Workflow triggered successfully!');
       showGenerateStatus(
         'Game generation triggered! It may take a few minutes. Refresh the page to see the new game.',
@@ -480,19 +360,11 @@ async function triggerGameGeneration() {
       setTimeout(() => {
         window.location.reload();
       }, 30000);
-    } else if (response.status === 401) {
-      // Token invalid, clear it
-      console.error('Authentication failed');
-      setGitHubToken(null);
-      showGenerateStatus('Invalid GitHub token. Please try again.', 'error');
-      generateBtn.disabled = false;
-      generateBtn.textContent = 'Generate New Game';
-      generateBtn.style.opacity = '1';
     } else {
-      const errorData = await response.json().catch(() => ({}));
-      console.error('API error:', errorData);
+      const errorMessage = responseData.error || response.statusText || 'Failed to trigger workflow';
+      console.error('API error:', errorMessage);
       showGenerateStatus(
-        `Error: ${errorData.message || response.statusText || 'Failed to trigger workflow'}`,
+        `Error: ${errorMessage}`,
         'error'
       );
       generateBtn.disabled = false;

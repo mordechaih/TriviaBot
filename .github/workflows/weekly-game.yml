@@ -5,16 +5,19 @@ on:
     # Run every Monday at 9:00 AM UTC
     - cron: '0 9 * * 1'
   workflow_dispatch: # Allow manual triggering
+  repository_dispatch:
+    types: [generate-game] # Triggered by external API call
 
 jobs:
   generate-game:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to commit and push
+      actions: read # Needed to read workflow status
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Setup Node.js
         uses: actions/setup-node@v4

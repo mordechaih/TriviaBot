@@ -122,28 +122,66 @@ To manually trigger:
 
 ### Generating Games from the Webapp
 
-The webapp includes a "Generate New Game" button that allows you to trigger game generation remotely. To use this feature:
+The webapp includes a "Generate New Game" button that allows you to trigger game generation remotely. This uses a secure serverless function to protect your GitHub token - the token never leaves the server and is never exposed in the browser.
 
-1. **Create a GitHub Personal Access Token**:
+#### Setup (One-time):
+
+1. **Deploy the serverless function** (choose one):
+   
+   **Option A: Vercel (Recommended)**
+   - Install Vercel CLI: `npm i -g vercel`
+   - In your project directory, run: `vercel`
+   - Follow the prompts to deploy
+   - After deployment, go to your Vercel dashboard
+   - Navigate to your project → Settings → Environment Variables
+   - Add these environment variables:
+     - `GITHUB_TOKEN` - Your GitHub Personal Access Token (with `repo` scope)
+     - `GITHUB_OWNER` - Your GitHub username (optional, can be in config.js)
+     - `GITHUB_REPO` - Repository name (optional, can be in config.js)
+   - Copy your function URL (e.g., `https://your-app.vercel.app/api/trigger-workflow`)
+   
+   **Option B: Netlify**
+   - Install Netlify CLI: `npm i -g netlify-cli`
+   - In your project directory, run: `netlify deploy --prod`
+   - Follow the prompts to deploy
+   - After deployment, go to your Netlify dashboard
+   - Navigate to Site settings → Environment variables
+   - Add the same environment variables as above
+   - Copy your function URL (e.g., `https://your-app.netlify.app/.netlify/functions/trigger-workflow`)
+
+2. **Create a GitHub Personal Access Token** (for the serverless function):
    - Go to https://github.com/settings/tokens
    - Click "Generate new token (classic)"
    - Give it a name like "TriviaBot Game Generation"
-   - Select the `repo` scope (full control of private repositories)
+   - Select the `repo` scope
    - Click "Generate token" and copy it
+   - Add it as `GITHUB_TOKEN` in your serverless function's environment variables
 
-2. **First-time setup**:
-   - When you click "Generate New Game" for the first time, you'll be prompted to enter:
-     - Your GitHub username
-     - Repository name (defaults to "TriviaBot")
-     - Your Personal Access Token
-   - This information is stored in your browser's localStorage for future use
+3. **Configure the webapp**:
+   - Edit `js/config.js` and fill in:
+     ```javascript
+     const GITHUB_CONFIG = {
+       owner: 'your-username',
+       repo: 'TriviaBot',
+       branch: 'main',
+       apiEndpoint: 'https://your-app.vercel.app/api/trigger-workflow'
+     };
+     ```
+   - **Important**: `js/config.js` is gitignored and won't be committed
+   - **Security**: The token is stored server-side in your hosting platform, never in the browser
 
-3. **Using the button**:
-   - Click "Generate New Game" on the main page
-   - The workflow will be triggered via GitHub's API
-   - You'll see a status message confirming the trigger
-   - The page will auto-refresh after 30 seconds to check for the new game
-   - Note: Game generation takes a few minutes to complete
+#### How it works:
+- **Frontend**: Calls your serverless function (no token exposed)
+- **Serverless function**: Uses the token (stored as environment variable) to trigger the workflow
+- **Workflow**: Uses `GITHUB_TOKEN` (automatically provided by GitHub Actions) for all operations
+- **Security**: Your PAT is stored server-side and never exposed to the browser
+
+#### Using the button:
+- Click "Generate New Game" on the main page
+- The workflow will be triggered securely via your serverless function
+- You'll see a status message confirming the trigger
+- The page will auto-refresh after 30 seconds to check for the new game
+- Note: Game generation takes a few minutes to complete
 
 ## Legal Disclaimer
 

@@ -32,30 +32,6 @@
       <div id="generate-status" class="generate-status" style="display: none;"></div>
     </div>
 
-    <!-- GitHub Credentials Modal -->
-    <div id="github-modal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <h3>GitHub Configuration</h3>
-        <p>Enter your GitHub information to generate games:</p>
-        <form id="github-form">
-          <label for="github-owner-input">GitHub Username:</label>
-          <input type="text" id="github-owner-input" required>
-          
-          <label for="github-repo-input">Repository Name:</label>
-          <input type="text" id="github-repo-input" value="TriviaBot" required>
-          
-          <label for="github-token-input">Personal Access Token:</label>
-          <input type="password" id="github-token-input" required placeholder="ghp_...">
-          <small>Create one at <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a></small>
-          
-          <div class="modal-buttons">
-            <button type="submit" class="modal-btn primary">Save & Generate</button>
-            <button type="button" class="modal-btn secondary" id="modal-cancel">Cancel</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
     <div id="loading" class="loading">Loading games...</div>
     <div id="error" class="error" style="display: none;"></div>
     <div id="game-list" class="game-list" style="display: none;"></div>
@@ -65,6 +41,7 @@
     </div>
   </main>
 
+  <script src="js/config.js"></script>
   <script src="js/game-list.js"></script>
 </body>
 </html>
