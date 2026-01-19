@@ -91,13 +91,16 @@ function cleanClueText(text, answer = null) {
   // Pattern: lowercase letter followed by one or more capitalized words concatenated at end
   // This catches things like "textCameronStella" or "answerJonathanKen" at the end
   // Example: "geniusWilly WonkaCameronStella" -> after removing answer, we have "geniusCameronStella"
-  text = text.replace(/([a-z])([A-Z][a-z]+)+([A-Z][a-z]+)*\s*$/g, '$1');
+  // BE MORE CONSERVATIVE: Only remove if we have at least 2 capitalized words (likely player names)
+  // and the text before ends with lowercase (not part of the clue)
+  text = text.replace(/([a-z])([A-Z][a-z]+){2,}\s*$/g, '$1');
   
   // Remove trailing capitalized words that appear to be appended (not part of the clue)
   // Look for a pattern where we have lowercase text, then suddenly capitalized word(s) at the end
   // Pattern: word ending in lowercase, then space, then capitalized word(s) at very end
-  // This is conservative - only removes if there's a space boundary
-  text = text.replace(/([a-z])\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*$/g, '$1');
+  // BE MORE CONSERVATIVE: Only remove if we have 2+ capitalized words (likely player names)
+  // This is conservative - only removes if there's a space boundary AND multiple capitalized words
+  text = text.replace(/([a-z])\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\s*$/g, '$1');
   
   // Remove "Triple Stumper" (this is a game term that sometimes appears)
   text = text.replace(/\bTriple\s+Stumper\b/gi, '');
@@ -114,11 +117,24 @@ function cleanClueText(text, answer = null) {
   // Remove multiple spaces and clean up
   text = text.replace(/\s+/g, ' ').trim();
   
-  // Remove trailing punctuation artifacts
+  // Remove trailing punctuation artifacts (but be conservative - only if it's clearly an artifact)
+  // Only remove if it's a single punctuation mark with no context
+  // Don't remove if it's part of a sentence (e.g., "What is X?" should keep the question mark)
+  // Only remove trailing punctuation if it's followed by nothing meaningful
   text = text.replace(/\s*[.,;:]\s*$/, '');
   
   // Final cleanup: remove any remaining single letters or numbers at the end that look like artifacts
+  // BE MORE CONSERVATIVE: Only remove if it's clearly an artifact (single char with space before)
+  // Don't remove if it might be part of the clue (e.g., "X" as an answer placeholder)
+  // Only remove if preceded by space and followed by nothing
+  const beforeFinalCleanup = text;
   text = text.replace(/\s+[A-Z0-9]\s*$/, '');
+  
+  // If we removed something and the result is suspiciously short, restore it
+  // This prevents cutting off legitimate short clues
+  if (beforeFinalCleanup.length > text.length && text.length < 10) {
+    text = beforeFinalCleanup;
+  }
   
   return text.trim();
 }

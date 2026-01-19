@@ -1,6 +1,8 @@
-[] stick to a single jeopardy category per round
-[] color code each round (r1 yellow to  final trivia red)
-[] add the ability to shuffle / reload per question and per category
-[] randomize category/question order -- it's currently following the order of the episode
-[] I am noticing the ends of questions being cut off. Perhaps our script is being too aggressive with trimming? Try a different strategy.
-[] Retheme to use a dark mode and orangey-reddish theme by default. 
+[x] stick to a single jeopardy category per round
+[x] color code each round (r1 yellow to  final trivia red)
+[x] add the ability to shuffle / reload per question and per category
+[x] randomize category/question order -- it's currently following the order of the episode
+[x] I am noticing the ends of questions being cut off. Perhaps our script is being too aggressive with trimming? Try a different strategy.
+[x] Retheme to use a dark mode and orangey-reddish theme by default. 
+[x] the generate games button should be just an "add" icon button, and inline with the rest of the buttons ("all games" / "unplayed" / "played")
+[x] the refresh games button should be just a refresh icon button, and inline with the rest of the buttons ("all games" / "unplayed" / "played")

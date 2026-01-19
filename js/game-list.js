@@ -8,35 +8,39 @@ let currentFilter = 'all';
  * Load played status from GitHub or localStorage fallback
  */
 async function loadPlayedStatus() {
-  perfLab.start('loadPlayedStatus');
+  if (typeof perfLab !== 'undefined') perfLab.start('loadPlayedStatus');
   
   try {
     // Try to load from GitHub Pages (data/played-status.json)
-    perfLab.start('fetchPlayedStatus');
+    if (typeof perfLab !== 'undefined') perfLab.start('fetchPlayedStatus');
     const response = await fetch('data/played-status.json');
     if (response.ok) {
       playedStatus = await response.json();
       console.log('Loaded played status from server');
-      perfLab.end('fetchPlayedStatus');
-      perfLab.end('loadPlayedStatus');
+      if (typeof perfLab !== 'undefined') {
+        perfLab.end('fetchPlayedStatus');
+        perfLab.end('loadPlayedStatus');
+      }
       return;
     }
-    perfLab.end('fetchPlayedStatus');
+    if (typeof perfLab !== 'undefined') perfLab.end('fetchPlayedStatus');
   } catch (error) {
     console.log('Could not load from server, trying localStorage');
   }
   
   // Fallback to localStorage
-  perfLab.start('loadFromLocalStorage');
+  if (typeof perfLab !== 'undefined') perfLab.start('loadFromLocalStorage');
   const stored = localStorage.getItem('triviabot-played-status');
   if (stored) {
-    perfLab.start('parsePlayedStatus');
+    if (typeof perfLab !== 'undefined') perfLab.start('parsePlayedStatus');
     playedStatus = JSON.parse(stored);
-    perfLab.end('parsePlayedStatus');
+    if (typeof perfLab !== 'undefined') perfLab.end('parsePlayedStatus');
     console.log('Loaded played status from localStorage');
   }
-  perfLab.end('loadFromLocalStorage');
-  perfLab.end('loadPlayedStatus');
+  if (typeof perfLab !== 'undefined') {
+    perfLab.end('loadFromLocalStorage');
+    perfLab.end('loadPlayedStatus');
+  }
 }
 
 /**
@@ -55,7 +59,10 @@ async function savePlayedStatus() {
  * Load list of available games
  */
 async function loadGames() {
-  perfLab.start('loadGames');
+  // Safely start performance tracking (perfLab might not be loaded)
+  if (typeof perfLab !== 'undefined') {
+    perfLab.start('loadGames');
+  }
   
   try {
     // Get list of game files from the games directory
@@ -65,7 +72,7 @@ async function loadGames() {
     // Try to load a games index if it exists
     let gameIds = [];
     try {
-      perfLab.start('fetchGamesIndex');
+      if (typeof perfLab !== 'undefined') perfLab.start('fetchGamesIndex');
       // Add cache-busting to prevent stale data - use timestamp and random to ensure fresh fetch
       const cacheBuster = `${Date.now()}-${Math.random()}`;
       const indexResponse = await fetch(`data/games/index.json?t=${cacheBuster}`, {
@@ -82,21 +89,23 @@ async function loadGames() {
       } else {
         console.warn('Failed to load games index:', indexResponse.status, indexResponse.statusText);
       }
-      perfLab.end('fetchGamesIndex');
+      if (typeof perfLab !== 'undefined')       if (typeof perfLab !== 'undefined') perfLab.end('fetchGamesIndex');
     } catch (error) {
       // If no index exists, we'll need to discover games another way
       // For now, we'll try common date patterns or let the user know
-      console.log('No games index found');
-      perfLab.end('fetchGamesIndex');
+      console.log('No games index found', error);
+      if (typeof perfLab !== 'undefined') perfLab.end('fetchGamesIndex');
     }
     
     // If we have game IDs, load them
     if (gameIds.length > 0) {
-      perfLab.start('fetchAllGames');
-      perfLab.record('gameCount', gameIds.length);
+      if (typeof perfLab !== 'undefined') {
+        perfLab.start('fetchAllGames');
+        perfLab.record('gameCount', gameIds.length);
+      }
       
       const gamePromises = gameIds.map((id, index) => {
-        perfLab.start(`fetchGame-${index}`);
+        if (typeof perfLab !== 'undefined') perfLab.start(`fetchGame-${index}`);
         // Add cache-busting to prevent stale data - use timestamp and random
         const cacheBuster = `${Date.now()}-${Math.random()}`;
         return fetch(`data/games/${id}.json?t=${cacheBuster}`, {
@@ -107,41 +116,46 @@ async function loadGames() {
           }
         })
           .then(res => {
-            perfLab.end(`fetchGame-${index}`);
+            if (typeof perfLab !== 'undefined') perfLab.end(`fetchGame-${index}`);
             return res.ok ? res.json() : null;
           })
-          .catch(() => {
-            perfLab.end(`fetchGame-${index}`);
+          .catch((err) => {
+            console.warn(`Failed to fetch game ${id}:`, err);
+            if (typeof perfLab !== 'undefined') perfLab.end(`fetchGame-${index}`);
             return null;
           });
       });
       
       const games = await Promise.all(gamePromises);
-      perfLab.end('fetchAllGames');
+      if (typeof perfLab !== 'undefined') perfLab.end('fetchAllGames');
       
-      perfLab.start('sortGames');
+      if (typeof perfLab !== 'undefined') perfLab.start('sortGames');
       allGames = games.filter(g => g !== null).sort((a, b) => 
         new Date(b.date) - new Date(a.date)
       );
-      perfLab.end('sortGames');
+      if (typeof perfLab !== 'undefined') perfLab.end('sortGames');
     } else {
       // Fallback: try to discover games by checking common patterns
       // This is a workaround - ideally we'd have an index file
-      perfLab.start('discoverGames');
+      if (typeof perfLab !== 'undefined') perfLab.start('discoverGames');
       allGames = await discoverGames();
-      perfLab.end('discoverGames');
+      if (typeof perfLab !== 'undefined') perfLab.end('discoverGames');
     }
     
-    perfLab.start('renderGames');
+    if (typeof perfLab !== 'undefined') perfLab.start('renderGames');
     renderGames();
-    perfLab.end('renderGames');
+    if (typeof perfLab !== 'undefined') perfLab.end('renderGames');
     
-    perfLab.end('loadGames');
+    if (typeof perfLab !== 'undefined') perfLab.end('loadGames');
     
   } catch (error) {
     console.error('Error loading games:', error);
-    showError('Failed to load games. Please try again later.');
-    perfLab.end('loadGames');
+    console.error('Error stack:', error.stack);
+    // Don't show error to user during polling - just log it
+    // showError will be called by the polling mechanism if needed
+    if (typeof perfLab !== 'undefined') perfLab.end('loadGames');
+    // Re-throw so polling mechanism can handle it
+    throw error;
   }
 }
 
@@ -178,29 +192,36 @@ async function discoverGames() {
  * Render the game list
  */
 function renderGames() {
-  perfLab.start('renderGames-internal');
+  if (typeof perfLab !== 'undefined') perfLab.start('renderGames-internal');
   
   const container = document.getElementById('game-list');
   const loading = document.getElementById('loading');
   const emptyState = document.getElementById('empty-state');
   
+  if (!container || !loading || !emptyState) {
+    console.error('Required DOM elements not found for renderGames');
+    return;
+  }
+  
   loading.style.display = 'none';
   
   // Filter games based on current filter
-  perfLab.start('filterGames');
+  if (typeof perfLab !== 'undefined') perfLab.start('filterGames');
   let filteredGames = allGames;
   if (currentFilter === 'played') {
     filteredGames = allGames.filter(game => playedStatus[game.id] === true);
   } else if (currentFilter === 'unplayed') {
     filteredGames = allGames.filter(game => playedStatus[game.id] !== true);
   }
-  perfLab.end('filterGames');
-  perfLab.record('filteredGameCount', filteredGames.length);
+  if (typeof perfLab !== 'undefined') {
+    perfLab.end('filterGames');
+    perfLab.record('filteredGameCount', filteredGames.length);
+  }
   
   if (filteredGames.length === 0) {
     container.style.display = 'none';
     emptyState.style.display = 'block';
-    perfLab.end('renderGames-internal');
+    if (typeof perfLab !== 'undefined') perfLab.end('renderGames-internal');
     return;
   }
   
@@ -210,20 +231,20 @@ function renderGames() {
   // Use DocumentFragment to batch DOM operations
   const fragment = document.createDocumentFragment();
   
-  perfLab.start('createGameCards');
+  if (typeof perfLab !== 'undefined') perfLab.start('createGameCards');
   filteredGames.forEach((game, index) => {
-    perfLab.start(`createGameCard-${index}`);
+    if (typeof perfLab !== 'undefined') perfLab.start(`createGameCard-${index}`);
     const card = createGameCard(game);
     fragment.appendChild(card);
-    perfLab.end(`createGameCard-${index}`);
+    if (typeof perfLab !== 'undefined') perfLab.end(`createGameCard-${index}`);
   });
-  perfLab.end('createGameCards');
+  if (typeof perfLab !== 'undefined') perfLab.end('createGameCards');
   
   // Clear and append fragment in one operation
   container.innerHTML = '';
   container.appendChild(fragment);
   
-  perfLab.end('renderGames-internal');
+  if (typeof perfLab !== 'undefined') perfLab.end('renderGames-internal');
 }
 
 /**
@@ -476,15 +497,18 @@ async function triggerGameGeneration() {
           }
         } catch (error) {
           console.error('Error polling for games:', error);
+          console.error('Error details:', error.message, error.stack);
+          
           if (pollCount >= maxPolls) {
             clearInterval(pollForNewGames);
             showGenerateStatus(
-              'Could not detect new game. Please refresh the page manually.',
-              'info'
+              `Could not detect new game after ${maxPolls} attempts. Error: ${error.message}. Please refresh the page manually.`,
+              'error'
             );
           } else {
+            // Show error but continue polling
             showGenerateStatus(
-              `Error checking for games (${pollCount}/${maxPolls}). Retrying...`,
+              `Error checking for games (${pollCount}/${maxPolls}): ${error.message}. Retrying...`,
               'info'
             );
           }
