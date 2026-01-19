@@ -3,6 +3,7 @@
 let allGames = [];
 let playedStatus = {};
 let currentFilter = 'all';
+let lastKnownIndexTimestamp = null; // Track when index was last updated
 
 /**
  * Helper function to update icon button state while preserving icon
@@ -109,23 +110,37 @@ async function loadGames() {
     let gameIds = [];
     try {
       if (typeof perfLab !== 'undefined') perfLab.start('fetchGamesIndex');
-      // Add cache-busting to prevent stale data - use timestamp and random to ensure fresh fetch
-      const cacheBuster = `${Date.now()}-${Math.random()}`;
-      const indexResponse = await fetch(`data/games/index.json?t=${cacheBuster}`, {
+      // Add aggressive cache-busting to prevent stale data from Vercel CDN
+      // Use multiple cache-busting strategies: timestamp, random, and performance counter
+      const cacheBuster = `v=${Date.now()}&r=${Math.random()}&c=${performance.now()}`;
+      const indexResponse = await fetch(`data/games/index.json?${cacheBuster}`, {
+        method: 'GET',
         cache: 'no-store',
         headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         }
       });
       if (indexResponse.ok) {
         const index = await indexResponse.json();
         gameIds = index.games || [];
         console.log('Loaded game IDs from index:', gameIds);
+        console.log('Index lastUpdated:', index.lastUpdated);
+        
+        // Track index timestamp to detect changes
+        if (index.lastUpdated) {
+          const indexChanged = lastKnownIndexTimestamp !== null && 
+                               lastKnownIndexTimestamp !== index.lastUpdated;
+          if (indexChanged) {
+            console.log('Index has been updated! Previous:', lastKnownIndexTimestamp, 'Current:', index.lastUpdated);
+          }
+          lastKnownIndexTimestamp = index.lastUpdated;
+        }
       } else {
         console.warn('Failed to load games index:', indexResponse.status, indexResponse.statusText);
       }
-      if (typeof perfLab !== 'undefined')       if (typeof perfLab !== 'undefined') perfLab.end('fetchGamesIndex');
+      if (typeof perfLab !== 'undefined') perfLab.end('fetchGamesIndex');
     } catch (error) {
       // If no index exists, we'll need to discover games another way
       // For now, we'll try common date patterns or let the user know
@@ -142,13 +157,15 @@ async function loadGames() {
       
       const gamePromises = gameIds.map((id, index) => {
         if (typeof perfLab !== 'undefined') perfLab.start(`fetchGame-${index}`);
-        // Add cache-busting to prevent stale data - use timestamp and random
-        const cacheBuster = `${Date.now()}-${Math.random()}`;
-        return fetch(`data/games/${id}.json?t=${cacheBuster}`, {
+        // Add aggressive cache-busting to prevent stale data from Vercel CDN
+        const cacheBuster = `v=${Date.now()}&r=${Math.random()}&c=${performance.now()}`;
+        return fetch(`data/games/${id}.json?${cacheBuster}`, {
+          method: 'GET',
           cache: 'no-store',
           headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
           }
         })
           .then(res => {
@@ -496,9 +513,11 @@ async function triggerGameGeneration() {
         'info'
       );
       
-      // Store initial game IDs before polling starts
+      // Store initial game IDs and index timestamp before polling starts
       const initialGameIds = new Set(allGames.map(g => g.id));
+      const initialIndexTimestamp = lastKnownIndexTimestamp;
       console.log('Initial games:', Array.from(initialGameIds));
+      console.log('Initial index timestamp:', initialIndexTimestamp);
       
       // Poll for new games every 10 seconds, up to 3 minutes
       let pollCount = 0;
@@ -517,13 +536,25 @@ async function triggerGameGeneration() {
           // Get current game IDs
           const currentGameIds = new Set(allGames.map(g => g.id));
           console.log('Current games:', Array.from(currentGameIds));
+          console.log('Current index timestamp:', lastKnownIndexTimestamp);
+          
+          // Check if index timestamp has changed (indicates index was updated)
+          const indexUpdated = initialIndexTimestamp !== null && 
+                               lastKnownIndexTimestamp !== null &&
+                               lastKnownIndexTimestamp !== initialIndexTimestamp;
           
           // Check if we have new game IDs
           const newGameIds = Array.from(currentGameIds).filter(id => !initialGameIds.has(id));
           
-          if (newGameIds.length > 0) {
+          // If index was updated or we have new games, consider it a success
+          if (indexUpdated || newGameIds.length > 0) {
             clearInterval(pollForNewGames);
-            console.log('New games detected:', newGameIds);
+            if (indexUpdated) {
+              console.log('Index updated detected! Timestamp changed from', initialIndexTimestamp, 'to', lastKnownIndexTimestamp);
+            }
+            if (newGameIds.length > 0) {
+              console.log('New games detected:', newGameIds);
+            }
             
             // Show success toast with deployment confirmation
             showGenerateStatus(
@@ -654,8 +685,9 @@ async function init() {
       refreshBtn.disabled = true;
       updateIconButton(refreshBtn, 'loader-2', 'Refreshing...');
       try {
-        // Clear cache and reload
+        // Clear cache and reload - reset timestamp to force fresh fetch
         allGames = [];
+        lastKnownIndexTimestamp = null;
         await loadGames();
         showGenerateStatus('Games list refreshed!', 'success');
         setTimeout(() => {
