@@ -24,15 +24,19 @@
     </div>
 
     <div class="filters">
-      <button class="filter-btn active" data-filter="all">All Games</button>
-      <button class="filter-btn" data-filter="unplayed">Unplayed</button>
-      <button class="filter-btn" data-filter="played">Played</button>
-      <button id="generate-btn" class="icon-btn" title="Generate New Game">
-        <i data-lucide="plus"></i>
-      </button>
-      <button id="refresh-btn" class="icon-btn" title="Refresh Games List">
-        <i data-lucide="refresh-cw"></i>
-      </button>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">All Games</button>
+        <button class="filter-btn" data-filter="unplayed">Unplayed</button>
+        <button class="filter-btn" data-filter="played">Played</button>
+      </div>
+      <div class="action-buttons">
+        <button id="generate-btn" class="icon-btn" title="Generate New Game">
+          <i data-lucide="plus"></i>
+        </button>
+        <button id="refresh-btn" class="icon-btn" title="Refresh Games List">
+          <i data-lucide="refresh-cw"></i>
+        </button>
+      </div>
     </div>
 
     <div id="generate-status" class="generate-status"></div>

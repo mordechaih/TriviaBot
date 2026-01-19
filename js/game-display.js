@@ -263,7 +263,18 @@ function createQuestionElement(question, number, roundNumber) {
   
   const answer = document.createElement('div');
   answer.className = 'question-answer';
-  answer.textContent = question.answer;
+  
+  // Ensure answer is properly set - defensive coding
+  const answerText = question.answer || '';
+  if (typeof answerText !== 'string') {
+    console.warn('Answer is not a string:', question.answer, typeof question.answer);
+  }
+  answer.textContent = String(answerText);
+  
+  // Verify the answer was set correctly (for debugging)
+  if (answer.textContent !== answerText) {
+    console.error('Answer mismatch! Expected:', answerText, 'Got:', answer.textContent);
+  }
   
   questionDiv.appendChild(category);
   questionDiv.appendChild(clue);
