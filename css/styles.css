@@ -72,7 +72,7 @@ main {
 .game-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--spacing-xs);
 }
 
 .game-card {
@@ -906,10 +906,47 @@ main {
   font-size: var(--font-size-small);
   color: #D0D0D0;
   line-height: 1.5;
+  position: relative;
 }
 
 .legal-disclaimer strong {
   color: var(--text-color);
+}
+
+.legal-disclaimer.dismissed {
+  display: none;
+}
+
+.disclaimer-dismiss-btn {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  background: transparent;
+  border: none;
+  color: #D0D0D0;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.2s;
+  width: 28px;
+  height: 28px;
+}
+
+.disclaimer-dismiss-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+}
+
+.disclaimer-dismiss-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.disclaimer-dismiss-btn i {
+  width: 18px;
+  height: 18px;
 }
 
 /* Tablet and larger screens */

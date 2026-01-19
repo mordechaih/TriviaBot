@@ -74,12 +74,13 @@ function calculateDifficulty(question) {
 
 /**
  * Categorize difficulty level
+ * Adjusted thresholds to better match actual question distribution
  */
 function getDifficultyLevel(score) {
-  if (score < 10) return 'easy';
-  if (score < 30) return 'medium';
-  if (score < 50) return 'hard';
-  return 'expert';
+  if (score < 15) return 'easy';      // Jeopardy $200-$600
+  if (score < 35) return 'medium';    // Jeopardy $800-$1000, Double $400-$800
+  if (score < 55) return 'hard';      // Double $1000-$1600
+  return 'expert';                     // Double $1800-$2000
 }
 
 /**
@@ -276,33 +277,51 @@ async function selectQuestions(archive, usedQuestions, targetDate) {
     difficultyLevel: getDifficultyLevel(calculateDifficulty(q))
   }));
   
-  // Group questions by category, then by difficulty
-  const questionsByCategory = {};
+  // RESTRUCTURE: Group by gameId first, then by category within each game
+  // This ensures we pull from different games for each round
+  const questionsByGame = {};
+  let questionsWithoutGameId = 0;
+  let questionsWithoutCategory = 0;
   questionsWithDifficulty.forEach(q => {
-    if (!questionsByCategory[q.category]) {
-      questionsByCategory[q.category] = {
+    if (!q.gameId) questionsWithoutGameId++;
+    if (!q.category) questionsWithoutCategory++;
+    const gameId = q.gameId || 'unknown';
+    const category = q.category || 'Unknown';
+    if (!questionsByGame[gameId]) {
+      questionsByGame[gameId] = {};
+    }
+    if (!questionsByGame[gameId][category]) {
+      questionsByGame[gameId][category] = {
         easy: [],
         medium: [],
         hard: [],
         expert: []
       };
     }
-    questionsByCategory[q.category][q.difficultyLevel].push(q);
+    questionsByGame[gameId][category][q.difficultyLevel].push(q);
   });
   
-  // Shuffle categories to randomize round order
-  const categoryKeys = Object.keys(questionsByCategory);
-  for (let i = categoryKeys.length - 1; i > 0; i--) {
+  if (questionsWithoutGameId > 0) {
+    console.warn(`Warning: ${questionsWithoutGameId} questions are missing gameId`);
+  }
+  if (questionsWithoutCategory > 0) {
+    console.warn(`Warning: ${questionsWithoutCategory} questions are missing category`);
+  }
+  
+  // Get list of games and shuffle for randomization
+  const gameIds = Object.keys(questionsByGame);
+  for (let i = gameIds.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [categoryKeys[i], categoryKeys[j]] = [categoryKeys[j], categoryKeys[i]];
+    [gameIds[i], gameIds[j]] = [gameIds[j], gameIds[i]];
   }
   
   // Select 24 questions with increasing difficulty
-  // Each round uses a single category (3 questions from same category)
+  // Each round uses a single category from a different game
   const selectedQuestions = [];
-  const totalQuestions = 24;
-  const questionsPerRound = 3;
+  const totalQuestions = 24; // 3 questions per round × 8 rounds
+  const questionsPerRound = 3; // 3 questions per round, can mix difficulties
   const numRounds = 8;
+  const usedGames = new Set();
   const usedCategories = new Set();
   
   // Strategy: Start easy, gradually increase difficulty
@@ -326,97 +345,185 @@ async function selectQuestions(archive, usedQuestions, targetDate) {
       targetDifficulty = 'expert';
     }
     
-    // Find a category with at least 3 questions of the target difficulty
-    // Use shuffled categoryKeys to randomize order
+    // Find a game and category with enough questions of target difficulty
+    let selectedGame = null;
     let selectedCategory = null;
     
-    // Try to find a category with enough questions of target difficulty
-    for (const category of categoryKeys) {
-      if (usedCategories.has(category)) continue;
-      
-      const categoryQuestions = questionsByCategory[category][targetDifficulty] || [];
-      // Also check fallback difficulties
-      const fallbackDifficulties = 
-        targetDifficulty === 'expert' ? ['hard', 'expert'] :
-        targetDifficulty === 'hard' ? ['medium', 'hard'] :
-        targetDifficulty === 'medium' ? ['easy', 'medium'] :
-        ['easy'];
-      
-      let availableInCategory = categoryQuestions.filter(
-        q => !selectedQuestions.some(sq => sq.clue === q.clue)
-      );
-      
-      // If not enough in target difficulty, try fallback
-      if (availableInCategory.length < questionsPerRound) {
-        for (const fallback of fallbackDifficulties) {
-          if (fallback === targetDifficulty) continue;
-          const fallbackQuestions = (questionsByCategory[category][fallback] || [])
-            .filter(q => !selectedQuestions.some(sq => sq.clue === q.clue));
-          availableInCategory = [...availableInCategory, ...fallbackQuestions];
-          if (availableInCategory.length >= questionsPerRound) break;
+    // First, let's check how many total questions of this difficulty we have available
+    // BEFORE filtering by selectedQuestions (to see the raw count)
+    let totalAvailableRaw = 0;
+    let totalAvailableAfterFilter = 0;
+    let availableByGameCategory = [];
+    for (const gameId of gameIds) {
+      const gameCategories = questionsByGame[gameId];
+      if (!gameCategories) continue;
+      for (const category of Object.keys(gameCategories)) {
+        if (usedCategories.has(category)) continue;
+        const categoryData = gameCategories[category];
+        const rawCount = (categoryData[targetDifficulty] || []).length;
+        const available = (categoryData[targetDifficulty] || []).filter(
+          q => !selectedQuestions.some(sq => sq.clue === q.clue)
+        );
+        if (rawCount > 0) {
+          totalAvailableRaw += rawCount;
+        }
+        if (available.length > 0) {
+          totalAvailableAfterFilter += available.length;
+          availableByGameCategory.push({
+            gameId,
+            category,
+            count: available.length,
+            rawCount: rawCount // Show original count before filtering
+          });
         }
       }
+    }
+    
+    // Use the filtered count for the check
+    const totalAvailable = totalAvailableAfterFilter;
+    
+    // Debug: log if we're losing questions to the selectedQuestions filter
+    if (totalAvailableRaw > totalAvailable) {
+      console.log(`Round ${round + 1} (${targetDifficulty}): Raw count: ${totalAvailableRaw}, After filter: ${totalAvailable}, Lost: ${totalAvailableRaw - totalAvailable}`);
+    }
+    
+    if (totalAvailable < questionsPerRound) {
+      throw new Error(`Not enough ${targetDifficulty} questions available (${totalAvailable} total, need ${questionsPerRound} for round ${round + 1}). Available by game/category: ${JSON.stringify(availableByGameCategory.slice(0, 10))}`);
+    }
+    
+    // Build a list of all available game/category combinations with their question counts
+    // Sort by count (descending) to prioritize categories with more questions
+    const candidates = [];
+    for (const gameId of gameIds) {
+      const gameCategories = questionsByGame[gameId];
+      if (!gameCategories) continue;
       
-      if (availableInCategory.length >= questionsPerRound) {
-        selectedCategory = category;
+      for (const category of Object.keys(gameCategories)) {
+        if (usedCategories.has(category)) continue; // Skip categories we've already used
+        
+        const categoryData = gameCategories[category];
+        const targetQuestions = (categoryData[targetDifficulty] || []).filter(
+          q => !selectedQuestions.some(sq => sq.clue === q.clue)
+        );
+        
+        // Count total available questions across all difficulties in this category
+        let totalAvailableInCategory = 0;
+        const allDifficulties = ['easy', 'medium', 'hard', 'expert'];
+        for (const diff of allDifficulties) {
+          const questions = (categoryData[diff] || []).filter(
+            q => !selectedQuestions.some(sq => sq.clue === q.clue)
+          );
+          totalAvailableInCategory += questions.length;
+        }
+        
+        if (targetQuestions.length > 0 && totalAvailableInCategory >= questionsPerRound) {
+          candidates.push({
+            gameId,
+            category,
+            count: targetQuestions.length,
+            totalAvailable: totalAvailableInCategory, // Total across all difficulties
+            isUnusedGame: !usedGames.has(gameId)
+          });
+        }
+      }
+    }
+    
+    // Sort: prefer unused games, then by total available questions (descending)
+    candidates.sort((a, b) => {
+      if (a.isUnusedGame !== b.isUnusedGame) {
+        return a.isUnusedGame ? -1 : 1; // Unused games first
+      }
+      // Prefer categories with more total available questions (across all difficulties)
+      return (b.totalAvailable || 0) - (a.totalAvailable || 0);
+    });
+    
+    // Find a candidate - we'll allow mixing difficulties if needed
+    // First try to find one with enough questions of target difficulty
+    for (const candidate of candidates) {
+      if (candidate.count >= questionsPerRound) {
+        selectedGame = candidate.gameId;
+        selectedCategory = candidate.category;
         break;
       }
     }
     
-    // If no category found with target difficulty, try any category
-    if (!selectedCategory) {
-      for (const category of categoryKeys) {
-        if (usedCategories.has(category)) continue;
-        
-        const allInCategory = [
-          ...(questionsByCategory[category].easy || []),
-          ...(questionsByCategory[category].medium || []),
-          ...(questionsByCategory[category].hard || []),
-          ...(questionsByCategory[category].expert || [])
-        ].filter(q => !selectedQuestions.some(sq => sq.clue === q.clue));
-        
-        if (allInCategory.length >= questionsPerRound) {
-          selectedCategory = category;
-          break;
-        }
+    // If we can't find one with enough of target difficulty, 
+    // pick one that has enough total questions (we'll mix difficulties)
+    if (!selectedGame || !selectedCategory) {
+      // Pick the best candidate (most total available questions)
+      const bestCandidate = candidates.find(c => (c.totalAvailable || 0) >= questionsPerRound);
+      if (bestCandidate) {
+        selectedGame = bestCandidate.gameId;
+        selectedCategory = bestCandidate.category;
+      } else if (candidates.length > 0) {
+        // Last resort: pick the one with most total questions
+        selectedGame = candidates[0].gameId;
+        selectedCategory = candidates[0].category;
+      } else {
+        // More detailed error message
+        const topOptions = availableByGameCategory
+          .filter(item => !usedCategories.has(item.category))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 5);
+        throw new Error(`Could not find a game and category with ${targetDifficulty} questions for round ${round + 1}. Total available: ${totalAvailable}, need: ${questionsPerRound}. Top available options: ${JSON.stringify(topOptions)}`);
       }
     }
     
-    if (!selectedCategory) {
-      throw new Error(`Could not find a category with enough questions for round ${round + 1}`);
-    }
-    
-    // Select questions from the chosen category
+    // Select questions from the chosen category in the chosen game
+    // Mark game as used (but we allow reuse if needed for later rounds)
+    usedGames.add(selectedGame);
     usedCategories.add(selectedCategory);
-    const categoryData = questionsByCategory[selectedCategory];
+    const categoryData = questionsByGame[selectedGame][selectedCategory];
     
-    // Prioritize target difficulty, then fallback
-    const fallbackDifficulties = 
-      targetDifficulty === 'expert' ? ['expert', 'hard'] :
-      targetDifficulty === 'hard' ? ['hard', 'medium'] :
-      targetDifficulty === 'medium' ? ['medium', 'easy'] :
-      ['easy'];
+    // Get questions of target difficulty from this category
+    let targetQuestions = (categoryData[targetDifficulty] || []).filter(
+      q => !selectedQuestions.some(sq => sq.clue === q.clue)
+    );
     
-    const questionsToChooseFrom = [];
-    for (const diff of fallbackDifficulties) {
-      const available = (categoryData[diff] || []).filter(
-        q => !selectedQuestions.some(sq => sq.clue === q.clue)
-      );
-      questionsToChooseFrom.push(...available);
-      if (questionsToChooseFrom.length >= questionsPerRound) break;
-    }
-    
-    // Shuffle questions to randomize order within category
-    for (let i = questionsToChooseFrom.length - 1; i > 0; i--) {
+    // Shuffle and select as many as we can of target difficulty
+    for (let i = targetQuestions.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [questionsToChooseFrom[i], questionsToChooseFrom[j]] = [questionsToChooseFrom[j], questionsToChooseFrom[i]];
+      [targetQuestions[i], targetQuestions[j]] = [targetQuestions[j], targetQuestions[i]];
     }
     
-    // Take first 3 questions from the shuffled category
-    const selectedFromCategory = questionsToChooseFrom.slice(0, questionsPerRound);
+    let selectedFromCategory = targetQuestions.slice(0, questionsPerRound);
+    
+    // If we don't have enough of target difficulty, fill with other difficulties
+    if (selectedFromCategory.length < questionsPerRound) {
+      // Determine fallback difficulties based on target (prioritize adjacent difficulties)
+      const fallbackDifficulties = [];
+      if (targetDifficulty === 'hard') {
+        fallbackDifficulties.push('medium', 'expert', 'easy'); // Try all if needed
+      } else if (targetDifficulty === 'expert') {
+        fallbackDifficulties.push('hard', 'medium', 'easy'); // Try all if needed
+      } else if (targetDifficulty === 'medium') {
+        fallbackDifficulties.push('easy', 'hard', 'expert'); // Try all if needed
+      } else if (targetDifficulty === 'easy') {
+        fallbackDifficulties.push('medium', 'hard', 'expert'); // Try all if needed
+      }
+      
+      // Try to fill from fallback difficulties
+      for (const fallbackDiff of fallbackDifficulties) {
+        if (selectedFromCategory.length >= questionsPerRound) break;
+        
+        const fallbackQuestions = (categoryData[fallbackDiff] || []).filter(
+          q => !selectedQuestions.some(sq => sq.clue === q.clue) &&
+               !selectedFromCategory.some(sq => sq.clue === q.clue)
+        );
+        
+        // Shuffle fallback questions
+        for (let i = fallbackQuestions.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [fallbackQuestions[i], fallbackQuestions[j]] = [fallbackQuestions[j], fallbackQuestions[i]];
+        }
+        
+        const needed = questionsPerRound - selectedFromCategory.length;
+        selectedFromCategory.push(...fallbackQuestions.slice(0, needed));
+      }
+    }
     
     if (selectedFromCategory.length < questionsPerRound) {
-      throw new Error(`Category "${selectedCategory}" does not have enough questions for round ${round + 1}`);
+      throw new Error(`Category "${selectedCategory}" in game "${selectedGame}" does not have enough questions for round ${round + 1} (got ${selectedFromCategory.length}, need ${questionsPerRound})`);
     }
     
     selectedFromCategory.forEach(question => {
@@ -519,7 +626,7 @@ async function generateGame(targetDate = null) {
   
   // Organize questions into rounds
   const rounds = [];
-  const questionsPerRound = 3;
+  const questionsPerRound = 3; // Match the selection logic
   
   for (let i = 0; i < 8; i++) {
     const roundQuestions = questions.slice(i * questionsPerRound, (i + 1) * questionsPerRound);
@@ -579,4 +686,5 @@ try {
   console.error('Error generating game:', error.message);
   process.exit(1);
 }
+
 

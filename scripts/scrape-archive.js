@@ -302,7 +302,16 @@ async function scrapeGame(gameId) {
     if (finalJeopardy.length > 0) {
       const category = finalJeopardy.find('.category_name').text().trim();
       const clueText = finalJeopardy.find('td#clue_FJ.clue_text').text().trim();
-      const answerText = finalJeopardy.find('.correct_response').text().trim();
+      
+      // Use ONLY the .correct_response element to isolate the answer
+      const $correctResponse = finalJeopardy.find('.correct_response');
+      let answerText = '';
+      $correctResponse.contents().each((idx, node) => {
+        if (node.type === 'text') {
+          answerText += $(node).text();
+        }
+      });
+      answerText = answerText.trim();
       
       if (clueText && answerText) {
         // Clean the answer text first

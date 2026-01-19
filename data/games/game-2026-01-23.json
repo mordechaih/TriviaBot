@@ -1,0 +1,179 @@
+{
+  "id": "game-2026-01-23",
+  "date": "2026-01-23",
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "Benny Goodman, who could swing, & Pete Fountain, who could flow",
+          "answer": "the clarinet",
+          "category": "Unknown"
+        },
+        {
+          "clue": "To knead tired muscles & the enactment into law of a legislative bill",
+          "answer": "massage & passage",
+          "category": "Unknown"
+        },
+        {
+          "clue": "In July New York Times reporter Judith Miller was jailed for refusing to reveal one of these",
+          "answer": "a source",
+          "category": "Unknown"
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "With temps reaching 70 below zero, Yakutsk in this region of Russia ranks among the world's coldest cities",
+          "answer": "Siberia",
+          "category": "WORLD CITIES"
+        },
+        {
+          "clue": "Though its name means \"place of the thunderbolt\", this city in West Bengal is better known as a city of tea",
+          "answer": "Darjeeling",
+          "category": "WORLD CITIES"
+        },
+        {
+          "clue": "Lugano in this country hosted the first Eurovision Song Contest in 1956: Basel is scheduled to host in 2025",
+          "answer": "Switzerland",
+          "category": "WORLD CITIES"
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "One of the world's largest church organs is in Cadet Chapel at this institution in",
+          "answer": "West Point",
+          "category": "ORGAN RECITAL"
+        },
+        {
+          "clue": "Each of these organs has a visceral pleura & a parietal pleura",
+          "answer": "the lungs",
+          "category": "ORGAN RECITAL"
+        },
+        {
+          "clue": "The epicardium is its outer layer",
+          "answer": "the heart",
+          "category": "ORGAN RECITAL"
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Full executive power return to Japan's emperor following the 1867 ascension of Mutsuhito, better known by this name",
+          "answer": "Meiji",
+          "category": "SOMETIME IN THE LAST 300 YEARS"
+        },
+        {
+          "clue": "From 2008 to 2012 he was president of Russia, because Putin sure wasn't still running things, no sir, it was this guy, 100%",
+          "answer": "Medvedev",
+          "category": "SOMETIME IN THE LAST 300 YEARS"
+        },
+        {
+          "clue": "He told 30,000 at a be-in at Golden Gate Park in 1967 to turn on, tune in, drop out",
+          "answer": "Leary",
+          "category": "SOMETIME IN THE LAST 300 YEARS"
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "Now a museum, the Topkapi Palace in this city was built by Mehmed II in the 15th century",
+          "answer": "Istanbul",
+          "category": "HISTORIC BUILDINGS"
+        },
+        {
+          "clue": "In 1911 & 1969 Caernarfon Castle was the site of investiture ceremonies in which young men received this royal title",
+          "answer": "Prince of Wales",
+          "category": "HISTORIC BUILDINGS"
+        },
+        {
+          "clue": "The Golden Rock, this type of Buddhist structure, has been perching on a mountainside in Myanmar since the 6th century B.C",
+          "answer": "pagoda",
+          "category": "HISTORIC BUILDINGS"
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Harry Bertram of Ellangowan is the actual hero of the 1815 \"Waverley\" tale \"Guy Mannering\" by this author",
+          "answer": "Sir",
+          "category": "BOOKS & AUTHORS"
+        },
+        {
+          "clue": "In 1986, the 50th anniversary of her bestseller, a stamp of her was released in a ceremony in Atlanta",
+          "answer": "Margaret Mitchell",
+          "category": "BOOKS & AUTHORS"
+        },
+        {
+          "clue": "\"I, Claudius\" author Robert Graves expressed the disillusion of many in \"Goodbye to All That\", his memoir of this war",
+          "answer": "World War I",
+          "category": "BOOKS & AUTHORS"
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "Literally sleep with the fishesConrad's all-glass undersea Muraka suite is just four hours by speedboat from this Maldives capital city",
+          "answer": "Malé",
+          "category": "A HOTEL MOST UNUSUAL"
+        },
+        {
+          "clue": "Temps hover below freezing in this country's Icehotel built anew each year with ice harvested from the Torne, its northernmost river",
+          "answer": "Sweden",
+          "category": "A HOTEL MOST UNUSUAL"
+        },
+        {
+          "clue": "Tired of amenities? Book a \"sweat-box\" cell at the prison castle in Tobolsk, Russia, where this author of \"The Idiot\" once did time",
+          "answer": "Dostoyevsky",
+          "category": "A HOTEL MOST UNUSUAL"
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "This park in northeastern South Africa bears the name of a president of the Transvaal",
+          "answer": "Kruger",
+          "category": "NATIONAL PARKS"
+        },
+        {
+          "clue": "A national park in New Zealand is a true \"land\" of these steep-cliffed inlets also found in northern lands, like",
+          "answer": "a fjord",
+          "category": "NATIONAL PARKS"
+        },
+        {
+          "clue": "This centrally located country has Tortuguero National Park on the Caribbean & Corcovado National Park on the Pacific",
+          "answer": "Costa Rica",
+          "category": "NATIONAL PARKS"
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "U.S. HISTORY",
+    "question": "Challenged in a courtroom that same year, 1925's Butler Act in Tennessee outlawed this activity & wasn't repealed until 1967",
+    "answer": "teaching evolution"
+  }
+}

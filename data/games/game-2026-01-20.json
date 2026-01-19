@@ -1,0 +1,179 @@
+{
+  "id": "game-2026-01-20",
+  "date": "2026-01-20",
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "The second part of the ballet \"Jewels\" is named for these red gems; the dancers wear red too",
+          "answer": "rubies",
+          "category": "Unknown"
+        },
+        {
+          "clue": "You've caught a pass inside your foe's 10-yard line & have a new set of downs, so this is your new down status",
+          "answer": "first & goal",
+          "category": "Unknown"
+        },
+        {
+          "clue": "Rainier, Montmorency, Maraschino",
+          "answer": "cherries",
+          "category": "Unknown"
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "The diencephalon, part of this organ, includes the thalamus",
+          "answer": "the brain",
+          "category": "ORGAN RECITAL"
+        },
+        {
+          "clue": "This organ breaks down ingested nutrients into small particles & mixes them with gastric juices to make chyme",
+          "answer": "the stomach",
+          "category": "ORGAN RECITAL"
+        },
+        {
+          "clue": "The trigone is a triangular area of this organ between the opening of the urethra & the 2 ureters",
+          "answer": "the bladder",
+          "category": "ORGAN RECITAL"
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "As you can imagine, the project was pretty hush-hush; even this guy didn't know about it until he suddenly became president",
+          "answer": "Truman",
+          "category": "THE MANHATTAN PROJECT"
+        },
+        {
+          "clue": "A structure called the \"Vessel\" has 2,500 individual steps & 80 landings, in the yards named this, the river it overlooks",
+          "answer": "Hudson",
+          "category": "THE MANHATTAN PROJECT"
+        },
+        {
+          "clue": "Nuclear facilities were built in Oak Ridge, Tennessee & Hanford, Wash. but the main assembly plant was in this New Mexico locale",
+          "answer": "Los Alamos",
+          "category": "THE MANHATTAN PROJECT"
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "When life gives you the Meyer type of this tree, expect plenty of fruit year-round",
+          "answer": "a lemon",
+          "category": "PRODUCE"
+        },
+        {
+          "clue": "Not only did he produce \"Citizen Kane\", he co-wrote, starred in & directed the film, tootalk about a best boy",
+          "answer": "Welles",
+          "category": "PRODUCE"
+        },
+        {
+          "clue": "In addition to exec producing \"Michael Clayton\", he got an Oscar nomination for",
+          "answer": "George Clooney",
+          "category": "PRODUCE"
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "During the '80s Bush's daughter Doro worked for the tourism office of this state her dad loved & found peace in",
+          "answer": "Maine",
+          "category": "41"
+        },
+        {
+          "clue": "George Bush succeeded William Colby as director of this in 1976, a time of low morale in the agency",
+          "answer": "the CIA",
+          "category": "41"
+        },
+        {
+          "clue": "George H.W. Bush famously pledged to work toward a nation nicer in these 2 ways",
+          "answer": "kinder, gentler",
+          "category": "41"
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "This \"Great\" structure in Djenné, Mali is rebuilt every year by the community",
+          "answer": "the",
+          "category": "RECONSTRUCTION"
+        },
+        {
+          "clue": "\"All the gods\" were welcome when this Roman building was rebuilt by Hadrian between 118 & 125 A.D",
+          "answer": "the Pantheon",
+          "category": "RECONSTRUCTION"
+        },
+        {
+          "clue": "This Bronx building has been called \"The House that George Built\"; it's next to where \"The House that Ruth Built\" once was",
+          "answer": "Yankee Stadium",
+          "category": "RECONSTRUCTION"
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "In a Henry James novella, this title American girl sends Winterbourne a \"D.M.\" & asks if he remembers their time at",
+          "answer": "Daisy Miller",
+          "category": "PARTS OF THE BOOK"
+        },
+        {
+          "clue": "Milkman Dead travels to Shalimar & hears a song about his great-grandfather flying in this Toni Morrison work",
+          "answer": "Song of Solomon",
+          "category": "PARTS OF THE BOOK"
+        },
+        {
+          "clue": "Remedios the beauty, the daughter of Arcadio, mysteriously floats up to the heavens in this 1967 novel",
+          "answer": "One Hundred Years of Solitude",
+          "category": "PARTS OF THE BOOK"
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "This new name for the landlocked kingdom of Swaziland was officially introduced in 2018",
+          "answer": "Eswatini",
+          "category": "COUNTRIES THAT START WITH A VOWEL"
+        },
+        {
+          "clue": "This nation of Central Asia borders 5 other \"Stan\"s & lies mostly between the Syr Darya & Amu",
+          "answer": "Uzbekistan",
+          "category": "COUNTRIES THAT START WITH A VOWEL"
+        },
+        {
+          "clue": "This has land borders with a somewhat larger & with a much larger country",
+          "answer": "Estonia",
+          "category": "COUNTRIES THAT START WITH A VOWEL"
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "WORLD TRAVEL",
+    "question": "The name of this service that began Nov. 14, 1994 echoes the Étoile du Nord, which linked Paris, Brussels & Amsterdam from 1927",
+    "answer": "Eurostar"
+  }
+}

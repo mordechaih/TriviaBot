@@ -1,0 +1,179 @@
+{
+  "id": "game-2026-01-22",
+  "date": "2026-01-22",
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "University of Tennessee: thisville",
+          "answer": "Knoxville",
+          "category": "Unknown"
+        },
+        {
+          "clue": "On the first episode of this show, a family moves to a new city where brother & sister meet new friends at the posh high school",
+          "answer": "Beverly Hills, 90210",
+          "category": "Unknown"
+        },
+        {
+          "clue": "Many have wondered why Mudville's opponent didn't walk this mighty slugger \"at the bat\" when first base was open",
+          "answer": "Casey",
+          "category": "Unknown"
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "Miley Cyrus came in like one in 2013",
+          "answer": "a \"Wrecking Ball\"",
+          "category": "PICTURE THE HIT SONG"
+        },
+        {
+          "clue": "An Elvis hit",
+          "answer": "\"Hound Dog\"",
+          "category": "PICTURE THE HIT SONG"
+        },
+        {
+          "clue": "Taylor Swift felt it creeping up on her",
+          "answer": "\"Lavender Haze\"",
+          "category": "PICTURE THE HIT SONG"
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Dogs! In! Spaaaace! On November 3, 1957, a pup named Laika became the first living creature to orbit Earth aboard this craft,",
+          "answer": "Sputnik",
+          "category": "WHEN IN THE WORLD...?"
+        },
+        {
+          "clue": "In late April 1865 this play was performed for a specific audience: Edwin Stanton & a crew of investigators",
+          "answer": "Our",
+          "category": "WHEN IN THE WORLD...?"
+        },
+        {
+          "clue": "Scotty on \"Star Trek\", James Doohan was hit by 6 bullets & lost a middle finger helping take Juno Beach on this date",
+          "answer": "June 6, 1944",
+          "category": "WHEN IN THE WORLD...?"
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "On Jan. 16, 1991 President Bush said there was \"no choice but to drive Saddam from\" this country \"by force\"",
+          "answer": "Kuwait",
+          "category": "41"
+        },
+        {
+          "clue": "With its exuberant energy & grand scale, Mozart's Symphony No. 41 earned this nickname after a top god",
+          "answer": "Jupiter",
+          "category": "41"
+        },
+        {
+          "clue": "All belonging to noble Venetian families, \"the 41\" were the group of electors who chose this leader",
+          "answer": "the doge",
+          "category": "41"
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "Curaçao, in the Caribbean is part of these \"Lesser\" islands",
+          "answer": "the",
+          "category": "ISLANDS"
+        },
+        {
+          "clue": "Christchurch & Dunedin are the 2 largest cities on this island",
+          "answer": "the South Island of",
+          "category": "ISLANDS"
+        },
+        {
+          "clue": "Palma is the capital of this largest of the Balearic islands",
+          "answer": "Mallorca",
+          "category": "ISLANDS"
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Pitching for the Yankees, Tommy John once committed 3 of these on one play",
+          "answer": "errors",
+          "category": "A WORD IN A SHAKESPEARE PLAY TITLE"
+        },
+        {
+          "clue": "As a holiday it celebrates the halfway point of a harvest season",
+          "answer": "Midsummer",
+          "category": "A WORD IN A SHAKESPEARE PLAY TITLE"
+        },
+        {
+          "clue": "The short-tailed variety of this insectivore uses toxic saliva to immobilize prey",
+          "answer": "a shrew",
+          "category": "A WORD IN A SHAKESPEARE PLAY TITLE"
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "Was previously New York governor & before that, on the board of",
+          "answer": "Nelson Rockefeller",
+          "category": "THE VICE PRESIDENT WHO..."
+        },
+        {
+          "clue": "Was the first South Carolinian to win the office, but unfortunately, was big on slavery",
+          "answer": "Calhoun",
+          "category": "THE VICE PRESIDENT WHO..."
+        },
+        {
+          "clue": "As a senator, he was the only one from the South to remain in office after the 1860 secession; he'd be rewarded",
+          "answer": "Andrew Johnson",
+          "category": "THE VICE PRESIDENT WHO..."
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "This canal completed in 1893 divides the Peloponnese Peninsula from mainland Greece",
+          "answer": "Corinth",
+          "category": "BODIES OF WATER"
+        },
+        {
+          "clue": "Serpent's Mouth is a channel separating this island's southwestern coast from Venezuela",
+          "answer": "Trinidad",
+          "category": "BODIES OF WATER"
+        },
+        {
+          "clue": "Winter temperatures along this 4-letter Siberian river that flows through Yakutsk can reach the 80s below zero",
+          "answer": "the Lena",
+          "category": "BODIES OF WATER"
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "U.S. BUSINESS FOUNDERS",
+    "question": "A 1934 note to him: \"Received hunting clothes and thank you for those wonderful shoes they fit perfect your friend, Babe Ruth\"",
+    "answer": "L.L. Bean"
+  }
+}

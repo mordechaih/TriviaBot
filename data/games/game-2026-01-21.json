@@ -1,0 +1,179 @@
+{
+  "id": "game-2026-01-21",
+  "date": "2026-01-21",
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "The Benedictine monks of Santo Domingo de Silos released a gregarious chant album",
+          "answer": "Gregorian",
+          "category": "Unknown"
+        },
+        {
+          "clue": "\"I know not that; but such a handkerchiefI am sure it was your wife'sdid I today see Cassio wipe his beard with\"",
+          "answer": "Iago",
+          "category": "Unknown"
+        },
+        {
+          "clue": "Walkers had a chip that paired hoisin, aka Peking sauce, with this appropriate fowl",
+          "answer": "duck",
+          "category": "Unknown"
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "The 41st state, it's known as \"The Treasure State\" for its immense mineral wealth",
+          "answer": "Montana",
+          "category": "41"
+        },
+        {
+          "clue": "As part of Space Shuttle mission STS-41B, astronaut Bruce McCandless made the first of these without a lifeline",
+          "answer": "a space walk",
+          "category": "41"
+        },
+        {
+          "clue": "In honor of Brian Piccolo, 41 is a retired jersey number of this NFL team",
+          "answer": "the",
+          "category": "41"
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "General Sickles called these folks \"Northern people, who have settled within the Southern states since the war\"",
+          "answer": "carpetbaggers",
+          "category": "RECONSTRUCTION"
+        },
+        {
+          "clue": "In 2023, USS Chancellorsville was renamed after this Black Civil War hero & Reconstruction-era congressman",
+          "answer": "Robert Smalls",
+          "category": "RECONSTRUCTION"
+        },
+        {
+          "clue": "Oaks from the Loire region's Forest of Bercé were selected to rebuild the spire of this place that was damaged in 2019",
+          "answer": "the Cathedral of",
+          "category": "RECONSTRUCTION"
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Dover Books' \"Medieval and Renaissance Fashion\" has \"90 full-color\" these illuminating illustrations on special paper",
+          "answer": "plates",
+          "category": "PARTS OF THE BOOK"
+        },
+        {
+          "clue": "In \"The Minister's Vigil\" chapter of this book, a minister sees a meteor's streak forming a dark red \"A\" in the sky",
+          "answer": "The",
+          "category": "PARTS OF THE BOOK"
+        },
+        {
+          "clue": "The oxidized reddish-brown spots on old books are named after the reddish-brown coat of this wild canine",
+          "answer": "a fox",
+          "category": "PARTS OF THE BOOK"
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "This mega producer & creator of \"Scandal\" declared, \"You can waste your lives drawing lines or you can live your life crossing them\"",
+          "answer": "Rhimes",
+          "category": "PRODUCE"
+        },
+        {
+          "clue": "As a producer, he was smart enough to hire himself to direct \"A Beautiful Mind\"; imagine that!",
+          "answer": "Ron Howard",
+          "category": "PRODUCE"
+        },
+        {
+          "clue": "The name of this cylindrical vegetable means \"little squashes\" in Italian",
+          "answer": "zucchini",
+          "category": "PRODUCE"
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "An album of Bach played on the 4 organs of Freiburg was released in 1974 in this type of 4-channel sound",
+          "answer": "quadraphonic",
+          "category": "ORGAN RECITAL"
+        },
+        {
+          "clue": "An organ built at Wanamaker's department store in Philadelphia has nearly 30,000 of these",
+          "answer": "pipes",
+          "category": "ORGAN RECITAL"
+        },
+        {
+          "clue": "The wood for the organ in this Salt Lake City edifice came from Utah's",
+          "answer": "the",
+          "category": "ORGAN RECITAL"
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "A program chief & a friend of J. Robert Oppenheimer's from Berkeley days, this Nobel Prize winner was played on screen by",
+          "answer": "Ernest Lawrence",
+          "category": "THE MANHATTAN PROJECT"
+        },
+        {
+          "clue": "The \"Little Boy\" atomic bomb used uranium-235; \"Fat Man\", this element that was only discovered around 1940",
+          "answer": "plutonium",
+          "category": "THE MANHATTAN PROJECT"
+        },
+        {
+          "clue": "In 1942 it was my kind of townfor the first controlled nuclear chain reaction",
+          "answer": "Chicago",
+          "category": "THE MANHATTAN PROJECT"
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "One benefit of reading this Stephen Chbosky book: \"Things change. And friends leave. And life doesn't stop for anybody\"",
+          "answer": "The Perks of Being a Wallflower",
+          "category": "WISTFUL THINKING"
+        },
+        {
+          "clue": "This Angeleno poet & barfly wrote, \"I felt like crying, but nothing came out\"",
+          "answer": "Bukowski",
+          "category": "WISTFUL THINKING"
+        },
+        {
+          "clue": "In \"Dandelion Wine\" he was not a \"Ray\" of sunshine, saying, \"some people turn sad awfully young no special reason\"",
+          "answer": "Bradbury",
+          "category": "WISTFUL THINKING"
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "CHEMICAL ELEMENT NAMES",
+    "question": "Spanning the alphabet, they are the only 2 chemical element names that end with the letter \"C\"",
+    "answer": "arsenic & zinc"
+  }
+}
