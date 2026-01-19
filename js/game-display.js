@@ -32,19 +32,19 @@ function debouncedLocalStorageWrite(key, value) {
  * Load game from URL parameter
  */
 async function loadGame() {
-  perfLab.start('loadGame');
+  if (typeof perfLab !== 'undefined') perfLab.start('loadGame');
   
   const urlParams = new URLSearchParams(window.location.search);
   const gameId = urlParams.get('id');
   
   if (!gameId) {
     showError('No game ID provided');
-    perfLab.end('loadGame');
+    if (typeof perfLab !== 'undefined') perfLab.end('loadGame');
     return;
   }
   
   try {
-    perfLab.start('fetchGameData');
+    if (typeof perfLab !== 'undefined') perfLab.start('fetchGameData');
     // Add cache-busting to prevent stale data
     const response = await fetch(`data/games/${gameId}.json?t=${Date.now()}`, {
       cache: 'no-store'
@@ -53,26 +53,28 @@ async function loadGame() {
       throw new Error(`Game not found: ${gameId}`);
     }
     
-    perfLab.start('parseGameData');
+    if (typeof perfLab !== 'undefined') perfLab.start('parseGameData');
     currentGame = await response.json();
-    perfLab.end('parseGameData');
-    perfLab.end('fetchGameData');
+    if (typeof perfLab !== 'undefined') {
+      perfLab.end('parseGameData');
+      perfLab.end('fetchGameData');
+    }
     
-    perfLab.start('renderGame');
+    if (typeof perfLab !== 'undefined') perfLab.start('renderGame');
     renderGame();
-    perfLab.end('renderGame');
+    if (typeof perfLab !== 'undefined') perfLab.end('renderGame');
     
     // Mark as played when game is viewed
-    perfLab.start('markGameAsPlayed');
+    if (typeof perfLab !== 'undefined') perfLab.start('markGameAsPlayed');
     await markGameAsPlayed(gameId);
-    perfLab.end('markGameAsPlayed');
+    if (typeof perfLab !== 'undefined') perfLab.end('markGameAsPlayed');
     
-    perfLab.end('loadGame');
+    if (typeof perfLab !== 'undefined') perfLab.end('loadGame');
     
   } catch (error) {
     console.error('Error loading game:', error);
     showError(`Failed to load game: ${error.message}`);
-    perfLab.end('loadGame');
+    if (typeof perfLab !== 'undefined') perfLab.end('loadGame');
   }
 }
 
@@ -80,25 +82,35 @@ async function loadGame() {
  * Render the game
  */
 function renderGame() {
-  perfLab.start('renderGame-internal');
+  if (typeof perfLab !== 'undefined') perfLab.start('renderGame-internal');
   
   const loading = document.getElementById('loading');
   const content = document.getElementById('game-content');
+  
+  if (!loading || !content) {
+    console.error('Required DOM elements not found for renderGame');
+    showError('Error: Required page elements not found');
+    return;
+  }
   
   loading.style.display = 'none';
   content.style.display = 'block';
   
   // Set game title and date
-  perfLab.start('updateGameHeader');
-  document.getElementById('game-title').textContent = `Game ${currentGame.date}`;
-  const dateObj = new Date(currentGame.date);
-  document.getElementById('game-date').textContent = dateObj.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-  perfLab.end('updateGameHeader');
+  if (typeof perfLab !== 'undefined') perfLab.start('updateGameHeader');
+  const titleEl = document.getElementById('game-title');
+  const dateEl = document.getElementById('game-date');
+  if (titleEl && dateEl) {
+    titleEl.textContent = `Game ${currentGame.date}`;
+    const dateObj = new Date(currentGame.date);
+    dateEl.textContent = dateObj.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+  if (typeof perfLab !== 'undefined') perfLab.end('updateGameHeader');
   
   // Render rounds
   renderRounds();
@@ -106,7 +118,7 @@ function renderGame() {
   // Render final trivia
   renderFinalTrivia();
   
-  perfLab.end('renderGame-internal');
+  if (typeof perfLab !== 'undefined') perfLab.end('renderGame-internal');
 }
 
 /**
@@ -114,39 +126,46 @@ function renderGame() {
  * OPTIMIZED: Uses DocumentFragment to batch DOM operations and reduce reflows
  */
 function renderRounds() {
-  perfLab.start('renderRounds');
+  if (typeof perfLab !== 'undefined') perfLab.start('renderRounds');
   const container = document.getElementById('rounds-container');
+  
+  if (!container) {
+    console.error('rounds-container element not found');
+    return;
+  }
   
   // Use DocumentFragment to batch DOM operations
   const fragment = document.createDocumentFragment();
   
   currentGame.rounds.forEach((round, index) => {
-    perfLab.start(`createRound-${index}`);
+    if (typeof perfLab !== 'undefined') perfLab.start(`createRound-${index}`);
     const roundElement = createRoundElement(round);
     fragment.appendChild(roundElement);
-    perfLab.end(`createRound-${index}`);
+    if (typeof perfLab !== 'undefined') perfLab.end(`createRound-${index}`);
   });
   
   // Clear container and append fragment in one operation
   container.innerHTML = '';
   container.appendChild(fragment);
   
-  perfLab.end('renderRounds');
-  perfLab.record('roundCount', currentGame.rounds.length);
+  if (typeof perfLab !== 'undefined') {
+    perfLab.end('renderRounds');
+    perfLab.record('roundCount', currentGame.rounds.length);
+  }
 }
 
 /**
  * Create a round element
  */
 function createRoundElement(round) {
-  perfLab.start('createRoundElement');
+  if (typeof perfLab !== 'undefined') perfLab.start('createRoundElement');
   
   const roundDiv = document.createElement('div');
   roundDiv.className = 'round';
   roundDiv.setAttribute('data-round', round.roundNumber);
   
   // Round header (collapsible)
-  perfLab.start('createRoundHeader');
+  if (typeof perfLab !== 'undefined') perfLab.start('createRoundHeader');
   const header = document.createElement('div');
   header.className = 'round-header';
   header.onclick = () => toggleRound(roundDiv);
@@ -182,10 +201,10 @@ function createRoundElement(round) {
   header.appendChild(difficulty);
   header.appendChild(shuffleRoundBtn);
   header.appendChild(toggle);
-  perfLab.end('createRoundHeader');
+  if (typeof perfLab !== 'undefined') perfLab.end('createRoundHeader');
   
   // Round content
-  perfLab.start('createRoundContent');
+  if (typeof perfLab !== 'undefined') perfLab.start('createRoundContent');
   const content = document.createElement('div');
   content.className = 'round-content';
   
@@ -193,21 +212,23 @@ function createRoundElement(round) {
   const questionFragment = document.createDocumentFragment();
   
   round.questions.forEach((question, index) => {
-    perfLab.start(`createQuestion-${round.roundNumber}-${index}`);
+    if (typeof perfLab !== 'undefined') perfLab.start(`createQuestion-${round.roundNumber}-${index}`);
     const questionElement = createQuestionElement(question, index + 1, round.roundNumber);
     questionFragment.appendChild(questionElement);
-    perfLab.end(`createQuestion-${round.roundNumber}-${index}`);
+    if (typeof perfLab !== 'undefined') perfLab.end(`createQuestion-${round.roundNumber}-${index}`);
   });
   
   // Append all questions at once
   content.appendChild(questionFragment);
-  perfLab.end('createRoundContent');
+  if (typeof perfLab !== 'undefined') perfLab.end('createRoundContent');
   
   roundDiv.appendChild(header);
   roundDiv.appendChild(content);
   
-  perfLab.end('createRoundElement');
-  perfLab.record('questionsPerRound', round.questions.length);
+  if (typeof perfLab !== 'undefined') {
+    perfLab.end('createRoundElement');
+    perfLab.record('questionsPerRound', round.questions.length);
+  }
   
   return roundDiv;
 }
@@ -306,7 +327,7 @@ function renderFinalTrivia() {
  */
 async function markGameAsPlayed(gameId) {
   try {
-    perfLab.start('loadPlayedStatus');
+    if (typeof perfLab !== 'undefined') perfLab.start('loadPlayedStatus');
     // Load current played status
     let playedStatus = {};
     try {
@@ -318,20 +339,20 @@ async function markGameAsPlayed(gameId) {
       // Fallback to localStorage
       const stored = localStorage.getItem('triviabot-played-status');
       if (stored) {
-        perfLab.start('parseLocalStorage');
+        if (typeof perfLab !== 'undefined') perfLab.start('parseLocalStorage');
         playedStatus = JSON.parse(stored);
-        perfLab.end('parseLocalStorage');
+        if (typeof perfLab !== 'undefined') perfLab.end('parseLocalStorage');
       }
     }
-    perfLab.end('loadPlayedStatus');
+    if (typeof perfLab !== 'undefined') perfLab.end('loadPlayedStatus');
     
     // Update status
     playedStatus[gameId] = true;
     
     // Save to localStorage (debounced to prevent blocking)
-    perfLab.start('saveToLocalStorage');
+    if (typeof perfLab !== 'undefined') perfLab.start('saveToLocalStorage');
     debouncedLocalStorageWrite('triviabot-played-status', playedStatus);
-    perfLab.end('saveToLocalStorage');
+    if (typeof perfLab !== 'undefined') perfLab.end('saveToLocalStorage');
     
     // Note: To save to GitHub, you'd need to use GitHub API
     // For now, we just use localStorage
