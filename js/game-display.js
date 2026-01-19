@@ -522,6 +522,32 @@ function showError(message) {
 }
 
 /**
+ * Handle sticky back button on scroll
+ */
+function setupStickyBackButton() {
+  const backBtn = document.getElementById('back-btn');
+  if (!backBtn) return;
+  
+  const nav = backBtn.closest('.nav');
+  if (!nav) return;
+  
+  function handleScroll() {
+    const navRect = nav.getBoundingClientRect();
+    const isAtTop = navRect.top <= 0;
+    
+    if (isAtTop) {
+      backBtn.classList.add('sticky');
+    } else {
+      backBtn.classList.remove('sticky');
+    }
+  }
+  
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  // Check initial state
+  handleScroll();
+}
+
+/**
  * Initialize
  */
 function init() {
@@ -539,6 +565,12 @@ function init() {
   }
   
   loadGame();
+  setupStickyBackButton();
+  
+  // Initialize Lucide icons for back button
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
 }
 
 // Run on page load

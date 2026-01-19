@@ -818,8 +818,23 @@ main {
   cursor: pointer;
   min-height: var(--touch-target);
   text-decoration: none;
-  display: inline-block;
-  transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  transition: background 0.2s, position 0.3s, top 0.3s, left 0.3s, transform 0.3s;
+  position: relative;
+}
+
+.nav-btn i,
+.nav-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.nav-btn-text {
+  transition: opacity 0.3s, width 0.3s;
+  white-space: nowrap;
 }
 
 .nav-btn:hover {
@@ -828,6 +843,24 @@ main {
 
 .nav-btn:active {
   background: #FF9D6B;
+}
+
+/* Sticky nav button when scrolled to top */
+.nav-btn.sticky {
+  position: fixed;
+  top: var(--spacing-md);
+  left: var(--spacing-md);
+  z-index: 1000;
+  margin: 0;
+  padding: var(--spacing-sm);
+  min-width: var(--touch-target);
+  justify-content: center;
+}
+
+.nav-btn.sticky .nav-btn-text {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
 }
 
 /* Loading state */
