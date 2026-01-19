@@ -552,19 +552,19 @@ main {
 
 /* Color code answers by round */
 .round[data-round="1"] .question-answer {
-  color: #2D2D2D;
+  color: white;
   background: rgba(255, 215, 0, 0.2);
   border: 1px solid rgba(255, 215, 0, 0.4);
 }
 
 .round[data-round="2"] .question-answer {
-  color: #2D2D2D;
+  color: white;
   background: rgba(255, 199, 0, 0.2);
   border: 1px solid rgba(255, 199, 0, 0.4);
 }
 
 .round[data-round="3"] .question-answer {
-  color: #2D2D2D;
+  color: white;
   background: rgba(255, 183, 0, 0.2);
   border: 1px solid rgba(255, 183, 0, 0.4);
 }
