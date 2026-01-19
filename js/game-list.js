@@ -66,13 +66,21 @@ async function loadGames() {
     let gameIds = [];
     try {
       perfLab.start('fetchGamesIndex');
-      // Add cache-busting to prevent stale data
-      const indexResponse = await fetch(`data/games/index.json?t=${Date.now()}`, {
-        cache: 'no-store'
+      // Add cache-busting to prevent stale data - use timestamp and random to ensure fresh fetch
+      const cacheBuster = `${Date.now()}-${Math.random()}`;
+      const indexResponse = await fetch(`data/games/index.json?t=${cacheBuster}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
       });
       if (indexResponse.ok) {
         const index = await indexResponse.json();
         gameIds = index.games || [];
+        console.log('Loaded game IDs from index:', gameIds);
+      } else {
+        console.warn('Failed to load games index:', indexResponse.status, indexResponse.statusText);
       }
       perfLab.end('fetchGamesIndex');
     } catch (error) {
@@ -89,9 +97,14 @@ async function loadGames() {
       
       const gamePromises = gameIds.map((id, index) => {
         perfLab.start(`fetchGame-${index}`);
-        // Add cache-busting to prevent stale data
-        return fetch(`data/games/${id}.json?t=${Date.now()}`, {
-          cache: 'no-store'
+        // Add cache-busting to prevent stale data - use timestamp and random
+        const cacheBuster = `${Date.now()}-${Math.random()}`;
+        return fetch(`data/games/${id}.json?t=${cacheBuster}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
         })
           .then(res => {
             perfLab.end(`fetchGame-${index}`);
@@ -410,9 +423,13 @@ async function triggerGameGeneration() {
         'info'
       );
       
-      // Poll for new games every 10 seconds, up to 2 minutes
+      // Store initial game IDs before polling starts
+      const initialGameIds = new Set(allGames.map(g => g.id));
+      console.log('Initial games:', Array.from(initialGameIds));
+      
+      // Poll for new games every 10 seconds, up to 3 minutes
       let pollCount = 0;
-      const maxPolls = 12; // 12 * 10 seconds = 2 minutes
+      const maxPolls = 18; // 18 * 10 seconds = 3 minutes
       
       const pollForNewGames = setInterval(async () => {
         pollCount++;
@@ -420,16 +437,22 @@ async function triggerGameGeneration() {
         
         try {
           // Force reload games with cache-busting
+          // Clear the allGames array first to force fresh load
+          allGames = [];
           await loadGames();
           
-          // Check if we have more games than before
-          const currentGameCount = allGames.length;
-          const previousCount = window.previousGameCount || 0;
+          // Get current game IDs
+          const currentGameIds = new Set(allGames.map(g => g.id));
+          console.log('Current games:', Array.from(currentGameIds));
           
-          if (currentGameCount > previousCount) {
+          // Check if we have new game IDs
+          const newGameIds = Array.from(currentGameIds).filter(id => !initialGameIds.has(id));
+          
+          if (newGameIds.length > 0) {
             clearInterval(pollForNewGames);
+            console.log('New games detected:', newGameIds);
             showGenerateStatus(
-              `New game generated! Found ${currentGameCount} game(s).`,
+              `New game generated! Found ${newGameIds.length} new game(s).`,
               'success'
             );
             // Refresh after showing success message
@@ -439,14 +462,17 @@ async function triggerGameGeneration() {
           } else if (pollCount >= maxPolls) {
             clearInterval(pollForNewGames);
             showGenerateStatus(
-              'Game generation may still be in progress. Please refresh the page manually.',
+              'Game generation may still be in progress. Please refresh the page manually to check.',
               'info'
             );
+            console.log('Polling timeout reached. Initial games:', Array.from(initialGameIds), 'Current games:', Array.from(currentGameIds));
           } else {
+            const elapsed = pollCount * 10;
             showGenerateStatus(
-              `Waiting for new game... (${pollCount * 10}s)`,
+              `Waiting for new game... (${elapsed}s / ~3min)`,
               'info'
             );
+            console.log(`No new games yet. Still waiting... (${elapsed}s)`);
           }
         } catch (error) {
           console.error('Error polling for games:', error);
@@ -456,12 +482,14 @@ async function triggerGameGeneration() {
               'Could not detect new game. Please refresh the page manually.',
               'info'
             );
+          } else {
+            showGenerateStatus(
+              `Error checking for games (${pollCount}/${maxPolls}). Retrying...`,
+              'info'
+            );
           }
         }
       }, 10000); // Poll every 10 seconds
-      
-      // Store current game count
-      window.previousGameCount = allGames.length;
     } else {
       const errorMessage = responseData.error || response.statusText || 'Failed to trigger workflow';
       console.error('API error:', errorMessage);
@@ -509,6 +537,34 @@ async function init() {
     });
   } else {
     console.error('Generate button not found in DOM!');
+  }
+  
+  // Set up refresh button
+  const refreshBtn = document.getElementById('refresh-btn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Refresh button clicked!');
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = 'Refreshing...';
+      try {
+        // Clear cache and reload
+        allGames = [];
+        await loadGames();
+        showGenerateStatus('Games list refreshed!', 'success');
+        setTimeout(() => {
+          const statusDiv = document.getElementById('generate-status');
+          if (statusDiv) statusDiv.style.display = 'none';
+        }, 3000);
+      } catch (error) {
+        console.error('Error refreshing games:', error);
+        showGenerateStatus('Error refreshing games. Please try again.', 'error');
+      } finally {
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = '🔄 Refresh Games List';
+      }
+    });
   }
   
   // Load data

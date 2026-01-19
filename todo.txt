@@ -3,3 +3,4 @@
 [] add the ability to shuffle / reload per question and per category
 [] randomize category/question order -- it's currently following the order of the episode
 [] I am noticing the ends of questions being cut off. Perhaps our script is being too aggressive with trimming? Try a different strategy.
+[] Retheme to use a dark mode and orangey-reddish theme by default. 
