@@ -859,39 +859,6 @@ main {
   background: #FF9D6B;
 }
 
-/* Placeholder to maintain space when button becomes sticky */
-.nav-btn-placeholder {
-  display: none;
-  min-height: var(--touch-target);
-  width: 100%;
-}
-
-.nav-btn.sticky + .nav-btn-placeholder,
-.nav.sticky .nav-btn-placeholder {
-  display: block;
-}
-
-/* Sticky nav button when scrolled to top */
-.nav-btn.sticky {
-  position: fixed;
-  top: var(--spacing-md);
-  left: var(--spacing-md);
-  z-index: 1000;
-  margin: 0;
-  padding: var(--spacing-sm);
-  min-width: var(--touch-target);
-  width: var(--touch-target);
-  justify-content: center;
-  gap: 0;
-  transform: none;
-}
-
-.nav-btn.sticky .nav-btn-text {
-  opacity: 0;
-  width: 0;
-  margin: 0;
-  padding: 0;
-}
 
 /* Loading state */
 .loading {
