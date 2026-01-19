@@ -366,7 +366,11 @@ async function triggerGameGeneration() {
     }
   } catch (error) {
     console.error('Error triggering workflow:', error);
-    showGenerateStatus(`Error: ${error.message}`, 'error');
+    const errorMessage = error.message || 'Network error';
+    showGenerateStatus(
+      `Error: ${errorMessage}. Check browser console for details.`,
+      'error'
+    );
     generateBtn.disabled = false;
     generateBtn.textContent = 'Generate New Game';
     generateBtn.style.opacity = '1';
