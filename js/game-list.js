@@ -373,6 +373,10 @@ function showGenerateStatus(message, type = 'info') {
   statusDiv.textContent = message;
   statusDiv.className = `generate-status ${type}`;
   
+  // Clear any inline display style that might have been set by hideGenerateStatus
+  // This ensures the CSS class can properly control display
+  statusDiv.style.display = '';
+  
   // Trigger animation by adding 'show' class
   // Use requestAnimationFrame to ensure the element is rendered before animating
   requestAnimationFrame(() => {
@@ -440,6 +444,8 @@ async function triggerGameGeneration() {
   if (!repoInfo) {
     showGenerateStatus('Error: GitHub configuration not found. Please create js/config.js (see js/config.example.js for template)', 'error');
     restoreIconButton(generateBtn, 'plus');
+    generateBtn.disabled = false;
+    generateBtn.style.opacity = '1';
     return;
   }
   
@@ -450,6 +456,8 @@ async function triggerGameGeneration() {
   if (!apiEndpoint) {
     showGenerateStatus('Error: API endpoint not configured. Please set apiEndpoint in js/config.js', 'error');
     restoreIconButton(generateBtn, 'plus');
+    generateBtn.disabled = false;
+    generateBtn.style.opacity = '1';
     return;
   }
   
@@ -484,7 +492,7 @@ async function triggerGameGeneration() {
     if (response.ok && (responseData.success || response.status === 204)) {
       console.log('Workflow triggered successfully!');
       showGenerateStatus(
-        'Game generation triggered! Waiting for deployment...',
+        '🚀 Game generation triggered! Vercel is deploying your new game...',
         'info'
       );
       
@@ -516,27 +524,53 @@ async function triggerGameGeneration() {
           if (newGameIds.length > 0) {
             clearInterval(pollForNewGames);
             console.log('New games detected:', newGameIds);
+            
+            // Show success toast with deployment confirmation
             showGenerateStatus(
-              `New game generated! Found ${newGameIds.length} new game(s).`,
+              `🎉 Vercel deployment complete! New game is ready. Refreshing...`,
               'success'
             );
-            // Refresh after showing success message
+            
+            // Restore button state
+            restoreIconButton(generateBtn, 'plus');
+            generateBtn.disabled = false;
+            generateBtn.style.opacity = '1';
+            
+            // Auto-refresh after showing success message (give user time to see it)
             setTimeout(() => {
               window.location.reload();
-            }, 2000);
+            }, 2500);
           } else if (pollCount >= maxPolls) {
             clearInterval(pollForNewGames);
             showGenerateStatus(
-              'Game generation may still be in progress. Please refresh the page manually to check.',
+              '⏱️ Deployment may still be in progress. Please refresh the page manually to check.',
               'info'
             );
+            restoreIconButton(generateBtn, 'plus');
+            generateBtn.disabled = false;
+            generateBtn.style.opacity = '1';
             console.log('Polling timeout reached. Initial games:', Array.from(initialGameIds), 'Current games:', Array.from(currentGameIds));
           } else {
             const elapsed = pollCount * 10;
-            showGenerateStatus(
-              `Waiting for new game... (${elapsed}s / ~3min)`,
-              'info'
-            );
+            const remaining = Math.max(0, (maxPolls - pollCount) * 10);
+            
+            // Show deployment progress with better messaging
+            if (pollCount <= 3) {
+              showGenerateStatus(
+                `🚀 Vercel is deploying your game... (${elapsed}s elapsed)`,
+                'info'
+              );
+            } else if (pollCount <= 9) {
+              showGenerateStatus(
+                `⏳ Deployment in progress... (${elapsed}s / ~${Math.ceil(remaining / 60)}min remaining)`,
+                'info'
+              );
+            } else {
+              showGenerateStatus(
+                `⏳ Still waiting for deployment... (${elapsed}s / ~${Math.ceil(remaining / 60)}min remaining)`,
+                'info'
+              );
+            }
             console.log(`No new games yet. Still waiting... (${elapsed}s)`);
           }
         } catch (error) {
@@ -546,13 +580,16 @@ async function triggerGameGeneration() {
           if (pollCount >= maxPolls) {
             clearInterval(pollForNewGames);
             showGenerateStatus(
-              `Could not detect new game after ${maxPolls} attempts. Error: ${error.message}. Please refresh the page manually.`,
+              `❌ Could not detect new game after ${maxPolls} attempts. Error: ${error.message}. Please refresh the page manually.`,
               'error'
             );
+            restoreIconButton(generateBtn, 'plus');
+            generateBtn.disabled = false;
+            generateBtn.style.opacity = '1';
           } else {
             // Show error but continue polling
             showGenerateStatus(
-              `Error checking for games (${pollCount}/${maxPolls}): ${error.message}. Retrying...`,
+              `⚠️ Error checking deployment (${pollCount}/${maxPolls}): ${error.message}. Retrying...`,
               'info'
             );
           }
@@ -566,6 +603,8 @@ async function triggerGameGeneration() {
         'error'
       );
       restoreIconButton(generateBtn, 'plus');
+      generateBtn.disabled = false;
+      generateBtn.style.opacity = '1';
     }
   } catch (error) {
     console.error('Error triggering workflow:', error);
@@ -575,6 +614,8 @@ async function triggerGameGeneration() {
       'error'
     );
     restoreIconButton(generateBtn, 'plus');
+    generateBtn.disabled = false;
+    generateBtn.style.opacity = '1';
   }
 }
 
