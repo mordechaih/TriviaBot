@@ -255,25 +255,16 @@ function hideGenerateStatus() {
 
 /**
  * Get GitHub repository info from config file
+ * Requires js/config.js to be present (no fallbacks since we're using Vercel)
  */
 function getGitHubRepoInfo() {
-  // Check if config is available
+  // Require config.js - no fallbacks since we're using Vercel
   if (typeof GITHUB_CONFIG !== 'undefined' && GITHUB_CONFIG.owner && GITHUB_CONFIG.repo) {
     return {
       owner: GITHUB_CONFIG.owner,
       repo: GITHUB_CONFIG.repo,
       branch: GITHUB_CONFIG.branch || 'main'
     };
-  }
-  
-  // Fallback: try to extract from window.location (for GitHub Pages)
-  const hostname = window.location.hostname;
-  if (hostname.includes('github.io')) {
-    const parts = hostname.split('.');
-    if (parts.length >= 2) {
-      const username = parts[0];
-      return { owner: username, repo: 'TriviaBot', branch: 'main' };
-    }
   }
   
   return null;
@@ -304,15 +295,17 @@ async function triggerGameGeneration() {
   
   // Check if credentials are configured
   if (!repoInfo) {
-    showGenerateStatus('Error: GitHub configuration not found. Please check js/config.js', 'error');
+    showGenerateStatus('Error: GitHub configuration not found. Please create js/config.js (see js/config.example.js for template)', 'error');
     generateBtn.disabled = false;
     generateBtn.textContent = 'Generate New Game';
     generateBtn.style.opacity = '1';
     return;
   }
   
-  // Get API endpoint from config
-  const apiEndpoint = typeof GITHUB_CONFIG !== 'undefined' ? GITHUB_CONFIG.apiEndpoint : null;
+  // Get API endpoint from config (required for Vercel deployment)
+  const apiEndpoint = typeof GITHUB_CONFIG !== 'undefined' && GITHUB_CONFIG.apiEndpoint 
+    ? GITHUB_CONFIG.apiEndpoint 
+    : null;
   if (!apiEndpoint) {
     showGenerateStatus('Error: API endpoint not configured. Please set apiEndpoint in js/config.js', 'error');
     generateBtn.disabled = false;

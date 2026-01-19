@@ -2,19 +2,43 @@
 // Set GITHUB_TOKEN, GITHUB_OWNER, and GITHUB_REPO as environment variables in Netlify
 
 exports.handler = async (event, context) => {
+  // Handle CORS preflight requests
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      },
+      body: ''
+    };
+  }
+
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      },
       body: JSON.stringify({ error: 'Method not allowed' })
     };
   }
+
+  // CORS headers for all responses
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type'
+  };
 
   // Get token from environment variable
   const token = process.env.GITHUB_TOKEN;
   if (!token) {
     return {
       statusCode: 500,
+      headers: corsHeaders,
       body: JSON.stringify({ error: 'GitHub token not configured' })
     };
   }
@@ -35,6 +59,7 @@ exports.handler = async (event, context) => {
   if (!repoOwner || !repoName) {
     return {
       statusCode: 400,
+      headers: corsHeaders,
       body: JSON.stringify({ error: 'Repository information required' })
     };
   }
@@ -65,6 +90,7 @@ exports.handler = async (event, context) => {
       const error = await dispatchResponse.json().catch(() => ({}));
       return {
         statusCode: dispatchResponse.status,
+        headers: corsHeaders,
         body: JSON.stringify({ 
           error: error.message || 'Failed to trigger workflow' 
         })
@@ -74,6 +100,7 @@ exports.handler = async (event, context) => {
     // repository_dispatch returns 204 No Content on success
     return {
       statusCode: 200,
+      headers: corsHeaders,
       body: JSON.stringify({ 
         success: true, 
         message: 'Workflow triggered successfully' 
@@ -84,6 +111,7 @@ exports.handler = async (event, context) => {
     console.error('Error triggering workflow:', error);
     return {
       statusCode: 500,
+      headers: corsHeaders,
       body: JSON.stringify({ 
         error: error.message || 'Internal server error' 
       })
