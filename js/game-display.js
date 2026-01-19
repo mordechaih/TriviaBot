@@ -261,18 +261,12 @@ function createQuestionElement(question, number, roundNumber) {
   clue.className = 'question-clue';
   clue.textContent = question.clue;
   
-  const revealBtn = document.createElement('button');
-  revealBtn.className = 'reveal-btn';
-  revealBtn.textContent = 'Reveal Answer';
-  revealBtn.onclick = () => revealAnswer(questionDiv);
-  
   const answer = document.createElement('div');
-  answer.className = 'question-answer hidden';
+  answer.className = 'question-answer';
   answer.textContent = question.answer;
   
   questionDiv.appendChild(category);
   questionDiv.appendChild(clue);
-  questionDiv.appendChild(revealBtn);
   questionDiv.appendChild(answer);
   
   return questionDiv;
@@ -298,17 +292,6 @@ function toggleRound(roundDiv) {
 }
 
 /**
- * Reveal answer for a question
- */
-function revealAnswer(questionDiv) {
-  const answer = questionDiv.querySelector('.question-answer');
-  const btn = questionDiv.querySelector('.reveal-btn');
-  
-  answer.classList.remove('hidden');
-  btn.style.display = 'none';
-}
-
-/**
  * Render final trivia
  */
 function renderFinalTrivia() {
@@ -316,7 +299,6 @@ function renderFinalTrivia() {
   const category = document.getElementById('final-category');
   const question = document.getElementById('final-question');
   const answer = document.getElementById('final-answer');
-  const revealBtn = document.getElementById('reveal-final-btn');
   
   if (!currentGame.finalTrivia) {
     finalDiv.style.display = 'none';
@@ -327,12 +309,6 @@ function renderFinalTrivia() {
   category.textContent = currentGame.finalTrivia.category;
   question.textContent = currentGame.finalTrivia.question;
   answer.textContent = currentGame.finalTrivia.answer;
-  answer.classList.add('hidden');
-  
-  revealBtn.onclick = () => {
-    answer.classList.remove('hidden');
-    revealBtn.style.display = 'none';
-  };
 }
 
 /**
