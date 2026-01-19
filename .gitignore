@@ -3,5 +3,8 @@ node_modules/
 *.log
 .env
 js/config.js
+js/config.dev.js
 todo.txt
+index.dev.html
+server.js
 

@@ -9,7 +9,8 @@
     "update-index": "node scripts/update-games-index.js",
     "clean-archive": "node scripts/clean-archive.js",
     "deploy": "vercel",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "dev": "node server.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0",
