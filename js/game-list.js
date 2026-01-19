@@ -8,24 +8,35 @@ let currentFilter = 'all';
  * Load played status from GitHub or localStorage fallback
  */
 async function loadPlayedStatus() {
+  perfLab.start('loadPlayedStatus');
+  
   try {
     // Try to load from GitHub Pages (data/played-status.json)
+    perfLab.start('fetchPlayedStatus');
     const response = await fetch('data/played-status.json');
     if (response.ok) {
       playedStatus = await response.json();
       console.log('Loaded played status from server');
+      perfLab.end('fetchPlayedStatus');
+      perfLab.end('loadPlayedStatus');
       return;
     }
+    perfLab.end('fetchPlayedStatus');
   } catch (error) {
     console.log('Could not load from server, trying localStorage');
   }
   
   // Fallback to localStorage
+  perfLab.start('loadFromLocalStorage');
   const stored = localStorage.getItem('triviabot-played-status');
   if (stored) {
+    perfLab.start('parsePlayedStatus');
     playedStatus = JSON.parse(stored);
+    perfLab.end('parsePlayedStatus');
     console.log('Loaded played status from localStorage');
   }
+  perfLab.end('loadFromLocalStorage');
+  perfLab.end('loadPlayedStatus');
 }
 
 /**
@@ -44,6 +55,8 @@ async function savePlayedStatus() {
  * Load list of available games
  */
 async function loadGames() {
+  perfLab.start('loadGames');
+  
   try {
     // Get list of game files from the games directory
     // Since we can't list files via fetch, we'll need to maintain an index
@@ -52,40 +65,64 @@ async function loadGames() {
     // Try to load a games index if it exists
     let gameIds = [];
     try {
+      perfLab.start('fetchGamesIndex');
       const indexResponse = await fetch('data/games/index.json');
       if (indexResponse.ok) {
         const index = await indexResponse.json();
         gameIds = index.games || [];
       }
+      perfLab.end('fetchGamesIndex');
     } catch (error) {
       // If no index exists, we'll need to discover games another way
       // For now, we'll try common date patterns or let the user know
       console.log('No games index found');
+      perfLab.end('fetchGamesIndex');
     }
     
     // If we have game IDs, load them
     if (gameIds.length > 0) {
-      const gamePromises = gameIds.map(id => 
-        fetch(`data/games/${id}.json`)
-          .then(res => res.ok ? res.json() : null)
-          .catch(() => null)
-      );
+      perfLab.start('fetchAllGames');
+      perfLab.record('gameCount', gameIds.length);
+      
+      const gamePromises = gameIds.map((id, index) => {
+        perfLab.start(`fetchGame-${index}`);
+        return fetch(`data/games/${id}.json`)
+          .then(res => {
+            perfLab.end(`fetchGame-${index}`);
+            return res.ok ? res.json() : null;
+          })
+          .catch(() => {
+            perfLab.end(`fetchGame-${index}`);
+            return null;
+          });
+      });
       
       const games = await Promise.all(gamePromises);
+      perfLab.end('fetchAllGames');
+      
+      perfLab.start('sortGames');
       allGames = games.filter(g => g !== null).sort((a, b) => 
         new Date(b.date) - new Date(a.date)
       );
+      perfLab.end('sortGames');
     } else {
       // Fallback: try to discover games by checking common patterns
       // This is a workaround - ideally we'd have an index file
+      perfLab.start('discoverGames');
       allGames = await discoverGames();
+      perfLab.end('discoverGames');
     }
     
+    perfLab.start('renderGames');
     renderGames();
+    perfLab.end('renderGames');
+    
+    perfLab.end('loadGames');
     
   } catch (error) {
     console.error('Error loading games:', error);
     showError('Failed to load games. Please try again later.');
+    perfLab.end('loadGames');
   }
 }
 
@@ -122,6 +159,8 @@ async function discoverGames() {
  * Render the game list
  */
 function renderGames() {
+  perfLab.start('renderGames-internal');
+  
   const container = document.getElementById('game-list');
   const loading = document.getElementById('loading');
   const emptyState = document.getElementById('empty-state');
@@ -129,27 +168,43 @@ function renderGames() {
   loading.style.display = 'none';
   
   // Filter games based on current filter
+  perfLab.start('filterGames');
   let filteredGames = allGames;
   if (currentFilter === 'played') {
     filteredGames = allGames.filter(game => playedStatus[game.id] === true);
   } else if (currentFilter === 'unplayed') {
     filteredGames = allGames.filter(game => playedStatus[game.id] !== true);
   }
+  perfLab.end('filterGames');
+  perfLab.record('filteredGameCount', filteredGames.length);
   
   if (filteredGames.length === 0) {
     container.style.display = 'none';
     emptyState.style.display = 'block';
+    perfLab.end('renderGames-internal');
     return;
   }
   
   emptyState.style.display = 'none';
   container.style.display = 'block';
-  container.innerHTML = '';
   
-  filteredGames.forEach(game => {
+  // Use DocumentFragment to batch DOM operations
+  const fragment = document.createDocumentFragment();
+  
+  perfLab.start('createGameCards');
+  filteredGames.forEach((game, index) => {
+    perfLab.start(`createGameCard-${index}`);
     const card = createGameCard(game);
-    container.appendChild(card);
+    fragment.appendChild(card);
+    perfLab.end(`createGameCard-${index}`);
   });
+  perfLab.end('createGameCards');
+  
+  // Clear and append fragment in one operation
+  container.innerHTML = '';
+  container.appendChild(fragment);
+  
+  perfLab.end('renderGames-internal');
 }
 
 /**
@@ -409,4 +464,16 @@ async function init() {
 
 // Run on page load
 init();
+
+// Capture baseline metrics on first load
+if (typeof perfLab !== 'undefined') {
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      if (!perfLab.baseline) {
+        console.log('Performance Lab: Ready for baseline capture');
+        console.log('Run: perfLab.saveBaseline("initial-baseline") to capture baseline');
+      }
+    }, 2000); // Wait for games to load
+  });
+}
 

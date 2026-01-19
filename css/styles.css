@@ -353,6 +353,47 @@ main {
   overflow: hidden;
 }
 
+/* Color coding for rounds: yellow (r1) to red (r8) */
+.round[data-round="1"] .round-header {
+  background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+  color: var(--text-color);
+}
+
+.round[data-round="2"] .round-header {
+  background: linear-gradient(135deg, #FFC700 0%, #FFB700 100%);
+  color: var(--text-color);
+}
+
+.round[data-round="3"] .round-header {
+  background: linear-gradient(135deg, #FFB700 0%, #FFA500 100%);
+  color: var(--text-color);
+}
+
+.round[data-round="4"] .round-header {
+  background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+  color: white;
+}
+
+.round[data-round="5"] .round-header {
+  background: linear-gradient(135deg, #FF8C00 0%, #FF6B00 100%);
+  color: white;
+}
+
+.round[data-round="6"] .round-header {
+  background: linear-gradient(135deg, #FF6B00 0%, #FF4500 100%);
+  color: white;
+}
+
+.round[data-round="7"] .round-header {
+  background: linear-gradient(135deg, #FF4500 0%, #DC143C 100%);
+  color: white;
+}
+
+.round[data-round="8"] .round-header {
+  background: linear-gradient(135deg, #DC143C 0%, #C41E3A 100%);
+  color: white;
+}
+
 .round-header {
   background: var(--primary-color);
   color: white;
@@ -444,7 +485,7 @@ main {
   border-radius: var(--border-radius);
   cursor: pointer;
   min-height: var(--touch-target);
-  width: 100%;
+  flex: 1;
   transition: background 0.2s;
 }
 
@@ -452,20 +493,45 @@ main {
   background: #0500CC;
 }
 
-/* Final Trivia */
+.shuffle-btn {
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  background: var(--secondary-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  min-height: var(--touch-target);
+  flex: 1;
+  transition: background 0.2s;
+}
+
+.shuffle-btn:active {
+  background: #FFC700;
+}
+
+.question-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+/* Final Trivia - Red gradient (final color in sequence) */
 .final-trivia {
-  background: linear-gradient(135deg, var(--secondary-color) 0%, #FFC700 100%);
-  border: 2px solid var(--primary-color);
+  background: linear-gradient(135deg, #C41E3A 0%, #8B0000 100%);
+  border: 2px solid #8B0000;
   border-radius: var(--border-radius);
   padding: var(--spacing-lg);
   margin-top: var(--spacing-xl);
   margin-bottom: var(--spacing-xl);
+  color: white;
 }
 
 .final-trivia h2 {
   font-size: var(--font-size-large);
   margin-bottom: var(--spacing-md);
-  color: var(--text-color);
+  color: white;
   text-align: center;
 }
 
@@ -475,8 +541,9 @@ main {
   text-align: center;
   margin-bottom: var(--spacing-md);
   padding: var(--spacing-sm);
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: var(--border-radius);
+  color: white;
 }
 
 .final-trivia .question {
@@ -484,14 +551,15 @@ main {
   line-height: 1.6;
   margin-bottom: var(--spacing-md);
   text-align: center;
+  color: white;
 }
 
 .final-trivia .answer {
   font-size: var(--font-size-base);
-  color: var(--primary-color);
+  color: #FFD700;
   font-weight: 600;
   padding: var(--spacing-md);
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: var(--border-radius);
   text-align: center;
   margin-top: var(--spacing-md);

@@ -276,21 +276,34 @@ async function selectQuestions(archive, usedQuestions, targetDate) {
     difficultyLevel: getDifficultyLevel(calculateDifficulty(q))
   }));
   
-  // Sort by difficulty
-  questionsWithDifficulty.sort((a, b) => a.difficultyScore - b.difficultyScore);
+  // Group questions by category, then by difficulty
+  const questionsByCategory = {};
+  questionsWithDifficulty.forEach(q => {
+    if (!questionsByCategory[q.category]) {
+      questionsByCategory[q.category] = {
+        easy: [],
+        medium: [],
+        hard: [],
+        expert: []
+      };
+    }
+    questionsByCategory[q.category][q.difficultyLevel].push(q);
+  });
+  
+  // Shuffle categories to randomize round order
+  const categoryKeys = Object.keys(questionsByCategory);
+  for (let i = categoryKeys.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [categoryKeys[i], categoryKeys[j]] = [categoryKeys[j], categoryKeys[i]];
+  }
   
   // Select 24 questions with increasing difficulty
-  // Divide into 8 rounds of 3 questions each
+  // Each round uses a single category (3 questions from same category)
   const selectedQuestions = [];
   const totalQuestions = 24;
   const questionsPerRound = 3;
   const numRounds = 8;
-  
-  // Distribute questions across difficulty ranges
-  const easyQuestions = questionsWithDifficulty.filter(q => q.difficultyLevel === 'easy');
-  const mediumQuestions = questionsWithDifficulty.filter(q => q.difficultyLevel === 'medium');
-  const hardQuestions = questionsWithDifficulty.filter(q => q.difficultyLevel === 'hard');
-  const expertQuestions = questionsWithDifficulty.filter(q => q.difficultyLevel === 'expert');
+  const usedCategories = new Set();
   
   // Strategy: Start easy, gradually increase difficulty
   // Round 1-2: Easy
@@ -298,68 +311,122 @@ async function selectQuestions(archive, usedQuestions, targetDate) {
   // Round 5-6: Hard
   // Round 7-8: Expert (with some hard mixed in)
   
-  let easyIndex = 0;
-  let mediumIndex = 0;
-  let hardIndex = 0;
-  let expertIndex = 0;
-  
   for (let round = 0; round < numRounds; round++) {
     const roundQuestions = [];
+    let targetDifficulty = 'easy';
     
-    for (let i = 0; i < questionsPerRound; i++) {
-      let question = null;
+    // Determine target difficulty for this round
+    if (round < 2) {
+      targetDifficulty = 'easy';
+    } else if (round < 4) {
+      targetDifficulty = 'medium';
+    } else if (round < 6) {
+      targetDifficulty = 'hard';
+    } else {
+      targetDifficulty = 'expert';
+    }
+    
+    // Find a category with at least 3 questions of the target difficulty
+    // Use shuffled categoryKeys to randomize order
+    let selectedCategory = null;
+    
+    // Try to find a category with enough questions of target difficulty
+    for (const category of categoryKeys) {
+      if (usedCategories.has(category)) continue;
       
-      if (round < 2) {
-        // Rounds 1-2: Easy
-        if (easyIndex < easyQuestions.length) {
-          question = easyQuestions[easyIndex++];
-        } else if (mediumIndex < mediumQuestions.length) {
-          question = mediumQuestions[mediumIndex++];
-        }
-      } else if (round < 4) {
-        // Rounds 3-4: Medium
-        if (mediumIndex < mediumQuestions.length) {
-          question = mediumQuestions[mediumIndex++];
-        } else if (easyIndex < easyQuestions.length) {
-          question = easyQuestions[easyIndex++];
-        }
-      } else if (round < 6) {
-        // Rounds 5-6: Hard
-        if (hardIndex < hardQuestions.length) {
-          question = hardQuestions[hardIndex++];
-        } else if (mediumIndex < mediumQuestions.length) {
-          question = mediumQuestions[mediumIndex++];
-        }
-      } else {
-        // Rounds 7-8: Expert (with some hard)
-        if (expertIndex < expertQuestions.length && i < 2) {
-          question = expertQuestions[expertIndex++];
-        } else if (hardIndex < hardQuestions.length) {
-          question = hardQuestions[hardIndex++];
-        } else if (expertIndex < expertQuestions.length) {
-          question = expertQuestions[expertIndex++];
+      const categoryQuestions = questionsByCategory[category][targetDifficulty] || [];
+      // Also check fallback difficulties
+      const fallbackDifficulties = 
+        targetDifficulty === 'expert' ? ['hard', 'expert'] :
+        targetDifficulty === 'hard' ? ['medium', 'hard'] :
+        targetDifficulty === 'medium' ? ['easy', 'medium'] :
+        ['easy'];
+      
+      let availableInCategory = categoryQuestions.filter(
+        q => !selectedQuestions.some(sq => sq.clue === q.clue)
+      );
+      
+      // If not enough in target difficulty, try fallback
+      if (availableInCategory.length < questionsPerRound) {
+        for (const fallback of fallbackDifficulties) {
+          if (fallback === targetDifficulty) continue;
+          const fallbackQuestions = (questionsByCategory[category][fallback] || [])
+            .filter(q => !selectedQuestions.some(sq => sq.clue === q.clue));
+          availableInCategory = [...availableInCategory, ...fallbackQuestions];
+          if (availableInCategory.length >= questionsPerRound) break;
         }
       }
       
-      if (!question) {
-        // Fallback: take from any available
-        const remaining = questionsWithDifficulty.filter(
-          q => !selectedQuestions.some(sq => sq.clue === q.clue)
-        );
-        if (remaining.length > 0) {
-          question = remaining[0];
-        }
-      }
-      
-      if (question) {
-        roundQuestions.push({
-          clue: question.clue,
-          answer: question.answer,
-          category: question.category
-        });
-        selectedQuestions.push(question);
+      if (availableInCategory.length >= questionsPerRound) {
+        selectedCategory = category;
+        break;
       }
     }
+    
+    // If no category found with target difficulty, try any category
+    if (!selectedCategory) {
+      for (const category of categoryKeys) {
+        if (usedCategories.has(category)) continue;
+        
+        const allInCategory = [
+          ...(questionsByCategory[category].easy || []),
+          ...(questionsByCategory[category].medium || []),
+          ...(questionsByCategory[category].hard || []),
+          ...(questionsByCategory[category].expert || [])
+        ].filter(q => !selectedQuestions.some(sq => sq.clue === q.clue));
+        
+        if (allInCategory.length >= questionsPerRound) {
+          selectedCategory = category;
+          break;
+        }
+      }
+    }
+    
+    if (!selectedCategory) {
+      throw new Error(`Could not find a category with enough questions for round ${round + 1}`);
+    }
+    
+    // Select questions from the chosen category
+    usedCategories.add(selectedCategory);
+    const categoryData = questionsByCategory[selectedCategory];
+    
+    // Prioritize target difficulty, then fallback
+    const fallbackDifficulties = 
+      targetDifficulty === 'expert' ? ['expert', 'hard'] :
+      targetDifficulty === 'hard' ? ['hard', 'medium'] :
+      targetDifficulty === 'medium' ? ['medium', 'easy'] :
+      ['easy'];
+    
+    const questionsToChooseFrom = [];
+    for (const diff of fallbackDifficulties) {
+      const available = (categoryData[diff] || []).filter(
+        q => !selectedQuestions.some(sq => sq.clue === q.clue)
+      );
+      questionsToChooseFrom.push(...available);
+      if (questionsToChooseFrom.length >= questionsPerRound) break;
+    }
+    
+    // Shuffle questions to randomize order within category
+    for (let i = questionsToChooseFrom.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [questionsToChooseFrom[i], questionsToChooseFrom[j]] = [questionsToChooseFrom[j], questionsToChooseFrom[i]];
+    }
+    
+    // Take first 3 questions from the shuffled category
+    const selectedFromCategory = questionsToChooseFrom.slice(0, questionsPerRound);
+    
+    if (selectedFromCategory.length < questionsPerRound) {
+      throw new Error(`Category "${selectedCategory}" does not have enough questions for round ${round + 1}`);
+    }
+    
+    selectedFromCategory.forEach(question => {
+      roundQuestions.push({
+        clue: question.clue,
+        answer: question.answer,
+        category: question.category
+      });
+      selectedQuestions.push(question);
+    });
     
     if (roundQuestions.length < questionsPerRound) {
       throw new Error(`Could not select enough questions for round ${round + 1}`);

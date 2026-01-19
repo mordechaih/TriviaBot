@@ -2,3 +2,4 @@
 [] color code each round (r1 yellow to  final trivia red)
 [] add the ability to shuffle / reload per question and per category
 [] randomize category/question order -- it's currently following the order of the episode
+[] I am noticing the ends of questions being cut off. Perhaps our script is being too aggressive with trimming? Try a different strategy.

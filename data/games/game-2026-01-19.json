@@ -1,0 +1,179 @@
+{
+  "id": "game-2026-01-19",
+  "date": "2026-01-19",
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "This \"A Midsummer Night's Dream\" character is aka",
+          "answer": "Puck",
+          "category": "Unknown"
+        },
+        {
+          "clue": "The University of Oregon has the Ducks; to the north, Evergreen State College has the Geoducks, a type of this animalTriple",
+          "answer": "a clam",
+          "category": "Unknown"
+        },
+        {
+          "clue": "A decisive gunfight like one between law enforcement officers & criminals",
+          "answer": "a shootout",
+          "category": "Unknown"
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "This delta that drains into the South China Sea covers 15,400 square miles in",
+          "answer": "the Mekong Delta",
+          "category": "AROUND THE WORLD"
+        },
+        {
+          "clue": "This longest river in South Africa is named in honor of the Dutch royal family",
+          "answer": "the Orange River",
+          "category": "AROUND THE WORLD"
+        },
+        {
+          "clue": "Al-Maquar in Amman is the royal court compound for the king of this nation",
+          "answer": "Jordan",
+          "category": "AROUND THE WORLD"
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "This trick-taking card game makes for a great Scrabble score, with a Z & a Q in its nameTriple",
+          "answer": "bezique",
+          "category": "WILD, CARDS!"
+        },
+        {
+          "clue": "The joker's wild in this type of poker that's an adaptation of an Asian domino game",
+          "answer": "Pai Gow",
+          "category": "WILD, CARDS!"
+        },
+        {
+          "clue": "Draw 2, Wild & Reverse are cards in this game",
+          "answer": "Uno",
+          "category": "WILD, CARDS!"
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "In 1902 this labor & child-welfare activist with a maternal nickname was called \"the most dangerous woman in America\"",
+          "answer": "Mother Jones",
+          "category": "AMERICAN HISTORY"
+        },
+        {
+          "clue": "In 1972 Richard Nixon was reelected by defeating this senator from South Dakota in a landslide",
+          "answer": "McGovern",
+          "category": "AMERICAN HISTORY"
+        },
+        {
+          "clue": "In 1775, Nathan Hale was teaching in the schoolhouse still standing in New London in this colony; in 1776, he was hanged as a spy",
+          "answer": "Connecticut",
+          "category": "AMERICAN HISTORY"
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "This 1862 tome by Victor Hugo criticizes the French justice & political systems, plus has a police chase to boot",
+          "answer": "Les Miz",
+          "category": "WEIGHTY WORKS"
+        },
+        {
+          "clue": "New York Magazine's review of this David Foster Wallace novel raved, \"It's as though Wittgenstein had gone on 'Jeopardy!'\"",
+          "answer": "Infinite Jest",
+          "category": "WEIGHTY WORKS"
+        },
+        {
+          "clue": "The invisible hand makes an appearance in \"The Theory of Moral Sentiments\" & this work, a sort of follow up by the same author",
+          "answer": "The Wealth of Nations",
+          "category": "WEIGHTY WORKS"
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "It's the somewhat self-deprecating title of the bestselling 2023 memoir by",
+          "answer": "Spare",
+          "category": "2020s VISION"
+        },
+        {
+          "clue": "2021 saw the container ship Ever Given get stuck in this vital artery, disrupting global trade",
+          "answer": "the Suez Canal",
+          "category": "2020s VISION"
+        },
+        {
+          "clue": "2022 trades of basketball players included Kristaps Porzingis for Spencer Dinwiddie & arms dealer Viktor Bout for her",
+          "answer": "Griner",
+          "category": "2020s VISION"
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "This country changed its name to Kampuchea in January 1976 & years of brutality followed",
+          "answer": "Cambodia",
+          "category": "IT HAPPENED IN JANUARY"
+        },
+        {
+          "clue": "The first of these trials in more than 130 years began in the U.S. Senate January 7, 1999",
+          "answer": "presidential impeachment trial",
+          "category": "IT HAPPENED IN JANUARY"
+        },
+        {
+          "clue": "The January 22 & 23, 1879 Battles of Isandlwana & Rorke's Drift were the first big fights in Britain's war against this people",
+          "answer": "the Zulu",
+          "category": "IT HAPPENED IN JANUARY"
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "In 1688 James II deserted England after his troops deserted him during this revolution with a laudatory adjective",
+          "answer": "Glorious",
+          "category": "YOU SAY YOU WANT A REVOLUTION?"
+        },
+        {
+          "clue": "During the Mexican revolution, he was the leader of la División del Norte, while Zapata led troops from the southJonathanMichelleTriple",
+          "answer": "Pancho Villa",
+          "category": "YOU SAY YOU WANT A REVOLUTION?"
+        },
+        {
+          "clue": "This leader who met the Arab Spring with ruthless repression was forced to flee his Damascus palace in 2024",
+          "answer": "Assad",
+          "category": "YOU SAY YOU WANT A REVOLUTION?"
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "ENGLISH PLACE NAMES",
+    "question": "Once called Grontabricc, it's named for a structure spanning a tributary of the",
+    "answer": "Cambridge"
+  }
+}

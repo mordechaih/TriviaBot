@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TriviaBot Performance Benchmark</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .benchmark-controls {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .benchmark-controls button {
+      margin: 5px;
+      padding: 10px 20px;
+      background: #060CE9;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .benchmark-controls button:hover {
+      background: #0500CC;
+    }
+    .benchmark-results {
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+    }
+    .metric-display {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 15px 0;
+    }
+    .metric-box {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      border-left: 4px solid #060CE9;
+    }
+    .metric-box h4 {
+      margin: 0 0 10px 0;
+      color: #060CE9;
+    }
+    .metric-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+    }
+    .metric-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+    }
+    pre {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TriviaBot Performance Benchmark</h1>
+    <p>Performance Testing Laboratory</p>
+  </header>
+
+  <main>
+    <div class="benchmark-controls">
+      <h2>Benchmark Controls</h2>
+      <button onclick="runBaselineBenchmark()">Run Baseline Benchmark</button>
+      <button onclick="saveBaseline()">Save Baseline</button>
+      <button onclick="runComparison()">Run Comparison</button>
+      <button onclick="clearMetrics()">Clear Metrics</button>
+      <button onclick="exportReport()">Export Report</button>
+      <button onclick="viewReport()">View HTML Report</button>
+    </div>
+
+    <div class="benchmark-results">
+      <h2>Current Metrics</h2>
+      <div id="metrics-display"></div>
+      
+      <h2>Comparison Results</h2>
+      <div id="comparison-display"></div>
+      
+      <h2>Raw Data</h2>
+      <pre id="raw-data"></pre>
+    </div>
+  </main>
+
+  <script src="js/performance.js"></script>
+  <script>
+    // Load a test game for benchmarking
+    async function loadTestGame() {
+      try {
+        const response = await fetch('data/games/game-2026-01-18.json');
+        if (response.ok) {
+          return await response.json();
+        }
+      } catch (error) {
+        console.error('Error loading test game:', error);
+      }
+      return null;
+    }
+
+    // Simulate game rendering for benchmarking
+    async function simulateGameRender(game) {
+      if (!game) return;
+      
+      // Simulate the rendering process
+      const container = document.createElement('div');
+      container.style.display = 'none';
+      document.body.appendChild(container);
+      
+      perfLab.start('simulate-renderRounds');
+      game.rounds.forEach((round, roundIndex) => {
+        perfLab.start(`simulate-round-${roundIndex}`);
+        const roundDiv = document.createElement('div');
+        round.questions.forEach((question, qIndex) => {
+          const qDiv = document.createElement('div');
+          qDiv.textContent = question.clue;
+          roundDiv.appendChild(qDiv);
+        });
+        container.appendChild(roundDiv);
+        perfLab.end(`simulate-round-${roundIndex}`);
+      });
+      perfLab.end('simulate-renderRounds');
+      
+      document.body.removeChild(container);
+    }
+
+    // Run baseline benchmark
+    async function runBaselineBenchmark() {
+      console.log('Running baseline benchmark...');
+      perfLab.clear();
+      
+      const game = await loadTestGame();
+      if (!game) {
+        alert('Could not load test game for benchmarking');
+        return;
+      }
+
+      // Run multiple iterations
+      const iterations = 5;
+      for (let i = 0; i < iterations; i++) {
+        await simulateGameRender(game);
+        await new Promise(resolve => setTimeout(resolve, 100)); // Small delay between runs
+      }
+
+      updateMetricsDisplay();
+      console.log('Baseline benchmark complete');
+    }
+
+    // Save current metrics as baseline
+    function saveBaseline() {
+      const baseline = perfLab.saveBaseline('initial-baseline');
+      console.log('Baseline saved:', baseline);
+      alert('Baseline saved!');
+      updateMetricsDisplay();
+    }
+
+    // Run comparison
+    async function runComparison() {
+      if (!perfLab.baseline) {
+        alert('Please save a baseline first');
+        return;
+      }
+
+      console.log('Running comparison...');
+      perfLab.clear();
+      
+      const game = await loadTestGame();
+      if (!game) {
+        alert('Could not load test game for benchmarking');
+        return;
+      }
+
+      // Run multiple iterations
+      const iterations = 5;
+      for (let i = 0; i < iterations; i++) {
+        await simulateGameRender(game);
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      const comparison = perfLab.compareToBaseline();
+      displayComparison(comparison);
+      updateMetricsDisplay();
+    }
+
+    // Update metrics display
+    function updateMetricsDisplay() {
+      const stats = perfLab.getAllStats();
+      const display = document.getElementById('metrics-display');
+      
+      if (stats.length === 0) {
+        display.innerHTML = '<p>No metrics recorded yet. Run a benchmark first.</p>';
+        return;
+      }
+
+      let html = '<div class="metric-display">';
+      stats.forEach(stat => {
+        html += `
+          <div class="metric-box">
+            <h4>${stat.name}</h4>
+            <div class="metric-value">${stat.mean.toFixed(2)}ms</div>
+            <div class="metric-label">Mean</div>
+            <div style="margin-top: 10px;">
+              <div>Min: ${stat.min.toFixed(2)}ms</div>
+              <div>Max: ${stat.max.toFixed(2)}ms</div>
+              <div>P95: ${stat.p95.toFixed(2)}ms</div>
+              <div>Samples: ${stat.count}</div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      
+      display.innerHTML = html;
+
+      // Update raw data
+      const rawData = document.getElementById('raw-data');
+      rawData.textContent = JSON.stringify(perfLab.export(), null, 2);
+    }
+
+    // Display comparison results
+    function displayComparison(comparison) {
+      if (!comparison) return;
+
+      const display = document.getElementById('comparison-display');
+      let html = '<table style="width: 100%; border-collapse: collapse;">';
+      html += '<thead><tr><th>Metric</th><th>Baseline</th><th>Current</th><th>Change</th><th>Status</th></tr></thead><tbody>';
+
+      comparison.comparison.forEach(comp => {
+        const statusClass = comp.status;
+        const changeText = comp.improvement !== null 
+          ? `${comp.improvement > 0 ? '+' : ''}${comp.improvement.toFixed(2)}%`
+          : 'N/A';
+        
+        html += `
+          <tr>
+            <td><strong>${comp.name}</strong></td>
+            <td>${comp.baseline ? comp.baseline.mean.toFixed(2) + 'ms' : 'N/A'}</td>
+            <td>${comp.current.mean.toFixed(2)}ms</td>
+            <td>${changeText}</td>
+            <td class="${statusClass}" style="font-weight: 600;">${comp.status.toUpperCase()}</td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      display.innerHTML = html;
+    }
+
+    // Clear metrics
+    function clearMetrics() {
+      perfLab.clear();
+      updateMetricsDisplay();
+      document.getElementById('comparison-display').innerHTML = '';
+      console.log('Metrics cleared');
+    }
+
+    // Export report
+    function exportReport() {
+      const data = perfLab.export();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `triviabot-performance-${new Date().toISOString()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // View HTML report
+    function viewReport() {
+      const html = perfLab.generateReport();
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    }
+
+    // Initialize
+    window.addEventListener('load', () => {
+      console.log('Performance Lab initialized');
+      console.log('Available commands:');
+      console.log('- runBaselineBenchmark()');
+      console.log('- saveBaseline()');
+      console.log('- runComparison()');
+      console.log('- perfLab object available in console');
+    });
+  </script>
+</body>
+</html>
+
