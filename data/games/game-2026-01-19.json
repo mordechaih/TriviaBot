@@ -1,0 +1,179 @@
+{
+  "id": "game-2026-01-19",
+  "date": "2026-01-19",
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "Slugworth, Prodnose & Fickelgruber are rivals of this candy-making genius",
+          "answer": "Willy Wonka",
+          "category": "ADULTS IN CHILDREN'S LIT"
+        },
+        {
+          "clue": "In Mother Goose's version of the fairy tale, Cinderella rushes from the ball as the clock strikes 12 & leaves behind this fancy footwear",
+          "answer": "the glass slipper",
+          "category": "Unknown"
+        },
+        {
+          "clue": "Can't read the label on this spray-pump bottle; my wet hair needs nourishing & detangling, so I hope it's leave-in this type of product",
+          "answer": "conditioner",
+          "category": "Unknown"
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "In the night sky, 7 of this lesser bear's stars outline the",
+          "answer": "Ursa Minor",
+          "category": "Unknown"
+        },
+        {
+          "clue": "\"Nuthin' But A \"G\" Thang\" is a classic collab between Snoop Dogg & this man",
+          "answer": "Dr. Dre",
+          "category": "Unknown"
+        },
+        {
+          "clue": "The Sixth Amendment to the Constitution says the accused has the right to a trial that is both public & this",
+          "answer": "speedy",
+          "category": "Unknown"
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "In the book this sister of Beezus \"and her Father\", she tries to get her dad to quit smoking",
+          "answer": "Ramona",
+          "category": "ADULTS IN CHILDREN'S LIT"
+        },
+        {
+          "clue": "In \"Henry IV, Part II\", this character says, \"We have heard the chimes at midnight\"",
+          "answer": "Falstaff",
+          "category": "Unknown"
+        },
+        {
+          "clue": "I hope my Biodance collagen mask is on properly; I'll peel off the mask when I wake up tomorrow & be part of this 2-word TikTok trendTriple",
+          "answer": "morning shed",
+          "category": "Unknown"
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "A somber or subtle element of a story is said to be \"in\" this, like Chopin's Piano Concerto No.",
+          "answer": "a minor key",
+          "category": "Unknown"
+        },
+        {
+          "clue": "Rosa Parks sued this duo for using her name on a 1998 hit, but it still made Rolling Stone's list of the 50 Greatest Hip-Hop",
+          "answer": "OutKast",
+          "category": "Unknown"
+        },
+        {
+          "clue": "This sixth planet from the Sun was the farthest of the planets known to the ancients & takes almost 30 years to make one orbit",
+          "answer": "Saturn",
+          "category": "Unknown"
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "The first of these trials in more than 130 years began in the U.S. Senate January 7, 1999",
+          "answer": "presidential impeachment trial",
+          "category": "IT HAPPENED IN JANUARY"
+        },
+        {
+          "clue": "Serbia's capital, it was formerly the capital of",
+          "answer": "Belgrade",
+          "category": "Unknown"
+        },
+        {
+          "clue": "The first federal wildlife law, the Lacey Act of 1900 addressed growing public concern over the decline of this now-extinct bird",
+          "answer": "the passenger pigeon",
+          "category": "Unknown"
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "Chopines had a big moment in the 16th century in this European city, where women used the high soles to teeter above wet streetsStellaTriple",
+          "answer": "Venice",
+          "category": "Unknown"
+        },
+        {
+          "clue": "This soapy teen series found Belly Conklin torn between her childhood friends, the brothers Conrad & Jeremiah",
+          "answer": "The Summer I Turned Pretty",
+          "category": "Unknown"
+        },
+        {
+          "clue": "A part of the hand &a sacred hymn from the",
+          "answer": "palm & psalm",
+          "category": "Unknown"
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "This country changed its name to Kampuchea in January 1976 & years of brutality followed",
+          "answer": "Cambodia",
+          "category": "IT HAPPENED IN JANUARY"
+        },
+        {
+          "clue": "Locals in this central American country call the capital Tegus for short",
+          "answer": "Honduras",
+          "category": "Unknown"
+        },
+        {
+          "clue": "The invisible hand makes an appearance in \"The Theory of Moral Sentiments\" & this work, a sort of follow up by the same author",
+          "answer": "The Wealth of Nations",
+          "category": "WEIGHTY WORKS"
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "In the 1800s this plastic emerged as a cheap substitute for the ivory used in fancy hair combs; the bad news? It was highly flammableTriple",
+          "answer": "celluloid",
+          "category": "Unknown"
+        },
+        {
+          "clue": "The O.G. love triangle on TV series saw Nate torn between Blair & Serena",
+          "answer": "Gossip Girl",
+          "category": "Unknown"
+        },
+        {
+          "clue": "Many cast members of this Netflix hit set on a deadly island are hyphenates, including Lee Jung-jae & Wi Ha-joon",
+          "answer": "Squid Game",
+          "category": "Unknown"
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "MEDICAL HISTORY",
+    "question": "The viral rash known since 1866 by this Latin name was described a century earlier by Friedrich Hoffmann of the University of",
+    "answer": "rubella"
+  }
+}
