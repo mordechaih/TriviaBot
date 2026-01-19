@@ -3,7 +3,8 @@
 let allGames = [];
 let playedStatus = {};
 let currentFilter = 'all';
-let lastKnownIndexTimestamp = null; // Track when index was last updated
+let lastKnownIndexTimestamp = null; // Track when index was last updated (version or timestamp)
+let lastKnownIndexVersion = null; // Track the version hash from index
 
 /**
  * Helper function to update icon button state while preserving icon
@@ -111,31 +112,46 @@ async function loadGames() {
     try {
       if (typeof perfLab !== 'undefined') perfLab.start('fetchGamesIndex');
       // Add aggressive cache-busting to prevent stale data from Vercel CDN
-      // Use multiple cache-busting strategies: timestamp, random, and performance counter
-      const cacheBuster = `v=${Date.now()}&r=${Math.random()}&c=${performance.now()}`;
+      // Use multiple cache-busting strategies: timestamp, random, performance counter, and version
+      // The version from the index will change when games are added/removed
+      const timestamp = Date.now();
+      const random = Math.random();
+      const perfCounter = performance.now();
+      const cacheBuster = `v=${timestamp}&r=${random}&c=${perfCounter}&_=${timestamp}`;
+      
       const indexResponse = await fetch(`data/games/index.json?${cacheBuster}`, {
         method: 'GET',
         cache: 'no-store',
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
           'Pragma': 'no-cache',
-          'Expires': '0'
+          'Expires': '0',
+          'X-Requested-With': 'XMLHttpRequest' // Some CDNs treat this differently
         }
       });
       if (indexResponse.ok) {
         const index = await indexResponse.json();
         gameIds = index.games || [];
         console.log('Loaded game IDs from index:', gameIds);
+        console.log('Index version:', index.version);
         console.log('Index lastUpdated:', index.lastUpdated);
         
-        // Track index timestamp to detect changes
-        if (index.lastUpdated) {
+        // Track index version and timestamp to detect changes
+        const currentVersion = index.version || index.lastUpdated;
+        const currentTimestamp = index.lastUpdated;
+        
+        if (index.version) {
+          lastKnownIndexVersion = index.version;
+        }
+        
+        if (currentVersion) {
           const indexChanged = lastKnownIndexTimestamp !== null && 
-                               lastKnownIndexTimestamp !== index.lastUpdated;
+                               lastKnownIndexTimestamp !== currentVersion;
           if (indexChanged) {
-            console.log('Index has been updated! Previous:', lastKnownIndexTimestamp, 'Current:', index.lastUpdated);
+            console.log('Index has been updated! Previous:', lastKnownIndexTimestamp, 'Current:', currentVersion);
+            console.log('Version hash changed from', lastKnownIndexVersion, 'to', index.version);
           }
-          lastKnownIndexTimestamp = index.lastUpdated;
+          lastKnownIndexTimestamp = currentVersion;
         }
       } else {
         console.warn('Failed to load games index:', indexResponse.status, indexResponse.statusText);
@@ -685,9 +701,10 @@ async function init() {
       refreshBtn.disabled = true;
       updateIconButton(refreshBtn, 'loader-2', 'Refreshing...');
       try {
-        // Clear cache and reload - reset timestamp to force fresh fetch
+        // Clear cache and reload - reset timestamp and version to force fresh fetch
         allGames = [];
         lastKnownIndexTimestamp = null;
+        lastKnownIndexVersion = null;
         await loadGames();
         showGenerateStatus('Games list refreshed!', 'success');
         setTimeout(() => {

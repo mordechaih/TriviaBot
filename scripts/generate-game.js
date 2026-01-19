@@ -453,17 +453,55 @@ async function selectQuestions(archive, usedQuestions, targetDate) {
 }
 
 /**
+ * Find the next available date that doesn't have a game
+ * Starts from targetDate (or today) and looks forward
+ */
+function findNextAvailableDate(targetDate = null) {
+  const startDate = targetDate ? new Date(targetDate) : new Date();
+  let checkDate = new Date(startDate);
+  
+  // Look for the next available date (check up to 365 days ahead)
+  for (let i = 0; i < 365; i++) {
+    const dateStr = checkDate.toISOString().split('T')[0];
+    const gameFile = path.join(GAMES_DIR, `game-${dateStr}.json`);
+    
+    if (!fs.existsSync(gameFile)) {
+      return dateStr;
+    }
+    
+    // Move to next day
+    checkDate.setDate(checkDate.getDate() + 1);
+  }
+  
+  // If all dates are taken, use the target date anyway (will overwrite)
+  return targetDate || new Date().toISOString().split('T')[0];
+}
+
+/**
  * Generate a game for a specific date
  */
 async function generateGame(targetDate = null) {
-  const date = targetDate || new Date().toISOString().split('T')[0];
-  const gameId = `game-${date}`;
-  const gameFile = path.join(GAMES_DIR, `${gameId}.json`);
+  let date;
+  let gameId;
+  let gameFile;
   
-  // Check if game already exists
-  if (fs.existsSync(gameFile)) {
-    console.log(`Game ${gameId} already exists`);
-    return gameId;
+  // If no target date specified, find the next available date
+  if (!targetDate) {
+    date = findNextAvailableDate();
+    gameId = `game-${date}`;
+    gameFile = path.join(GAMES_DIR, `${gameId}.json`);
+    console.log(`No date specified, using next available date: ${date}`);
+  } else {
+    // Specific date was requested
+    date = targetDate;
+    gameId = `game-${date}`;
+    gameFile = path.join(GAMES_DIR, `${gameId}.json`);
+    
+    // If game already exists for this specific date, skip
+    if (fs.existsSync(gameFile)) {
+      console.log(`Game ${gameId} already exists`);
+      return gameId;
+    }
   }
   
   const { archive, usedQuestions } = loadData();
@@ -531,10 +569,8 @@ let targetDate = null;
 if (args.includes('--date')) {
   const dateIndex = args.indexOf('--date');
   targetDate = args[dateIndex + 1];
-} else {
-  // Default to today
-  targetDate = new Date().toISOString().split('T')[0];
 }
+// If no --date flag, targetDate stays null, which tells generateGame to find next available date
 
 try {
   const gameId = await generateGame(targetDate);
