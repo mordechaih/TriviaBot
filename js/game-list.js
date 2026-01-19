@@ -483,9 +483,15 @@ async function triggerGameGeneration() {
   }
   
   // Get API endpoint from config (required for Vercel deployment)
-  const apiEndpoint = typeof GITHUB_CONFIG !== 'undefined' && GITHUB_CONFIG.apiEndpoint 
+  // Use the new deploy endpoint (trigger-deploy instead of trigger-workflow)
+  let apiEndpoint = typeof GITHUB_CONFIG !== 'undefined' && GITHUB_CONFIG.apiEndpoint 
     ? GITHUB_CONFIG.apiEndpoint 
     : null;
+  
+  // Update to use the new deploy endpoint
+  if (apiEndpoint && apiEndpoint.includes('/trigger-workflow')) {
+    apiEndpoint = apiEndpoint.replace('/trigger-workflow', '/trigger-deploy');
+  }
   if (!apiEndpoint) {
     showGenerateStatus('Error: API endpoint not configured. Please set apiEndpoint in js/config.js', 'error');
     restoreIconButton(generateBtn, 'plus');
