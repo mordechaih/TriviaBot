@@ -21,21 +21,24 @@ const owner = process.env.GITHUB_OWNER || 'mordechaih';
 const repo = process.env.GITHUB_REPO || 'TriviaBot';
 const branch = process.env.GITHUB_BRANCH || 'main';
 
-// Use VERCEL_URL (automatically provided by Vercel) or custom API_ENDPOINT
-// VERCEL_URL format: "trivia-bot-green.vercel.app" (no https://)
-// For production, set API_ENDPOINT environment variable in Vercel dashboard
+// Use API_ENDPOINT or construct from Vercel environment variables
+// IMPORTANT: Use the same domain as the frontend to avoid CORS issues
+// For production, set API_ENDPOINT to your production URL in Vercel dashboard
 let apiEndpoint = process.env.API_ENDPOINT;
 
 if (!apiEndpoint) {
-  // Use VERCEL_URL (available during build and runtime)
-  // This will be the deployment URL (preview or production)
-  const vercelUrl = process.env.VERCEL_URL;
-  if (vercelUrl) {
-    // VERCEL_URL doesn't include protocol, so add it
-    const url = vercelUrl.startsWith('http') ? vercelUrl : `https://${vercelUrl}`;
+  // Try to use production URL first, then fall back to VERCEL_URL
+  // VERCEL_PROJECT_PRODUCTION_URL is the production domain (e.g., "trivia-bot-green.vercel.app")
+  // VERCEL_URL is the current deployment URL (could be preview or production)
+  const productionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+  
+  if (productionUrl) {
+    // Vercel URLs don't include protocol, so add it
+    const url = productionUrl.startsWith('http') ? productionUrl : `https://${productionUrl}`;
     apiEndpoint = `${url}/api/trigger-workflow`;
+    console.log(`Using API endpoint: ${apiEndpoint}`);
   } else {
-    console.warn('Warning: VERCEL_URL not found. Set API_ENDPOINT environment variable in Vercel dashboard.');
+    console.warn('Warning: No Vercel URL found. Set API_ENDPOINT environment variable in Vercel dashboard.');
   }
 }
 
