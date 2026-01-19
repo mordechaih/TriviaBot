@@ -4,10 +4,10 @@
 
 ### 1. Updated GitHub Actions Workflow
 The workflow now:
-- **Pulls before committing** - Gets latest changes first
-- **Pulls before pushing** - Handles concurrent changes
-- **Uses rebase** - Keeps history clean
-- **Has retry logic** - Handles push failures gracefully
+- **Resets to origin/main** - Always starts from latest remote state
+- **No divergence possible** - Workflow commits are always on top
+- **Simple and reliable** - No complex pull/rebase logic needed
+- **Your commits preserved** - Just rebase them on top when you push
 
 ### 2. Configured Git Locally
 - Set `pull.rebase = true` - Always rebase when pulling
