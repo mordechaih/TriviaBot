@@ -806,6 +806,8 @@ main {
   display: flex;
   gap: var(--spacing-sm);
   justify-content: center;
+  position: relative;
+  min-height: var(--touch-target);
 }
 
 .nav-btn {
@@ -820,8 +822,9 @@ main {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--spacing-xs);
-  transition: background 0.2s, position 0.3s, top 0.3s, left 0.3s, transform 0.3s;
+  transition: background 0.2s, padding 0.3s ease, gap 0.3s ease, position 0.3s ease, top 0.3s ease, left 0.3s ease;
   position: relative;
 }
 
@@ -830,11 +833,13 @@ main {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
+  margin: 0;
 }
 
 .nav-btn-text {
-  transition: opacity 0.3s, width 0.3s;
+  transition: opacity 0.3s ease, width 0.3s ease, margin 0.3s ease;
   white-space: nowrap;
+  overflow: hidden;
 }
 
 .nav-btn:hover {
@@ -843,6 +848,18 @@ main {
 
 .nav-btn:active {
   background: #FF9D6B;
+}
+
+/* Placeholder to maintain space when button becomes sticky */
+.nav-btn-placeholder {
+  display: none;
+  min-height: var(--touch-target);
+  width: 100%;
+}
+
+.nav-btn.sticky + .nav-btn-placeholder,
+.nav.sticky .nav-btn-placeholder {
+  display: block;
 }
 
 /* Sticky nav button when scrolled to top */
@@ -854,13 +871,17 @@ main {
   margin: 0;
   padding: var(--spacing-sm);
   min-width: var(--touch-target);
+  width: var(--touch-target);
   justify-content: center;
+  gap: 0;
+  transform: translateX(0);
 }
 
 .nav-btn.sticky .nav-btn-text {
   opacity: 0;
   width: 0;
-  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 /* Loading state */

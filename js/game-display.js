@@ -148,6 +148,11 @@ function renderRounds() {
   container.innerHTML = '';
   container.appendChild(fragment);
   
+  // Initialize Lucide icons after all rounds are in the DOM
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+  
   if (typeof perfLab !== 'undefined') {
     perfLab.end('renderRounds');
     perfLab.record('roundCount', currentGame.rounds.length);
@@ -199,11 +204,6 @@ function createRoundElement(round) {
   const iconElement = document.createElement('i');
   iconElement.setAttribute('data-lucide', 'shuffle');
   shuffleRoundBtn.appendChild(iconElement);
-  
-  // Initialize Lucide icon
-  if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
-  }
   
   shuffleRoundBtn.onclick = async (e) => {
     e.stopPropagation(); // Prevent round toggle
@@ -537,8 +537,10 @@ function setupStickyBackButton() {
     
     if (isAtTop) {
       backBtn.classList.add('sticky');
+      nav.classList.add('sticky');
     } else {
       backBtn.classList.remove('sticky');
+      nav.classList.remove('sticky');
     }
   }
   
