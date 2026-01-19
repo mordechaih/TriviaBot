@@ -372,7 +372,13 @@ function showGenerateStatus(message, type = 'info') {
   }
   statusDiv.textContent = message;
   statusDiv.className = `generate-status ${type}`;
-  statusDiv.style.display = 'flex'; // Changed from 'block' to 'flex' to match CSS
+  
+  // Trigger animation by adding 'show' class
+  // Use requestAnimationFrame to ensure the element is rendered before animating
+  requestAnimationFrame(() => {
+    statusDiv.classList.add('show');
+  });
+  
   console.log('Status shown:', message, type);
 }
 
@@ -381,7 +387,13 @@ function showGenerateStatus(message, type = 'info') {
  */
 function hideGenerateStatus() {
   const statusDiv = document.getElementById('generate-status');
-  statusDiv.style.display = 'none';
+  if (statusDiv) {
+    statusDiv.classList.remove('show');
+    // Remove from DOM after animation completes
+    setTimeout(() => {
+      statusDiv.style.display = 'none';
+    }, 300);
+  }
 }
 
 /**

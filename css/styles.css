@@ -206,14 +206,6 @@ main {
 }
 
 /* Generate Game Section */
-.generate-section {
-  margin: var(--spacing-md) 0;
-  padding: var(--spacing-md);
-  background-color: var(--card-bg);
-  border-radius: var(--border-radius);
-  text-align: center;
-}
-
 /* Legacy generate-btn styles (kept for backward compatibility) */
 .generate-btn {
   background-color: var(--secondary-color);
@@ -249,16 +241,33 @@ main {
 }
 
 .generate-status {
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-md);
+  position: fixed;
+  top: var(--spacing-md);
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  padding: var(--spacing-md) var(--spacing-lg);
   border-radius: var(--border-radius);
   font-size: var(--font-size-base);
   min-height: 50px;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   text-align: center;
   font-weight: 500;
+  z-index: 1000;
+  max-width: 90%;
+  width: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.generate-status.show {
+  display: flex;
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  pointer-events: auto;
 }
 
 .generate-status.success {
