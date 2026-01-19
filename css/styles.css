@@ -80,7 +80,7 @@ main {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   padding: var(--spacing-md);
-  transition: background 0.2s;
+  transition: background 0.2s, border-color 0.2s;
   cursor: pointer;
   min-height: var(--touch-target);
   display: flex;
@@ -89,7 +89,8 @@ main {
 }
 
 .game-card:hover {
-  background: #3A3A3A;
+  background: #404040;
+  border-color: #464646;
 }
 
 .game-card:active {
@@ -148,11 +149,12 @@ main {
   border-radius: var(--border-radius);
   cursor: pointer;
   min-height: var(--touch-target);
-  transition: background 0.2s;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .filter-btn:hover {
-  background: #3A3A3A;
+  background: #404040;
+  border-color: #464646;
 }
 
 .filter-btn:active {
@@ -180,7 +182,7 @@ main {
   align-items: center;
   justify-content: center;
   gap: var(--spacing-xs);
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s, background 0.2s, border-color 0.2s;
   line-height: 1;
   position: relative;
 }
@@ -201,8 +203,14 @@ main {
   cursor: not-allowed;
 }
 
+.icon-btn:hover {
+  background: #404040;
+  border-color: #464646;
+}
+
 .icon-btn:disabled:hover {
   background: var(--card-bg);
+  border-color: var(--border-color);
 }
 
 /* Generate Game Section */
@@ -365,7 +373,7 @@ main {
   font-weight: 600;
   cursor: pointer;
   min-height: var(--touch-target);
-  transition: background 0.2s;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .modal-btn.primary {
@@ -388,7 +396,8 @@ main {
 }
 
 .modal-btn.secondary:hover {
-  background: #3A3A3A;
+  background: #404040;
+  border-color: #464646;
 }
 
 .modal-btn.secondary:active {
