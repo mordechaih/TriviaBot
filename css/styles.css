@@ -824,7 +824,7 @@ main {
   align-items: center;
   justify-content: center;
   gap: var(--spacing-xs);
-  transition: background 0.2s, padding 0.3s ease, gap 0.3s ease, position 0.3s ease, top 0.3s ease, left 0.3s ease;
+  transition: background 0.2s, padding 0.3s ease, gap 0.3s ease, transform 0.3s ease;
   position: relative;
 }
 
@@ -874,7 +874,7 @@ main {
   width: var(--touch-target);
   justify-content: center;
   gap: 0;
-  transform: translateX(0);
+  transform: none;
 }
 
 .nav-btn.sticky .nav-btn-text {

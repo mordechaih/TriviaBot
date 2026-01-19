@@ -531,16 +531,91 @@ function setupStickyBackButton() {
   const nav = backBtn.closest('.nav');
   if (!nav) return;
   
+  let isSticky = false;
+  let isAnimating = false;
+  
   function handleScroll() {
+    if (isAnimating) return;
+    
     const navRect = nav.getBoundingClientRect();
     const isAtTop = navRect.top <= 0;
     
-    if (isAtTop) {
+    if (isAtTop && !isSticky) {
+      isAnimating = true;
+      
+      // Get current position
+      const btnRect = backBtn.getBoundingClientRect();
+      const targetLeft = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--spacing-md') || '16');
+      const targetTop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--spacing-md') || '16');
+      
+      // Calculate transform needed to move from current to target
+      const deltaX = targetLeft - btnRect.left;
+      const deltaY = targetTop - btnRect.top;
+      
+      // First, switch to fixed positioning at current visual location
+      backBtn.style.position = 'fixed';
+      backBtn.style.top = `${btnRect.top}px`;
+      backBtn.style.left = `${btnRect.left}px`;
+      backBtn.style.width = `${btnRect.width}px`;
+      backBtn.style.zIndex = '1000';
       backBtn.classList.add('sticky');
       nav.classList.add('sticky');
-    } else {
-      backBtn.classList.remove('sticky');
-      nav.classList.remove('sticky');
+      
+      // Force reflow
+      backBtn.offsetHeight;
+      
+      // Now animate to target position using transform
+      requestAnimationFrame(() => {
+        backBtn.style.transition = 'transform 0.3s ease, padding 0.3s ease, gap 0.3s ease, width 0.3s ease';
+        backBtn.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+        
+        // After animation, set final position and reset transform
+        setTimeout(() => {
+          backBtn.style.top = `${targetTop}px`;
+          backBtn.style.left = `${targetLeft}px`;
+          backBtn.style.transform = 'none';
+          backBtn.style.transition = '';
+          isAnimating = false;
+        }, 300);
+      });
+      
+      isSticky = true;
+    } else if (!isAtTop && isSticky) {
+      isAnimating = true;
+      
+      // Get current position
+      const btnRect = backBtn.getBoundingClientRect();
+      const navRect = nav.getBoundingClientRect();
+      
+      // Calculate target position in normal flow
+      const navCenterX = navRect.left + (navRect.width / 2);
+      const currentBtnWidth = btnRect.width;
+      const targetX = navCenterX - (currentBtnWidth / 2);
+      const targetY = navRect.top;
+      
+      // Calculate transform
+      const deltaX = targetX - btnRect.left;
+      const deltaY = targetY - btnRect.top;
+      
+      // Animate back using transform
+      backBtn.style.transition = 'transform 0.3s ease, padding 0.3s ease, gap 0.3s ease, width 0.3s ease';
+      backBtn.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+      
+      setTimeout(() => {
+        // Switch back to relative positioning
+        backBtn.classList.remove('sticky');
+        nav.classList.remove('sticky');
+        backBtn.style.position = '';
+        backBtn.style.top = '';
+        backBtn.style.left = '';
+        backBtn.style.width = '';
+        backBtn.style.zIndex = '';
+        backBtn.style.transform = 'none';
+        backBtn.style.transition = '';
+        isAnimating = false;
+      }, 300);
+      
+      isSticky = false;
     }
   }
   
