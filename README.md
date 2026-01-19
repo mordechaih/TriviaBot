@@ -113,10 +113,15 @@ The project is configured to deploy to Vercel, which hosts both the static site 
    - Import your GitHub repository
    - Vercel will auto-detect the settings
 
-2. **Set environment variables** (for the serverless function):
+2. **Set environment variables**:
    - In Vercel dashboard → Your project → Settings → Environment Variables
-   - Add `GITHUB_TOKEN` with your Personal Access Token (with `repo` scope)
-   - (Optional) Add `GITHUB_OWNER` and `GITHUB_REPO`
+   - **Required**: `GITHUB_TOKEN` - Your Personal Access Token (with `repo` scope)
+   - **Optional**: 
+     - `GITHUB_OWNER` - Your GitHub username (defaults to 'mordechaih')
+     - `GITHUB_REPO` - Repository name (defaults to 'TriviaBot')
+     - `API_ENDPOINT` - Custom API endpoint URL (if not set, uses VERCEL_URL automatically)
+   
+   **Note**: `js/config.js` is automatically generated at build time from these environment variables, so you don't need to create it manually.
 
 3. **Deploy**:
    - Vercel will automatically deploy on every push to `main`

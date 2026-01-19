@@ -8,7 +8,8 @@
     "generate": "node scripts/generate-game.js",
     "update-index": "node scripts/update-games-index.js",
     "clean-archive": "node scripts/clean-archive.js",
-    "deploy": "vercel"
+    "deploy": "vercel",
+    "build": "node scripts/generate-config.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0",
