@@ -45,7 +45,10 @@ async function loadGame() {
   
   try {
     perfLab.start('fetchGameData');
-    const response = await fetch(`data/games/${gameId}.json`);
+    // Add cache-busting to prevent stale data
+    const response = await fetch(`data/games/${gameId}.json?t=${Date.now()}`, {
+      cache: 'no-store'
+    });
     if (!response.ok) {
       throw new Error(`Game not found: ${gameId}`);
     }

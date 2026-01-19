@@ -66,7 +66,10 @@ async function loadGames() {
     let gameIds = [];
     try {
       perfLab.start('fetchGamesIndex');
-      const indexResponse = await fetch('data/games/index.json');
+      // Add cache-busting to prevent stale data
+      const indexResponse = await fetch(`data/games/index.json?t=${Date.now()}`, {
+        cache: 'no-store'
+      });
       if (indexResponse.ok) {
         const index = await indexResponse.json();
         gameIds = index.games || [];
@@ -86,7 +89,10 @@ async function loadGames() {
       
       const gamePromises = gameIds.map((id, index) => {
         perfLab.start(`fetchGame-${index}`);
-        return fetch(`data/games/${id}.json`)
+        // Add cache-busting to prevent stale data
+        return fetch(`data/games/${id}.json?t=${Date.now()}`, {
+          cache: 'no-store'
+        })
           .then(res => {
             perfLab.end(`fetchGame-${index}`);
             return res.ok ? res.json() : null;
@@ -400,14 +406,62 @@ async function triggerGameGeneration() {
     if (response.ok && (responseData.success || response.status === 204)) {
       console.log('Workflow triggered successfully!');
       showGenerateStatus(
-        'Game generation triggered! It may take a few minutes. Refresh the page to see the new game.',
-        'success'
+        'Game generation triggered! Waiting for deployment...',
+        'info'
       );
       
-      // Auto-refresh after 30 seconds
-      setTimeout(() => {
-        window.location.reload();
-      }, 30000);
+      // Poll for new games every 10 seconds, up to 2 minutes
+      let pollCount = 0;
+      const maxPolls = 12; // 12 * 10 seconds = 2 minutes
+      
+      const pollForNewGames = setInterval(async () => {
+        pollCount++;
+        console.log(`Polling for new games (attempt ${pollCount}/${maxPolls})...`);
+        
+        try {
+          // Force reload games with cache-busting
+          await loadGames();
+          
+          // Check if we have more games than before
+          const currentGameCount = allGames.length;
+          const previousCount = window.previousGameCount || 0;
+          
+          if (currentGameCount > previousCount) {
+            clearInterval(pollForNewGames);
+            showGenerateStatus(
+              `New game generated! Found ${currentGameCount} game(s).`,
+              'success'
+            );
+            // Refresh after showing success message
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000);
+          } else if (pollCount >= maxPolls) {
+            clearInterval(pollForNewGames);
+            showGenerateStatus(
+              'Game generation may still be in progress. Please refresh the page manually.',
+              'info'
+            );
+          } else {
+            showGenerateStatus(
+              `Waiting for new game... (${pollCount * 10}s)`,
+              'info'
+            );
+          }
+        } catch (error) {
+          console.error('Error polling for games:', error);
+          if (pollCount >= maxPolls) {
+            clearInterval(pollForNewGames);
+            showGenerateStatus(
+              'Could not detect new game. Please refresh the page manually.',
+              'info'
+            );
+          }
+        }
+      }, 10000); // Poll every 10 seconds
+      
+      // Store current game count
+      window.previousGameCount = allGames.length;
     } else {
       const errorMessage = responseData.error || response.statusText || 'Failed to trigger workflow';
       console.error('API error:', errorMessage);
