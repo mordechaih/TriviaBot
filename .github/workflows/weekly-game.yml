@@ -41,8 +41,12 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          # Pull latest changes first to avoid divergence
-          git pull --rebase origin main || git pull origin main
+          # Fetch latest changes
+          git fetch origin main
+          
+          # Reset to remote main to ensure we're starting from the latest
+          # This prevents divergence by always working from the latest remote state
+          git reset --hard origin/main
           
           # Stage game files
           git add data/games/*.json data/games/index.json data/used-questions.json
@@ -51,15 +55,8 @@ jobs:
           if ! git diff --staged --quiet; then
             git commit -m "Generate weekly trivia game for $(date +%Y-%m-%d)"
             
-            # Pull again before pushing to handle any concurrent changes
-            git pull --rebase origin main || git pull origin main
-            
-            # Push with retry logic
-            git push origin main || {
-              echo "Push failed, trying to pull and rebase again..."
-              git pull --rebase origin main
-              git push origin main
-            }
+            # Push - we know we're up to date because we reset to origin/main
+            git push origin main
           else
             echo "No changes to commit"
           fi
