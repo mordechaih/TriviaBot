@@ -10,6 +10,10 @@
     {
       "source": "/api/trigger-deploy",
       "destination": "/api/trigger-deploy.js"
+    },
+    {
+      "source": "/api/sync-ui-data",
+      "destination": "/api/sync-ui-data.js"
     }
   ],
   "cleanUrls": true,
