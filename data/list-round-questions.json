@@ -1,0 +1,40 @@
+{
+  "questions": [
+    {
+      "clue": "In a classic pack of Smarties candy there are six different colors. What are those six colors?",
+      "answers": ["White (orange-cream)", "Yellow (pineapple)", "Pink (cherry)", "Green (strawberry)", "Purple (grape)", "Orange (orange)"]
+    },
+    {
+      "clue": "Name all five Spice Girls (first names or stage names).",
+      "answers": ["Mel B", "Mel C", "Emma", "Geri", "Victoria"]
+    },
+    {
+      "clue": "Name the five Great Lakes.",
+      "answers": ["Lake Superior", "Lake Michigan", "Lake Huron", "Lake Erie", "Lake Ontario"]
+    },
+    {
+      "clue": "Name the eight planets in our solar system (in order from the Sun).",
+      "answers": ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
+    },
+    {
+      "clue": "Name the seven days of the week.",
+      "answers": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    },
+    {
+      "clue": "Name the four cardinal directions.",
+      "answers": ["North", "South", "East", "West"]
+    },
+    {
+      "clue": "Name the primary colors (traditional art: red, yellow, blue).",
+      "answers": ["Red", "Yellow", "Blue"]
+    },
+    {
+      "clue": "Name the three branches of the U.S. federal government.",
+      "answers": ["Legislative", "Executive", "Judicial"]
+    }
+  ],
+  "metadata": {
+    "description": "List-round questions: one clue with multiple acceptable answers. 1 point per correct answer.",
+    "version": "1.0"
+  }
+}
