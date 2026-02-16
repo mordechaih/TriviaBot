@@ -75,6 +75,14 @@ After generating games, update the index:
 npm run update-index
 ```
 
+### Local testing (matching production)
+
+To avoid differences between your environment and production (styling, icons, fetch):
+
+- **Use the dev server**: `npm run dev` then open the app at the URL it prints (e.g. `http://localhost:3000`). Avoid opening `game.html` or `index.html` via `file://` so paths and CORS match production.
+- **Assets**: CSS/JS are served as-is (no build step). Production uses the same files; Vercel sets short cache headers for `/css/*` and `/js/*` so deploys propagate.
+- **Icons**: Lucide is pinned to a specific version in the HTML so local and production use the same icon set.
+
 ## Project Structure
 
 ```

@@ -958,8 +958,8 @@ function createStandardElement(question, number, roundNumber) {
     bannedBtn.title = 'Question is banned';
   }
   
-  header.appendChild(category);
   header.appendChild(bannedBtn);
+  header.appendChild(category);
   
   const clue = document.createElement('div');
   clue.className = 'question-clue';
@@ -1037,8 +1037,8 @@ function createListElement(question, number, roundNumber) {
     }
   };
   
-  header.appendChild(category);
   header.appendChild(bannedBtn);
+  header.appendChild(category);
   
   const clue = document.createElement('div');
   clue.className = 'question-clue';
@@ -1112,8 +1112,8 @@ function createMultipleChoiceElement(question, number, roundNumber) {
     }
   };
   
-  header.appendChild(category);
   header.appendChild(bannedBtn);
+  header.appendChild(category);
   
   const clue = document.createElement('div');
   clue.className = 'question-clue';
@@ -1177,8 +1177,8 @@ function createFamilyFeudElement(question, number, roundNumber) {
     }
   };
   
-  header.appendChild(category);
   header.appendChild(bannedBtn);
+  header.appendChild(category);
   
   const clue = document.createElement('div');
   clue.className = 'question-clue';

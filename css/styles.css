@@ -563,12 +563,58 @@ main {
   padding-bottom: 0;
 }
 
+.question-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.question-header .banned-btn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 215, 0, 0.5);
+  background: rgba(255, 215, 0, 0.15);
+  color: rgba(255, 235, 200, 0.95);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.question-header .banned-btn:hover:not(:disabled) {
+  background: rgba(255, 215, 0, 0.3);
+  border-color: rgba(255, 215, 0, 0.8);
+  color: #fff;
+}
+
+.question-header .banned-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+  border-color: var(--border-color);
+  background: var(--hover-bg);
+  color: #888;
+}
+
+.question-header .banned-btn i,
+.question-header .banned-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
 .question-category {
   font-size: var(--font-size-small);
   color: #B0B0B0;
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: 0;
+  margin-right: auto;
   font-weight: 500;
 }
+
 
 .question-clue {
   font-size: var(--font-size-base);
