@@ -6,5 +6,6 @@ js/config.js
 js/config.dev.js
 todo.txt
 index.dev.html
-server.js
+scripts/__tests__/fixtures/temp-family-feud-test.json
+data/jeopardy-parser/
 
