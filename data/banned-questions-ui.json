@@ -1,0 +1,35 @@
+{
+  "questions": [
+    {
+      "gameId": "game-2026-02-16",
+      "roundNumber": 2,
+      "questionIndex": 0,
+      "clue": "How many keys on a standard piano?",
+      "answer": "88",
+      "reason": "shuffled",
+      "flaggedDate": "2026-02-16T04:10:02.662Z",
+      "bannedBy": "shuffled"
+    },
+    {
+      "gameId": "game-2026-02-16",
+      "roundNumber": 2,
+      "questionIndex": 1,
+      "clue": "In what year did the first iPhone go on sale?",
+      "answer": "2007",
+      "reason": "shuffled",
+      "flaggedDate": "2026-02-16T04:10:02.662Z",
+      "bannedBy": "shuffled"
+    },
+    {
+      "gameId": "game-2026-02-16",
+      "roundNumber": 2,
+      "questionIndex": 2,
+      "clue": "How many days are in a leap year?",
+      "answer": "366",
+      "reason": "shuffled",
+      "flaggedDate": "2026-02-16T04:10:02.662Z",
+      "bannedBy": "shuffled"
+    }
+  ],
+  "lastUpdated": "2026-02-16T04:10:03.136Z"
+}
