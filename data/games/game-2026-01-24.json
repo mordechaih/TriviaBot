@@ -1,0 +1,179 @@
+{
+  "id": "game-2026-01-24",
+  "date": "2026-01-24",
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "Incorporated in 1961, this Florida city lives up to its name today around 7 a.m",
+          "answer": "Sunrise",
+          "category": "U.S. CITIES"
+        },
+        {
+          "clue": "\"There's no place like\" this Alaskan Gold Rush town located on the southern coast of the",
+          "answer": "Nome",
+          "category": "U.S. CITIES"
+        },
+        {
+          "clue": "More than 30% of its approximately 105,000 residents are students at the University of Colorado",
+          "answer": "Boulder",
+          "category": "U.S. CITIES"
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "A Georgia politician & voting rights activist, she puts some civics in her mystery with novels like \"Rogue Justice\"",
+          "answer": "Abrams",
+          "category": "BLACK MYSTERY MONTH"
+        },
+        {
+          "clue": "A back-to-Africa movement scam artist is part of Chester Himes' hard-boiled novel \"Cotton Comes to\" this New York City area",
+          "answer": "Harlem",
+          "category": "BLACK MYSTERY MONTH"
+        },
+        {
+          "clue": "A writer-producer of TV's \"Empire\", Attic Locke wrote the Highwy 59 trilogy about a Blck one of these Lone Str l",
+          "answer": "a",
+          "category": "BLACK MYSTERY MONTH"
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Politician & Justice Salmon P. Chase once graced the bill of this multi-zero amount",
+          "answer": "the bill",
+          "category": "PEOPLE ON U.S. MONEY"
+        },
+        {
+          "clue": "This New England politician & orator appeared on the bill from the 1860s to 1900",
+          "answer": "Webster",
+          "category": "PEOPLE ON U.S. MONEY"
+        },
+        {
+          "clue": "Having his face on some old twenties is appropriate for Hugh McCullough who headed this U.S. government department twice after the",
+          "answer": "the Treasury",
+          "category": "PEOPLE ON U.S. MONEY"
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "\"Another Day Of Sun\" was a song-and-dance number on a ramp from the 105 to 110 freeway in this 2016 film",
+          "answer": "La",
+          "category": "21st CENTURY MOVIE MOMENTS"
+        },
+        {
+          "clue": "What does \"I drink your milkshake\" have to do with oil? Drainage, we learn from Daniel Day-Lewis in this 2007 film",
+          "answer": "There",
+          "category": "21st CENTURY MOVIE MOMENTS"
+        },
+        {
+          "clue": "Melissa McCarthy's memorable moments in this 2011 film include hitting on an air marshal on a flight to Vegas for a bachelorette party",
+          "answer": "Bridesmaids",
+          "category": "21st CENTURY MOVIE MOMENTS"
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Of Manitoba:This province, home to about 1.2 million, a bit more than half of Cincinnati's metro area",
+          "answer": "Saskatchewan",
+          "category": "ON YOUR LEFT"
+        },
+        {
+          "clue": "Of Suffolk County, New York:This county whose coliseum is now run by",
+          "answer": "Nassau County",
+          "category": "ON YOUR LEFT"
+        },
+        {
+          "clue": "Of Algeria:This nation on the Mediterranean",
+          "answer": "Morocco",
+          "category": "ON YOUR LEFT"
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "The opening line of this play is Orsino's \"If music be the food of love, play on\"",
+          "answer": "Twelfth Night",
+          "category": "START TALKING, SHAKESPEARE CHARACTER"
+        },
+        {
+          "clue": "Title character Antonio begins this play saying, \"In sooth I know not why I am so sad\"",
+          "answer": "The Merchant of Venice",
+          "category": "START TALKING, SHAKESPEARE CHARACTER"
+        },
+        {
+          "clue": "Falstaff's first line in this non-history play is \"Now, Master Shallow, you'll complain of me to the king?\"",
+          "answer": "The Merry Wives of Windsor",
+          "category": "START TALKING, SHAKESPEARE CHARACTER"
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Not soccer, but pato, a combination of polo & basketball, was declared the national sport there in 1953",
+          "answer": "Argentina",
+          "category": "\"A\" TO \"A\" COUNTRIES"
+        },
+        {
+          "clue": "The desert-dwelling fennec fox is its national animal",
+          "answer": "Algeria",
+          "category": "\"A\" TO \"A\" COUNTRIES"
+        },
+        {
+          "clue": "The official language of this small country is Catalan",
+          "answer": "Andorra",
+          "category": "\"A\" TO \"A\" COUNTRIES"
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "Two of the leaders of the Mexican Revolution were the mustachioed Pancho Villa & this Tiger of Morelos",
+          "answer": "Zapata",
+          "category": "THAT'S QUITE A 'STACHE!"
+        },
+        {
+          "clue": "Perhaps it was his mustache that gave this superman philosopher his strength",
+          "answer": "Nietzsche",
+          "category": "THAT'S QUITE A 'STACHE!"
+        },
+        {
+          "clue": "His mustache became bushier over the years & was perhaps the most famous one in science",
+          "answer": "Einstein",
+          "category": "THAT'S QUITE A 'STACHE!"
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "BUSINESS LOGOS",
+    "question": "Early 1900s labels for this beverage brand featured a beaver sitting on a log at the top of a map",
+    "answer": "Canada Dry"
+  }
+}

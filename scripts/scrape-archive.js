@@ -18,6 +18,28 @@ if (fs.existsSync(ARCHIVE_FILE)) {
 const scrapedGameIds = new Set(existingArchive.map(q => q.gameId));
 
 /**
+ * Clean answer text - gentler than clue cleaning
+ * Only removes obvious artifacts, preserves most of the answer text
+ */
+function cleanAnswerText(text) {
+  if (!text) return '';
+  
+  // Remove patterns like "(Player: response)" or "(Ken: comment)"
+  text = text.replace(/\([^)]*:\s*[^)]*\)/g, '');
+  
+  // Remove patterns like "[Laughter]", "[*]", or any bracketed content
+  text = text.replace(/\[[^\]]*\]/g, '');
+  
+  // Remove "Triple Stumper" (this is a game term that sometimes appears)
+  text = text.replace(/\bTriple\s+Stumper\b/gi, '');
+  
+  // Remove multiple spaces
+  text = text.replace(/\s+/g, ' ').trim();
+  
+  return text.trim();
+}
+
+/**
  * Clean clue text by removing player responses, host comments, and answers
  */
 function cleanClueText(text, answer = null) {
@@ -100,14 +122,19 @@ function cleanClueText(text, answer = null) {
   // Remove question marks at the end that might be artifacts
   text = text.replace(/\?+\s*$/, '');
   
-  // Remove multiple spaces and clean up
+  // Preserve periods and spaces after them before collapsing spaces
+  // Replace "period + multiple spaces" with "period + single space" to preserve the period
+  text = text.replace(/\.\s+/g, '. ');
+  
+  // Remove multiple spaces and clean up (but preserve the period-space patterns we just fixed)
   text = text.replace(/\s+/g, ' ').trim();
   
-  // Remove trailing punctuation artifacts (but be conservative - only if it's clearly an artifact)
-  // Only remove if it's a single punctuation mark with no context
-  // Don't remove if it's part of a sentence (e.g., "What is X?" should keep the question mark)
-  // Only remove trailing punctuation if it's followed by nothing meaningful
-  text = text.replace(/\s*[.,;:]\s*$/, '');
+  // Don't remove trailing punctuation - preserve periods, commas, etc. that are part of the sentence
+  // Only remove if it's clearly a single isolated punctuation mark with no preceding text
+  // This is very conservative - only remove if text is just a single punctuation mark
+  if (/^[.,;:]\s*$/.test(text)) {
+    text = '';
+  }
   
   // Final cleanup: remove any remaining single letters or numbers at the end that look like artifacts
   // BE MORE CONSERVATIVE: Only remove if it's clearly an artifact (single char with space before)
@@ -201,8 +228,8 @@ async function scrapeGame(gameId) {
             value = parseInt(valueMatch[1], 10);
           }
           
-          // Clean the answer text first
-          const cleanAnswer = cleanClueText(answerText);
+          // Clean the answer text first using gentle cleaning
+          const cleanAnswer = cleanAnswerText(answerText);
           // Then clean the clue text, passing the answer to remove it if it appears
           const cleanClue = cleanClueText(clueText, cleanAnswer);
           
@@ -276,8 +303,8 @@ async function scrapeGame(gameId) {
             value = parseInt(valueMatch[1], 10);
           }
           
-          // Clean the answer text first
-          const cleanAnswer = cleanClueText(answerText);
+          // Clean the answer text first using gentle cleaning
+          const cleanAnswer = cleanAnswerText(answerText);
           // Then clean the clue text, passing the answer to remove it if it appears
           const cleanClue = cleanClueText(clueText, cleanAnswer);
           
@@ -302,11 +329,20 @@ async function scrapeGame(gameId) {
     if (finalJeopardy.length > 0) {
       const category = finalJeopardy.find('.category_name').text().trim();
       const clueText = finalJeopardy.find('td#clue_FJ.clue_text').text().trim();
-      const answerText = finalJeopardy.find('.correct_response').text().trim();
+      
+      // Use ONLY the .correct_response element to isolate the answer
+      const $correctResponse = finalJeopardy.find('.correct_response');
+      let answerText = '';
+      $correctResponse.contents().each((idx, node) => {
+        if (node.type === 'text') {
+          answerText += $(node).text();
+        }
+      });
+      answerText = answerText.trim();
       
       if (clueText && answerText) {
-        // Clean the answer text first
-        const cleanAnswer = cleanClueText(answerText);
+        // Clean the answer text first using gentle cleaning
+        const cleanAnswer = cleanAnswerText(answerText);
         // Then clean the clue text, passing the answer to remove it if it appears
         const cleanClue = cleanClueText(clueText, cleanAnswer);
         

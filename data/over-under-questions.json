@@ -1,0 +1,46 @@
+{
+  "questions": [
+    {
+      "clue": "How many keys are on a standard piano?",
+      "answer": "88",
+      "actualNumber": 88,
+      "targetNumber": 90,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "In what year did the first iPhone go on sale?",
+      "answer": "2007",
+      "actualNumber": 2007,
+      "targetNumber": 2005,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "How many days are in a leap year?",
+      "answer": "366",
+      "actualNumber": 366,
+      "targetNumber": 365,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "Roughly how many countries are in the United Nations?",
+      "answer": "193",
+      "actualNumber": 193,
+      "targetNumber": 200,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "In what year did World War II end?",
+      "answer": "1945",
+      "actualNumber": 1945,
+      "targetNumber": 1950,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "How many continents are there?",
+      "answer": "7",
+      "actualNumber": 7,
+      "targetNumber": 5,
+      "overOrUnder": "Over"
+    }
+  ]
+}

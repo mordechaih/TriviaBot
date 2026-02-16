@@ -7,19 +7,19 @@
       "difficulty": "easy",
       "questions": [
         {
-          "clue": "This \"A Midsummer Night's Dream\" character is aka",
-          "answer": "Puck",
-          "category": "Unknown"
+          "clue": "Mark Watney in this novel says, \"I don't want to come off as arrogant here, but I'm the best botanist on the planet\"",
+          "answer": "The Martian",
+          "category": "SCIENCE FICTION"
         },
         {
-          "clue": "The University of Oregon has the Ducks; to the north, Evergreen State College has the Geoducks, a type of this animalTriple",
-          "answer": "a clam",
-          "category": "Unknown"
+          "clue": "The title refers to cataclysms that can last for years in N.K. Jemisin's Hugo Award winner \"The Fifth\" this",
+          "answer": "Season",
+          "category": "SCIENCE FICTION"
         },
         {
-          "clue": "A decisive gunfight like one between law enforcement officers & criminals",
-          "answer": "a shootout",
-          "category": "Unknown"
+          "clue": "Also known as Melange, this mystical substance created by Arrakis' sandworms helps in space navigation",
+          "answer": "Spice",
+          "category": "SCIENCE FICTION"
         }
       ]
     },
@@ -28,19 +28,19 @@
       "difficulty": "easy",
       "questions": [
         {
-          "clue": "This delta that drains into the South China Sea covers 15,400 square miles in",
-          "answer": "the Mekong Delta",
-          "category": "AROUND THE WORLD"
+          "clue": "\"So all the\" these \"from Abraham to David are fourteen\" these",
+          "answer": "generations",
+          "category": "KING JAMES BIBLE TALK"
         },
         {
-          "clue": "This longest river in South Africa is named in honor of the Dutch royal family",
-          "answer": "the Orange River",
-          "category": "AROUND THE WORLD"
+          "clue": "The KJV loves this synonym for \"strike\" or \"bash\", as in \"thou shalt\" do this to \"the rock, and there shall come water out of it\"",
+          "answer": "smite",
+          "category": "KING JAMES BIBLE TALK"
         },
         {
-          "clue": "Al-Maquar in Amman is the royal court compound for the king of this nation",
-          "answer": "Jordan",
-          "category": "AROUND THE WORLD"
+          "clue": "\"Pride\" does this \"before destruction, and an haughty spirit before a fall\"",
+          "answer": "goeth",
+          "category": "KING JAMES BIBLE TALK"
         }
       ]
     },
@@ -49,19 +49,19 @@
       "difficulty": "medium",
       "questions": [
         {
-          "clue": "This trick-taking card game makes for a great Scrabble score, with a Z & a Q in its nameTriple",
-          "answer": "bezique",
-          "category": "WILD, CARDS!"
+          "clue": "Playing Achilles in the movie \"Troy\", this actor managed to injure his, yep, you guessed it, Achilles tendon",
+          "answer": "Brad Pitt",
+          "category": "LIFE IMITATES POP CULTURE"
         },
         {
-          "clue": "The joker's wild in this type of poker that's an adaptation of an Asian domino game",
-          "answer": "Pai Gow",
-          "category": "WILD, CARDS!"
+          "clue": "Talk about life imitating art: after nannying identical twins played by Lindsay Lohan in this 1998 film, I had real-life identical twins & they even share the characters' birthday",
+          "answer": "The Parent Trap",
+          "category": "LIFE IMITATES POP CULTURE"
         },
         {
-          "clue": "Draw 2, Wild & Reverse are cards in this game",
-          "answer": "Uno",
-          "category": "WILD, CARDS!"
+          "clue": "This show correctly predicts the future: a 2000 episode shows a grown-up Lisa as U.S. president; her predecessor: Donald Trump",
+          "answer": "The Simpsons",
+          "category": "LIFE IMITATES POP CULTURE"
         }
       ]
     },
@@ -70,40 +70,40 @@
       "difficulty": "medium",
       "questions": [
         {
-          "clue": "In 1902 this labor & child-welfare activist with a maternal nickname was called \"the most dangerous woman in America\"",
-          "answer": "Mother Jones",
-          "category": "AMERICAN HISTORY"
+          "clue": "After a hurricane & a tidal wave hit Belize City in 1961, the capital was moved 50 miles inland to this city to avoid flooding",
+          "answer": "Belmopan",
+          "category": "YOU BETTER BELIZE IT"
         },
         {
-          "clue": "In 1972 Richard Nixon was reelected by defeating this senator from South Dakota in a landslide",
-          "answer": "McGovern",
-          "category": "AMERICAN HISTORY"
+          "clue": "Belize's Great Blue Hole was featured in a 1970s episode of \"The Undersea World of\" him who called it one of Earth's best diving sites",
+          "answer": "Jacques Cousteau",
+          "category": "YOU BETTER BELIZE IT"
         },
         {
-          "clue": "In 1775, Nathan Hale was teaching in the schoolhouse still standing in New London in this colony; in 1776, he was hanged as a spy",
-          "answer": "Connecticut",
-          "category": "AMERICAN HISTORY"
+          "clue": "1981's constitution set up a bicameral national assembly of these 2 familiar-sounding bodies, but members of each serve 5-year terms",
+          "answer": "the Senate & the House of Representatives",
+          "category": "YOU BETTER BELIZE IT"
         }
       ]
     },
     {
       "roundNumber": 5,
-      "difficulty": "hard",
+      "difficulty": "medium",
       "questions": [
         {
-          "clue": "This 1862 tome by Victor Hugo criticizes the French justice & political systems, plus has a police chase to boot",
-          "answer": "Les Miz",
-          "category": "WEIGHTY WORKS"
+          "clue": "A nearly 4-hour-long Western, one of Hollywood's biggest bombs",
+          "answer": "Heaven's Gate",
+          "category": "PICTURE THE FILM"
         },
         {
-          "clue": "New York Magazine's review of this David Foster Wallace novel raved, \"It's as though Wittgenstein had gone on 'Jeopardy!'\"",
-          "answer": "Infinite Jest",
-          "category": "WEIGHTY WORKS"
+          "clue": "A 1986 Oliver Stone film",
+          "answer": "Platoon",
+          "category": "PICTURE THE FILM"
         },
         {
-          "clue": "The invisible hand makes an appearance in \"The Theory of Moral Sentiments\" & this work, a sort of follow up by the same author",
-          "answer": "The Wealth of Nations",
-          "category": "WEIGHTY WORKS"
+          "clue": "It tells the true story of a Pulitzer Prize-winning investigation",
+          "answer": "Spotlight",
+          "category": "PICTURE THE FILM"
         }
       ]
     },
@@ -112,40 +112,40 @@
       "difficulty": "medium",
       "questions": [
         {
-          "clue": "It's the somewhat self-deprecating title of the bestselling 2023 memoir by",
-          "answer": "Spare",
-          "category": "2020s VISION"
+          "clue": "Dwight Eisenhower & John Diefenbaker were there for the opening of this North American waterway in 1959",
+          "answer": "the St. Lawrence Seaway",
+          "category": "IN THE PAST"
         },
         {
-          "clue": "2021 saw the container ship Ever Given get stuck in this vital artery, disrupting global trade",
-          "answer": "the Suez Canal",
-          "category": "2020s VISION"
+          "clue": "All your favorite medieval travel influencers went through South India, like Ibn Battuta, Zheng He & this Venetian guy",
+          "answer": "Marco Polo",
+          "category": "IN THE PAST"
         },
         {
-          "clue": "2022 trades of basketball players included Kristaps Porzingis for Spencer Dinwiddie & arms dealer Viktor Bout for her",
-          "answer": "Griner",
-          "category": "2020s VISION"
+          "clue": "In ancient Rome the conflict of the orders refers to the struggle between these 2 social classes with names that start with \"P\"",
+          "answer": "patricians & plebeians",
+          "category": "IN THE PAST"
         }
       ]
     },
     {
       "roundNumber": 7,
-      "difficulty": "hard",
+      "difficulty": "medium",
       "questions": [
         {
-          "clue": "This country changed its name to Kampuchea in January 1976 & years of brutality followed",
-          "answer": "Cambodia",
-          "category": "IT HAPPENED IN JANUARY"
+          "clue": "The Treaty of Nanjing in 1842 ended the first of these wars instigated by British drug dealers",
+          "answer": "the Opium Wars",
+          "category": "IN THE 19th CENTURY"
         },
         {
-          "clue": "The first of these trials in more than 130 years began in the U.S. Senate January 7, 1999",
-          "answer": "presidential impeachment trial",
-          "category": "IT HAPPENED IN JANUARY"
+          "clue": "At this 1805 naval battle, Lord Nelson gave his famous signal, \"England expects that every man will do his duty\"",
+          "answer": "Trafalgar",
+          "category": "IN THE 19th CENTURY"
         },
         {
-          "clue": "The January 22 & 23, 1879 Battles of Isandlwana & Rorke's Drift were the first big fights in Britain's war against this people",
-          "answer": "the Zulu",
-          "category": "IT HAPPENED IN JANUARY"
+          "clue": "It traces its roots to the founding of the International Committee for the Relief of the Wounded in 1863",
+          "answer": "the Red Cross",
+          "category": "IN THE 19th CENTURY"
         }
       ]
     },
@@ -154,26 +154,26 @@
       "difficulty": "hard",
       "questions": [
         {
-          "clue": "In 1688 James II deserted England after his troops deserted him during this revolution with a laudatory adjective",
-          "answer": "Glorious",
-          "category": "YOU SAY YOU WANT A REVOLUTION?"
+          "clue": "Dating from 1522, the oldest house still standing in Cuba is in this city \"de Cuba\", the country's 2nd largest",
+          "answer": "Santiago de Cuba",
+          "category": "CITIES AROUND THE WORLD"
         },
         {
-          "clue": "During the Mexican revolution, he was the leader of la División del Norte, while Zapata led troops from the southJonathanMichelleTriple",
-          "answer": "Pancho Villa",
-          "category": "YOU SAY YOU WANT A REVOLUTION?"
+          "clue": "This pilgrimage city about 250 miles from Mecca was once known as Yathrib",
+          "answer": "Medina",
+          "category": "CITIES AROUND THE WORLD"
         },
         {
-          "clue": "This leader who met the Arab Spring with ruthless repression was forced to flee his Damascus palace in 2024",
-          "answer": "Assad",
-          "category": "YOU SAY YOU WANT A REVOLUTION?"
+          "clue": "Today it's around 10 million strong & known as Ho Chi Minh City, but before 1975 the city was known by this name",
+          "answer": "Saigon",
+          "category": "CITIES AROUND THE WORLD"
         }
       ]
     }
   ],
   "finalTrivia": {
-    "category": "ENGLISH PLACE NAMES",
-    "question": "Once called Grontabricc, it's named for a structure spanning a tributary of the",
-    "answer": "Cambridge"
+    "category": "THE ANCIENT WORLD",
+    "question": "This text helped the soul, or ka, navigate a journey into a region called Amenti",
+    "answer": "the Book of the Dead"
   }
 }

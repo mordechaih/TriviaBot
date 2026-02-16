@@ -1,0 +1,10 @@
+{
+  "questions": [
+    { "clue": "University of Oregon", "answer": "Ducks", "league": "College" },
+    { "clue": "University of Alabama", "answer": "Crimson Tide", "league": "College" },
+    { "clue": "University of Michigan", "answer": "Wolverines", "league": "College" },
+    { "clue": "Green Bay (NFL)", "answer": "Packers", "league": "NFL" },
+    { "clue": "Boston (NBA)", "answer": "Celtics", "league": "NBA" },
+    { "clue": "New York (MLB)", "answer": "Yankees", "league": "MLB" }
+  ]
+}

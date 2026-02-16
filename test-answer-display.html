@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Answer Display Test</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      padding: 20px;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+    .test-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .test-section {
+      margin: 20px 0;
+      padding: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+    }
+    .test-answer {
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      padding: var(--spacing-sm);
+      border-radius: var(--border-radius);
+      margin-top: var(--spacing-xs);
+      background: rgba(255, 215, 0, 0.2);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      color: white;
+    }
+    .raw-data {
+      background: var(--bg-color);
+      padding: 10px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      margin: 10px 0;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>Answer Display Test Laboratory</h1>
+    
+    <div class="test-section">
+      <h2>Test 1: Direct textContent Assignment</h2>
+      <p>Testing direct assignment like in createQuestionElement:</p>
+      <div class="raw-data" id="test1-raw">Raw answer: "the lungs"</div>
+      <div class="question-answer" id="test1">Loading...</div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 2: Using innerHTML</h2>
+      <p>Testing with innerHTML instead of textContent:</p>
+      <div class="raw-data" id="test2-raw">Raw answer: "the lungs"</div>
+      <div class="question-answer" id="test2">Loading...</div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 3: Real Game Data</h2>
+      <p>Loading actual answer from game file:</p>
+      <div class="raw-data" id="test3-raw">Loading...</div>
+      <div class="question-answer" id="test3">Loading...</div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 4: Multiple Answers</h2>
+      <p>Testing various answer formats:</p>
+      <div id="test4-container"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>CSS Inspection</h2>
+      <p>Checking computed styles:</p>
+      <div id="css-info"></div>
+    </div>
+  </div>
+
+  <script>
+    // Test 1: Direct textContent
+    const test1 = document.getElementById('test1');
+    test1.textContent = "the lungs";
+    console.log('Test 1 - textContent set to:', test1.textContent);
+    console.log('Test 1 - innerHTML:', test1.innerHTML);
+    console.log('Test 1 - innerText:', test1.innerText);
+
+    // Test 2: innerHTML
+    const test2 = document.getElementById('test2');
+    test2.innerHTML = "the lungs";
+    console.log('Test 2 - textContent:', test2.textContent);
+    console.log('Test 2 - innerHTML:', test2.innerHTML);
+
+    // Test 3: Load from actual game file
+    async function loadGameData() {
+      try {
+        const response = await fetch('data/games/game-2026-01-23.json');
+        const gameData = await response.json();
+        
+        // Find an answer that starts with "the"
+        const questionWithThe = gameData.rounds
+          .flatMap(r => r.questions)
+          .find(q => q.answer && q.answer.toLowerCase().startsWith('the'));
+        
+        if (questionWithThe) {
+          const test3Raw = document.getElementById('test3-raw');
+          const test3 = document.getElementById('test3');
+          
+          test3Raw.textContent = `Raw answer from JSON: "${questionWithThe.answer}" (length: ${questionWithThe.answer.length})`;
+          
+          // Simulate what createQuestionElement does
+          test3.textContent = questionWithThe.answer;
+          
+          console.log('Test 3 - Original answer:', questionWithThe.answer);
+          console.log('Test 3 - textContent after assignment:', test3.textContent);
+          console.log('Test 3 - innerHTML:', test3.innerHTML);
+          console.log('Test 3 - innerText:', test3.innerText);
+          console.log('Test 3 - Element:', test3);
+        }
+      } catch (error) {
+        console.error('Error loading game data:', error);
+        document.getElementById('test3-raw').textContent = 'Error: ' + error.message;
+      }
+    }
+
+    // Test 4: Multiple answers
+    const testAnswers = [
+      "the lungs",
+      "the heart",
+      "the clarinet",
+      "massage & passage",
+      "West Point",
+      "Istanbul"
+    ];
+    
+    const test4Container = document.getElementById('test4-container');
+    testAnswers.forEach((answer, index) => {
+      const wrapper = document.createElement('div');
+      wrapper.style.marginBottom = '10px';
+      
+      const raw = document.createElement('div');
+      raw.className = 'raw-data';
+      raw.textContent = `Answer ${index + 1}: "${answer}"`;
+      wrapper.appendChild(raw);
+      
+      const answerDiv = document.createElement('div');
+      answerDiv.className = 'question-answer';
+      answerDiv.textContent = answer;
+      wrapper.appendChild(answerDiv);
+      
+      test4Container.appendChild(wrapper);
+      
+      console.log(`Test 4.${index + 1} - Set: "${answer}", Got: "${answerDiv.textContent}"`);
+    });
+
+    // CSS Inspection
+    function inspectCSS() {
+      const test1 = document.getElementById('test1');
+      const computed = window.getComputedStyle(test1);
+      const cssInfo = document.getElementById('css-info');
+      
+      const info = [
+        `width: ${computed.width}`,
+        `max-width: ${computed.maxWidth}`,
+        `overflow: ${computed.overflow}`,
+        `text-overflow: ${computed.textOverflow}`,
+        `white-space: ${computed.whiteSpace}`,
+        `word-wrap: ${computed.wordWrap}`,
+        `overflow-wrap: ${computed.overflowWrap}`,
+        `display: ${computed.display}`,
+        `textContent length: ${test1.textContent.length}`,
+        `innerHTML length: ${test1.innerHTML.length}`
+      ].join('<br>');
+      
+      cssInfo.innerHTML = info;
+    }
+
+    // Run tests
+    loadGameData();
+    setTimeout(inspectCSS, 100);
+  </script>
+</body>
+</html>
+

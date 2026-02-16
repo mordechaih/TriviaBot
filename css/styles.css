@@ -16,7 +16,8 @@
   --card-bg: #2D2D2D;
   --border-color: #404040;
   --played-color: #6B6B6B;
-  --hover-bg: #3A3A3A;
+  --hover-bg: #363636;
+  --hover-border: #858585;
   --touch-target: 44px;
   --font-size-base: 16px;
   --font-size-large: 20px;
@@ -72,7 +73,7 @@ main {
 .game-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--spacing-xs);
 }
 
 .game-card {
@@ -89,12 +90,12 @@ main {
 }
 
 .game-card:hover {
-  background: #404040;
-  border-color: #464646;
+  background: var(--hover-bg);
+  border-color: var(--hover-border);
 }
 
 .game-card:active {
-  background: #404040;
+  background: var(--hover-bg);
 }
 
 .game-card.played {
@@ -136,8 +137,21 @@ main {
 .filters {
   margin-bottom: var(--spacing-lg);
   display: flex;
+  justify-content: space-between;
   gap: var(--spacing-sm);
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.action-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
 }
 
 .filter-btn {
@@ -150,15 +164,17 @@ main {
   cursor: pointer;
   min-height: var(--touch-target);
   transition: background 0.2s, border-color 0.2s;
+  border: 1px solid var(--card-bg);
 }
 
 .filter-btn:hover {
-  background: #404040;
-  border-color: #464646;
+  background: var(--hover-bg);
+  border: 1px solid var(--hover-border);
+  border-color: var(--hover-border);
 }
 
 .filter-btn:active {
-  background: #404040;
+  background: var(--hover-bg);
 }
 
 .filter-btn.active {
@@ -204,8 +220,8 @@ main {
 }
 
 .icon-btn:hover {
-  background: #404040;
-  border-color: #464646;
+  background: var(--hover-bg);
+  border-color: var(--hover-border);
 }
 
 .icon-btn:disabled:hover {
@@ -396,12 +412,12 @@ main {
 }
 
 .modal-btn.secondary:hover {
-  background: #404040;
-  border-color: #464646;
+  background: var(--hover-bg);
+  border-color: var(--hover-border);
 }
 
 .modal-btn.secondary:active {
-  background: #404040;
+  background: var(--hover-bg);
 }
 
 /* Game display styles */
@@ -566,6 +582,10 @@ main {
   padding: var(--spacing-sm);
   border-radius: var(--border-radius);
   margin-top: var(--spacing-xs);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  overflow: visible;
 }
 
 /* Color code answers by round */
@@ -711,7 +731,7 @@ main {
 
 .shuffle-btn {
   margin-top: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   font-size: var(--font-size-base);
   background: var(--secondary-color);
   color: var(--text-color);
@@ -798,24 +818,23 @@ main {
 .final-trivia .question {
   font-size: var(--font-size-base);
   line-height: 1.6;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 0;
   text-align: center;
   color: white;
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .final-trivia .answer {
   font-size: var(--font-size-base);
-  color: #FFD700;
+  color: #ffe7e4;
   font-weight: 600;
   padding: var(--spacing-md);
-  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: var(--border-radius);
   text-align: center;
-  margin-top: var(--spacing-md);
-}
-
-.final-trivia .answer.hidden {
-  display: none;
+  margin-top: var(--spacing-sm);
 }
 
 /* Navigation */
@@ -906,10 +925,47 @@ main {
   font-size: var(--font-size-small);
   color: #D0D0D0;
   line-height: 1.5;
+  position: relative;
 }
 
 .legal-disclaimer strong {
   color: var(--text-color);
+}
+
+.legal-disclaimer.dismissed {
+  display: none;
+}
+
+.disclaimer-dismiss-btn {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  background: transparent;
+  border: none;
+  color: #D0D0D0;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.2s;
+  width: 28px;
+  height: 28px;
+}
+
+.disclaimer-dismiss-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+}
+
+.disclaimer-dismiss-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.disclaimer-dismiss-btn i {
+  width: 18px;
+  height: 18px;
 }
 
 /* Tablet and larger screens */

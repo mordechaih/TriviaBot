@@ -95,8 +95,12 @@ async function savePlayedStatus() {
 
 /**
  * Load list of available games
+ * @param {Object} options - Optional configuration
+ * @param {string} options.baseUrl - Base URL for fetching (used for production polling)
  */
-async function loadGames() {
+async function loadGames(options = {}) {
+  const baseUrl = options.baseUrl || '';
+  
   // Safely start performance tracking (perfLab might not be loaded)
   if (typeof perfLab !== 'undefined') {
     perfLab.start('loadGames');
@@ -119,7 +123,11 @@ async function loadGames() {
       const perfCounter = performance.now();
       const cacheBuster = `v=${timestamp}&r=${random}&c=${perfCounter}&_=${timestamp}`;
       
-      const indexResponse = await fetch(`data/games/index.json?${cacheBuster}`, {
+      // Use base URL if provided (for production polling), otherwise relative path
+      const indexPath = 'data/games/index.json';
+      const indexUrl = baseUrl ? `${baseUrl}/${indexPath}?${cacheBuster}` : `${indexPath}?${cacheBuster}`;
+      console.log('Fetching index from:', indexUrl);
+      const indexResponse = await fetch(indexUrl, {
         method: 'GET',
         cache: 'no-store',
         headers: {
@@ -129,6 +137,7 @@ async function loadGames() {
           'X-Requested-With': 'XMLHttpRequest' // Some CDNs treat this differently
         }
       });
+      console.log('Index response status:', indexResponse.status, indexResponse.statusText);
       if (indexResponse.ok) {
         const index = await indexResponse.json();
         gameIds = index.games || [];
@@ -136,25 +145,49 @@ async function loadGames() {
         console.log('Index version:', index.version);
         console.log('Index lastUpdated:', index.lastUpdated);
         
-        // Track index version and timestamp to detect changes
-        const currentVersion = index.version || index.lastUpdated;
-        const currentTimestamp = index.lastUpdated;
+        // Clear discovery cache since we have a valid index now
+        discoveredGamesCache = null;
+        discoveredGamesCacheTime = null;
         
+        // Track index version and timestamp to detect changes
+        // Set version first
         if (index.version) {
           lastKnownIndexVersion = index.version;
+        } else {
+          lastKnownIndexVersion = null; // Clear if no version
         }
         
-        if (currentVersion) {
-          const indexChanged = lastKnownIndexTimestamp !== null && 
-                               lastKnownIndexTimestamp !== currentVersion;
-          if (indexChanged) {
-            console.log('Index has been updated! Previous:', lastKnownIndexTimestamp, 'Current:', currentVersion);
-            console.log('Version hash changed from', lastKnownIndexVersion, 'to', index.version);
-          }
-          lastKnownIndexTimestamp = currentVersion;
+        // Set timestamp (use lastUpdated, or version as fallback)
+        if (index.lastUpdated) {
+          lastKnownIndexTimestamp = index.lastUpdated;
+        } else if (index.version) {
+          lastKnownIndexTimestamp = index.version; // Fallback to version if no timestamp
+        } else {
+          lastKnownIndexTimestamp = null;
         }
+        
+        // Check if index changed (only if we had a previous value)
+        if (lastKnownIndexTimestamp && lastKnownIndexTimestamp !== null) {
+          const previousTimestamp = lastKnownIndexTimestamp;
+          const previousVersion = lastKnownIndexVersion;
+          // Values are already updated above, so we check against stored initial values
+          // This check happens in the polling logic, not here
+        }
+        
+        console.log('Set lastKnownIndexVersion:', lastKnownIndexVersion);
+        console.log('Set lastKnownIndexTimestamp:', lastKnownIndexTimestamp);
+      } else if (indexResponse.status === 404) {
+        // Index doesn't exist yet - this is fine, just use empty array
+        // Only log once to avoid spam during polling
+        if (!window.index404WarningShown) {
+          console.log('Games index not found (404) - will use discovery fallback or empty list');
+          window.index404WarningShown = true;
+        }
+        // Don't clear the existing values - keep them so we can detect when index appears
+        // But if we never had values, this is the initial state
       } else {
         console.warn('Failed to load games index:', indexResponse.status, indexResponse.statusText);
+        // On error, don't clear existing values
       }
       if (typeof perfLab !== 'undefined') perfLab.end('fetchGamesIndex');
     } catch (error) {
@@ -175,7 +208,10 @@ async function loadGames() {
         if (typeof perfLab !== 'undefined') perfLab.start(`fetchGame-${index}`);
         // Add aggressive cache-busting to prevent stale data from Vercel CDN
         const cacheBuster = `v=${Date.now()}&r=${Math.random()}&c=${performance.now()}`;
-        return fetch(`data/games/${id}.json?${cacheBuster}`, {
+        // Use base URL if provided (for production polling), otherwise relative path
+        const gamePath = `data/games/${id}.json`;
+        const gameUrl = baseUrl ? `${baseUrl}/${gamePath}?${cacheBuster}` : `${gamePath}?${cacheBuster}`;
+        return fetch(gameUrl, {
           method: 'GET',
           cache: 'no-store',
           headers: {
@@ -186,10 +222,22 @@ async function loadGames() {
         })
           .then(res => {
             if (typeof perfLab !== 'undefined') perfLab.end(`fetchGame-${index}`);
-            return res.ok ? res.json() : null;
+            if (res.ok) {
+              return res.json();
+            } else if (res.status === 404) {
+              // Silently ignore 404s - game doesn't exist
+              return null;
+            } else {
+              // Log other errors but don't spam console
+              console.warn(`Failed to fetch game ${id}: ${res.status} ${res.statusText}`);
+              return null;
+            }
           })
           .catch((err) => {
-            console.warn(`Failed to fetch game ${id}:`, err);
+            // Only log non-404 errors to avoid console spam
+            if (err.message && !err.message.includes('404')) {
+              console.warn(`Failed to fetch game ${id}:`, err.message);
+            }
             if (typeof perfLab !== 'undefined') perfLab.end(`fetchGame-${index}`);
             return null;
           });
@@ -202,12 +250,26 @@ async function loadGames() {
       allGames = games.filter(g => g !== null).sort((a, b) => 
         new Date(b.date) - new Date(a.date)
       );
+      // Assign game numbers based on sorted order (newest = #1)
+      allGames.forEach((game, index) => {
+        game.gameNumber = allGames.length - index;
+      });
       if (typeof perfLab !== 'undefined') perfLab.end('sortGames');
     } else {
       // Fallback: try to discover games by checking common patterns
       // This is a workaround - ideally we'd have an index file
+      // Only log a warning once, not on every poll
+      if (!window.discoverGamesWarningShown) {
+        console.warn('Games index not found - using discovery fallback. This may cause 404 errors.');
+        window.discoverGamesWarningShown = true;
+      }
       if (typeof perfLab !== 'undefined') perfLab.start('discoverGames');
       allGames = await discoverGames();
+      // Sort and assign game numbers
+      allGames.sort((a, b) => new Date(b.date) - new Date(a.date));
+      allGames.forEach((game, index) => {
+        game.gameNumber = allGames.length - index;
+      });
       if (typeof perfLab !== 'undefined') perfLab.end('discoverGames');
     }
     
@@ -228,33 +290,61 @@ async function loadGames() {
   }
 }
 
+// Cache for discovered games to avoid repeated 404 spam
+let discoveredGamesCache = null;
+let discoveredGamesCacheTime = null;
+const DISCOVER_CACHE_TTL = 60000; // Cache for 1 minute
+
 /**
  * Discover games by trying common date patterns
  * This is a fallback when no index file exists
+ * Only tries a limited number of dates to avoid spam
+ * Results are cached to avoid repeated 404 requests
  */
 async function discoverGames() {
+  // Return cached result if available and fresh
+  const now = Date.now();
+  if (discoveredGamesCache !== null && 
+      discoveredGamesCacheTime !== null && 
+      (now - discoveredGamesCacheTime) < DISCOVER_CACHE_TTL) {
+    console.log('Using cached discovered games');
+    return discoveredGamesCache;
+  }
+  
   const games = [];
   const today = new Date();
   
-  // Try the last 52 weeks (1 year)
-  for (let i = 0; i < 52; i++) {
+  // Try the last 8 weeks (more reasonable limit)
+  const promises = [];
+  
+  for (let i = 0; i < 8; i++) {
     const date = new Date(today);
     date.setDate(date.getDate() - (i * 7));
     const dateStr = date.toISOString().split('T')[0];
     const gameId = `game-${dateStr}`;
     
-    try {
-      const response = await fetch(`data/games/${gameId}.json`);
-      if (response.ok) {
-        const game = await response.json();
-        games.push(game);
-      }
-    } catch (error) {
-      // Game doesn't exist, continue
-    }
+    // Fetch with silent error handling
+    const promise = fetch(`data/games/${gameId}.json`)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        return null; // 404 or other error - return null silently
+      })
+      .catch(() => null); // Network error - return null silently
+    
+    promises.push(promise);
   }
   
-  return games;
+  // Wait for all requests, filter out nulls
+  const results = await Promise.all(promises);
+  const discoveredGames = results.filter(game => game !== null);
+  
+  // Cache the result
+  discoveredGamesCache = discoveredGames;
+  discoveredGamesCacheTime = now;
+  
+  return discoveredGames;
 }
 
 /**
@@ -295,7 +385,7 @@ function renderGames() {
   }
   
   emptyState.style.display = 'none';
-  container.style.display = 'block';
+  container.style.display = 'flex';
   
   // Use DocumentFragment to batch DOM operations
   const fragment = document.createDocumentFragment();
@@ -330,11 +420,13 @@ function createGameCard(game) {
   info.className = 'game-card-info';
   
   const title = document.createElement('h3');
-  title.textContent = `Game ${game.date}`;
+  title.textContent = `Game #${game.gameNumber || '?'}`;
   
   const date = document.createElement('div');
   date.className = 'date';
-  const dateObj = new Date(game.date);
+  // Parse date string as local date to avoid timezone issues
+  const [year, month, day] = game.date.split('-').map(Number);
+  const dateObj = new Date(year, month - 1, day);
   date.textContent = dateObj.toLocaleDateString('en-US', { 
     weekday: 'long', 
     year: 'numeric', 
@@ -535,32 +627,60 @@ async function triggerGameGeneration() {
         'info'
       );
       
-      // Store initial game IDs and index timestamp before polling starts
+      // Store initial game IDs and index timestamp/version before polling starts
       const initialGameIds = new Set(allGames.map(g => g.id));
       const initialIndexTimestamp = lastKnownIndexTimestamp;
+      const initialIndexVersion = lastKnownIndexVersion;
       console.log('Initial games:', Array.from(initialGameIds));
       console.log('Initial index timestamp:', initialIndexTimestamp);
+      console.log('Initial index version:', initialIndexVersion);
       
       // Poll for new games every 10 seconds, up to 3 minutes
       let pollCount = 0;
       const maxPolls = 18; // 18 * 10 seconds = 3 minutes
+      
+      // Determine if we need to poll from production (when using production API endpoint)
+      const isProductionApi = typeof GITHUB_CONFIG !== 'undefined' && 
+                              GITHUB_CONFIG.productionBaseUrl && 
+                              GITHUB_CONFIG.apiEndpoint && 
+                              GITHUB_CONFIG.apiEndpoint.includes(GITHUB_CONFIG.productionBaseUrl);
+      const pollBaseUrl = isProductionApi ? GITHUB_CONFIG.productionBaseUrl : null;
+      
+      if (pollBaseUrl) {
+        console.log('Using production base URL for polling:', pollBaseUrl);
+      }
       
       const pollForNewGames = setInterval(async () => {
         pollCount++;
         console.log(`Polling for new games (attempt ${pollCount}/${maxPolls})...`);
         
         try {
+          // Capture the timestamp BEFORE loading to compare properly
+          const timestampBeforeLoad = lastKnownIndexTimestamp;
+          const versionBeforeLoad = lastKnownIndexVersion;
+          const hadIndexBefore = timestampBeforeLoad !== null || versionBeforeLoad !== null;
+          
           // Force reload games with cache-busting
           // Clear the allGames array first to force fresh load
           allGames = [];
-          await loadGames();
+          // Use production base URL if available (for production workflow triggers)
+          await loadGames({ baseUrl: pollBaseUrl });
           
           // Get current game IDs
           const currentGameIds = new Set(allGames.map(g => g.id));
           console.log('Current games:', Array.from(currentGameIds));
-          console.log('Current index timestamp:', lastKnownIndexTimestamp);
+          console.log('Index timestamp before:', timestampBeforeLoad, 'after:', lastKnownIndexTimestamp);
+          console.log('Index version before:', versionBeforeLoad, 'after:', lastKnownIndexVersion);
           
-          // Check if index timestamp has changed (indicates index was updated)
+          // Check if index appeared (was null, now has value)
+          const indexAppeared = !hadIndexBefore && (lastKnownIndexTimestamp !== null || lastKnownIndexVersion !== null);
+          
+          // Check if index version has changed (more reliable than timestamp)
+          const versionChanged = initialIndexVersion !== null && 
+                                lastKnownIndexVersion !== null &&
+                                lastKnownIndexVersion !== initialIndexVersion;
+          
+          // Check if index timestamp has changed
           const indexUpdated = initialIndexTimestamp !== null && 
                                lastKnownIndexTimestamp !== null &&
                                lastKnownIndexTimestamp !== initialIndexTimestamp;
@@ -568,14 +688,30 @@ async function triggerGameGeneration() {
           // Check if we have new game IDs
           const newGameIds = Array.from(currentGameIds).filter(id => !initialGameIds.has(id));
           
+          // Also check if the count increased (even if IDs match, count change indicates update)
+          const initialCount = initialGameIds.size;
+          const currentCount = currentGameIds.size;
+          const countIncreased = currentCount > initialCount;
+          
+          console.log(`Game count: ${initialCount} -> ${currentCount}, New IDs: ${newGameIds.length}, Index appeared: ${indexAppeared}, Version changed: ${versionChanged}, Timestamp changed: ${indexUpdated}`);
+          
           // If index was updated or we have new games, consider it a success
-          if (indexUpdated || newGameIds.length > 0) {
+          if (indexAppeared || versionChanged || indexUpdated || newGameIds.length > 0 || countIncreased) {
             clearInterval(pollForNewGames);
+            if (indexAppeared) {
+              console.log('Index appeared! Was null, now has version:', lastKnownIndexVersion, 'timestamp:', lastKnownIndexTimestamp);
+            }
+            if (versionChanged) {
+              console.log('Index version changed detected! Version changed from', initialIndexVersion, 'to', lastKnownIndexVersion);
+            }
             if (indexUpdated) {
               console.log('Index updated detected! Timestamp changed from', initialIndexTimestamp, 'to', lastKnownIndexTimestamp);
             }
             if (newGameIds.length > 0) {
               console.log('New games detected:', newGameIds);
+            }
+            if (countIncreased) {
+              console.log('Game count increased from', initialCount, 'to', currentCount);
             }
             
             // Show success toast with deployment confirmation

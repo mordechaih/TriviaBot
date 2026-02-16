@@ -1,0 +1,9 @@
+{
+  "questions": [
+    { "clue": "The Great Wall of China is visible from space with the naked eye.", "answer": "False", "explanation": "It is a myth; the Wall is not visible from space without magnification." },
+    { "clue": "Humans share about 98% of their DNA with chimpanzees.", "answer": "True", "explanation": "Chimpanzees are our closest living relatives." },
+    { "clue": "Napoleon Bonaparte was short by modern standards.", "answer": "False", "explanation": "He was about 5'7\", average for his time." },
+    { "clue": "Lightning can strike the same place twice.", "answer": "True", "explanation": "Tall structures are often hit repeatedly." },
+    { "clue": "Goldfish have a three-second memory.", "answer": "False", "explanation": "Studies show they can remember for months." }
+  ]
+}
