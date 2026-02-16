@@ -7,6 +7,35 @@ let localStorageWriteTimeout = null;
 let pendingPlayedStatus = null;
 
 /**
+ * Round templates configuration (mirrors server-side)
+ */
+const ROUND_TEMPLATES = {
+  1: { type: 'standard', roundType: 'get-your-feet-wet', title: 'Get Your Feet Wet', points: 2, useLLM: false },
+  2: { type: 'over-under', roundType: 'over-under', title: 'Over/Under', points: 3, useLLM: false },
+  3: { type: 'standard', roundType: 'trifecta-trivia', title: 'Trifecta Trivia', points: 3, useLLM: false },
+  4: { type: 'list', roundType: 'list-round', title: 'The List Round', points: 'variable', useLLM: false },
+  5: { type: 'game-show-style', roundType: 'game-show-style', title: 'Game Show Style', points: 4, useLLM: true, subTypes: ['to-tell-the-truth', 'name-that-tune', 'millionaire', 'family-feud'] },
+  6: { type: 'entertainment', roundType: 'entertainment-trivia', title: 'Entertainment Trivia', points: 4, useLLM: false },
+  7: { type: 'mixing-things-up', roundType: 'mixing-things-up', title: 'Mixing Things Up', points: 5, useLLM: true, subTypes: ['who-am-i', 'size-matters', 'name-that-brand', 'name-that-sports-team'] },
+  8: { type: 'standard', roundType: 'game-changer', title: 'Game Changer Round', points: 6, useLLM: false }
+};
+
+const ENTERTAINMENT_KEYWORDS = [
+  'movie', 'film', 'cinema', 'tv', 'television', 'music', 'band', 'album', 'song', 'singer',
+  'actor', 'actress', 'oscar', 'grammy', 'emmy', 'netflix', 'broadway', 'hollywood',
+  'comedy', 'drama', 'sitcom', 'series', 'director', 'starring', 'soundtrack'
+];
+
+function filterEntertainmentArchive(archive) {
+  const lower = (s) => (s || '').toLowerCase();
+  return archive.filter(q => {
+    const cat = lower(q.category);
+    const clue = lower(q.clue || '');
+    return ENTERTAINMENT_KEYWORDS.some(kw => cat.includes(kw) || clue.includes(kw));
+  });
+}
+
+/**
  * Debounced localStorage write to prevent blocking main thread
  */
 function debouncedLocalStorageWrite(key, value) {
@@ -26,6 +55,525 @@ function debouncedLocalStorageWrite(key, value) {
       }
     }
   }, 100); // 100ms debounce
+}
+
+/**
+ * Load banned questions from localStorage
+ */
+function loadBannedQuestions() {
+  try {
+    const stored = localStorage.getItem('triviabot-banned-questions');
+    if (stored) {
+      const data = JSON.parse(stored);
+      return data.questions || [];
+    }
+  } catch (error) {
+    console.warn('Error loading banned questions:', error);
+  }
+  return [];
+}
+
+/**
+ * Load played games from localStorage
+ */
+function loadPlayedGames() {
+  try {
+    const stored = localStorage.getItem('triviabot-played-status');
+    if (stored) {
+      const data = JSON.parse(stored);
+      // Handle both old and new formats
+      if (data.games) {
+        return Object.keys(data.games).filter(gameId => data.games[gameId].played === true);
+      }
+      // Old format
+      return Object.keys(data).filter(gameId => data[gameId] === true);
+    }
+  } catch (error) {
+    console.warn('Error loading played games:', error);
+  }
+  return [];
+}
+
+/**
+ * Save banned questions to localStorage
+ */
+function saveBannedQuestions(questions) {
+  try {
+    const data = {
+      questions: questions,
+      lastUpdated: new Date().toISOString()
+    };
+    localStorage.setItem('triviabot-banned-questions', JSON.stringify(data));
+  } catch (error) {
+    console.error('Error saving banned questions:', error);
+  }
+}
+
+/** Map roundType + subType to pool file path (without 'data/' prefix). Standard rounds use archive. */
+const POOL_FILES = {
+  'over-under': 'over-under-questions.json',
+  'game-show-style': {
+    'to-tell-the-truth': 'to-tell-the-truth-questions.json',
+    'name-that-tune': 'name-that-tune-questions.json',
+    'millionaire': 'millionaire-questions.json',
+    'family-feud': 'family-feud-questions.json'
+  },
+  'mixing-things-up': {
+    'who-am-i': 'who-am-i-questions.json',
+    'size-matters': 'size-matters-questions.json',
+    'name-that-brand': 'name-that-brand-questions.json',
+    'name-that-sports-team': 'name-that-sports-team-questions.json'
+  }
+};
+
+/**
+ * Persist the current modified game to localStorage so changes survive refresh.
+ */
+function persistCurrentGame() {
+  if (!currentGame) return;
+  try {
+    localStorage.setItem(`triviabot-game-${currentGame.id}`, JSON.stringify(currentGame));
+  } catch (error) {
+    console.warn('Error persisting game:', error);
+  }
+}
+
+/**
+ * Sync banned questions and used questions to the server (data/ files) so the generator picks them up.
+ * Falls back to localStorage-only if server is unavailable (e.g. deployed static site).
+ */
+function syncUIDataToServer() {
+  try {
+    const banned = loadBannedQuestions();
+    const bannedPayload = { questions: banned, lastUpdated: new Date().toISOString() };
+
+    const stored = localStorage.getItem('triviabot-used-questions') || '[]';
+    const usedIds = JSON.parse(stored);
+
+    // Always persist to localStorage as fallback
+    localStorage.setItem('triviabot-banned-questions-export', JSON.stringify(bannedPayload, null, 2));
+    localStorage.setItem('triviabot-used-questions-export', JSON.stringify(usedIds));
+
+    // Try to write to server files via dev-server API
+    fetch('/api/sync-ui-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bannedQuestions: bannedPayload, usedQuestions: usedIds })
+    }).catch(() => {
+      // Silently ignore if server not available (static deploy)
+    });
+  } catch (error) {
+    console.warn('Error syncing UI data:', error);
+  }
+}
+
+/**
+ * Track a question as "used" in localStorage so the generator won't pick it again.
+ */
+function trackUsedQuestion(question) {
+  try {
+    const stored = localStorage.getItem('triviabot-used-questions') || '[]';
+    const used = JSON.parse(stored);
+    const id = `${question.clue}|${question.answer || ''}`;
+    if (!used.includes(id)) {
+      used.push(id);
+      localStorage.setItem('triviabot-used-questions', JSON.stringify(used));
+    }
+  } catch (error) {
+    console.warn('Error tracking used question:', error);
+  }
+}
+
+/**
+ * Generate a replacement question from the appropriate pool or archive.
+ * Themed rounds use pool files in data/; standard rounds use archive.
+ * @param {number} roundNumber - Round index
+ * @param {string} [currentCategory] - Prefer same category (archive only)
+ * @param {string} [subType] - Required for game-show-style and mixing-things-up
+ */
+async function generateReplacementQuestion(roundNumber, currentCategory = null, subType = null, currentRoundQuestions = []) {
+  const roundType = ROUND_TEMPLATES[roundNumber]?.roundType;
+  const bannedQuestions = loadBannedQuestions();
+  const isBanned = (q, clueKey, answerKey) =>
+    bannedQuestions.some(b => b.clue === (q[clueKey] ?? q.clue) && (b.answer === (q[answerKey] ?? q.answer) || !b.answer));
+  const isInCurrentRound = (q) =>
+    currentRoundQuestions.some(rq => rq.clue === q.clue || (rq.clue === (q.question || q.clue)));
+
+  try {
+    if (roundType === 'list-round') {
+      const listResponse = await fetch('data/list-round-questions.json');
+      if (!listResponse.ok) throw new Error('Failed to load list-round questions');
+      const { questions = [] } = await listResponse.json();
+      const listId = (clue) => `list:${clue}`;
+      const isListBanned = (clue) =>
+        bannedQuestions.some(b => b.questionId === listId(clue) || (b.clue === clue && b.questionId?.startsWith('list:')));
+      const available = (questions || []).filter(q =>
+        q.clue && Array.isArray(q.answers) && q.answers.length >= 2 && !isListBanned(q.clue) && !isInCurrentRound(q)
+      );
+      if (available.length === 0) throw new Error('No replacement list-round questions available');
+      const selected = available[Math.floor(Math.random() * available.length)];
+      return { clue: selected.clue, answers: selected.answers, pointsAvailable: selected.answers.length };
+    }
+
+    if (roundType === 'over-under') {
+      const file = POOL_FILES['over-under'];
+      const res = await fetch(`data/${file}`);
+      if (!res.ok) throw new Error('Failed to load Over/Under questions');
+      const { questions = [] } = await res.json();
+      const available = (questions || []).filter(q =>
+        q.clue && (q.actualNumber !== undefined || q.answer) && !isBanned(q, 'clue', 'answer') && !isInCurrentRound(q)
+      );
+      if (available.length === 0) throw new Error('No replacement Over/Under questions available');
+      const selected = available[Math.floor(Math.random() * available.length)];
+      const actual = typeof selected.actualNumber === 'number' ? selected.actualNumber : Number(selected.answer) || 0;
+      const target = typeof selected.targetNumber === 'number' ? selected.targetNumber : actual;
+      const overOrUnder = selected.overOrUnder ?? (actual > target ? 'Over' : 'Under');
+      return { clue: selected.clue, answer: String(selected.answer ?? actual), actualNumber: actual, targetNumber: target, overOrUnder };
+    }
+
+    if (roundType === 'entertainment-trivia') {
+      const archiveResponse = await fetch('data/archive-backup.json');
+      if (!archiveResponse.ok) throw new Error('Failed to load archive');
+      const archive = await archiveResponse.json();
+      const entertainment = filterEntertainmentArchive(archive);
+      const available = entertainment.filter(q =>
+        q.clue && q.answer && q.category && !isBanned(q, 'clue', 'answer') && !isInCurrentRound(q)
+      );
+      if (available.length === 0) throw new Error('No replacement entertainment questions available');
+      const selected = available[Math.floor(Math.random() * available.length)];
+      return { clue: selected.clue, answer: selected.answer, category: selected.category };
+    }
+
+    const gameShowPools = POOL_FILES['game-show-style'];
+    if (roundType === 'game-show-style' && subType && gameShowPools[subType]) {
+      const file = gameShowPools[subType];
+      const res = await fetch(`data/${file}`);
+      if (!res.ok) throw new Error(`Failed to load ${subType} questions`);
+      const data = await res.json();
+      const rawQuestions = data.questions || [];
+      if (subType === 'family-feud') {
+        const available = rawQuestions.filter(q => {
+          const clue = q.question;
+          const answer = q.topAnswers?.[0]?.answer;
+          return clue && answer && !isBanned({ clue, answer }, 'clue', 'answer') && !isInCurrentRound({ clue, question: q.question });
+        });
+        if (available.length === 0) throw new Error('No replacement Family Feud questions available');
+        const selected = available[Math.floor(Math.random() * available.length)];
+        return {
+          clue: selected.question,
+          answer: selected.topAnswers?.[0]?.answer || 'Unknown',
+          topAnswers: selected.topAnswers || [],
+          category: 'Family Feud'
+        };
+      }
+      const available = rawQuestions.filter(q => q.clue && (q.answer || q.correctAnswer) && !isBanned(q, 'clue', 'answer') && !isInCurrentRound(q));
+      if (available.length === 0) throw new Error(`No replacement ${subType} questions available`);
+      const selected = available[Math.floor(Math.random() * available.length)];
+      if (subType === 'millionaire') {
+        return {
+          clue: selected.clue,
+          options: selected.options,
+          correctAnswer: selected.correctAnswer ?? selected.answer,
+          answer: selected.correctAnswer ?? selected.answer,
+          explanation: selected.explanation
+        };
+      }
+      return {
+        clue: selected.clue,
+        answer: selected.answer ?? selected.correctAnswer,
+        explanation: selected.explanation,
+        details: selected.details,
+        league: selected.league
+      };
+    }
+
+    const mixingPools = POOL_FILES['mixing-things-up'];
+    if (roundType === 'mixing-things-up' && subType && mixingPools[subType]) {
+      const file = mixingPools[subType];
+      const res = await fetch(`data/${file}`);
+      if (!res.ok) throw new Error(`Failed to load ${subType} questions`);
+      const { questions = [] } = await res.json();
+      const available = (questions || []).filter(q => q.clue && q.answer && !isBanned(q, 'clue', 'answer') && !isInCurrentRound(q));
+      if (available.length === 0) throw new Error(`No replacement ${subType} questions available`);
+      const selected = available[Math.floor(Math.random() * available.length)];
+      return {
+        clue: selected.clue,
+        answer: selected.answer,
+        details: selected.details,
+        league: selected.league,
+        category: selected.category
+      };
+    }
+
+    const archiveResponse = await fetch('data/archive-backup.json');
+    if (!archiveResponse.ok) throw new Error('Failed to load archive');
+    const archive = await archiveResponse.json();
+    const playedGames = loadPlayedGames();
+
+    const availableQuestions = archive.filter(q =>
+      q.clue && q.answer && q.category && !isBanned(q, 'clue', 'answer') && !isInCurrentRound(q)
+    );
+    let candidates = availableQuestions;
+    if (currentCategory) {
+      const sameCategory = availableQuestions.filter(q => q.category === currentCategory);
+      if (sameCategory.length > 0) candidates = sameCategory;
+    }
+    if (candidates.length === 0) throw new Error('No replacement questions available');
+    return candidates[Math.floor(Math.random() * candidates.length)];
+  } catch (error) {
+    console.error('Error generating replacement question:', error);
+    return null;
+  }
+}
+
+// Track questions currently being banned to prevent multiple animations
+const banningQuestions = new Set();
+
+/**
+ * Mark a question as banned in localStorage (without animation)
+ * Used for shuffling rounds
+ */
+function markQuestionAsBannedSilent(gameId, roundNumber, questionIndex, reason = 'shuffled') {
+  const banned = loadBannedQuestions();
+  const round = currentGame.rounds.find(r => r.roundNumber === roundNumber);
+  const question = round?.questions?.[questionIndex];
+  
+  if (!question) {
+    return;
+  }
+  
+  // Check if already banned
+  const existingIndex = banned.findIndex(b => 
+    b.gameId === gameId && 
+    b.roundNumber === roundNumber && 
+    b.questionIndex === questionIndex
+  );
+  
+  if (existingIndex !== -1) {
+    return; // Already banned
+  }
+
+  const isListRound = round?.roundType === 'list-round' && question?.answers && Array.isArray(question.answers);
+  const banEntry = {
+    gameId,
+    roundNumber,
+    questionIndex,
+    clue: question.clue,
+    answer: question.answer,
+    reason: reason,
+    flaggedDate: new Date().toISOString(),
+    bannedBy: reason
+  };
+  if (isListRound) {
+    banEntry.questionId = `list:${question.clue}`;
+    banEntry.source = 'list-round';
+  }
+  banned.push(banEntry);
+
+  saveBannedQuestions(banned);
+  
+  // Update the question in currentGame
+  question.isBanned = true;
+}
+
+/**
+ * Mark a question as banned with animation sequence
+ */
+async function markQuestionAsBanned(gameId, roundNumber, questionIndex, reason = 'manual') {
+  // Create unique key for this question
+  const banKey = `${gameId}-${roundNumber}-${questionIndex}`;
+  
+  // Prevent multiple simultaneous bans
+  if (banningQuestions.has(banKey)) {
+    console.log('Question is already being banned');
+    return;
+  }
+  
+  const banned = loadBannedQuestions();
+  const round = currentGame.rounds.find(r => r.roundNumber === roundNumber);
+  const question = round?.questions?.[questionIndex];
+  
+  if (!question) {
+    console.error('Question not found');
+    return;
+  }
+  
+  // Check if already banned
+  const existingIndex = banned.findIndex(b => 
+    b.gameId === gameId && 
+    b.roundNumber === roundNumber && 
+    b.questionIndex === questionIndex
+  );
+  
+  if (existingIndex !== -1) {
+    console.log('Question already banned');
+    return;
+  }
+  
+  // Mark as being banned
+  banningQuestions.add(banKey);
+  
+  const isListRound = round?.roundType === 'list-round' && question?.answers && Array.isArray(question.answers);
+  const banEntry = {
+    gameId,
+    roundNumber,
+    questionIndex,
+    clue: question.clue,
+    answer: question.answer,
+    reason: reason,
+    flaggedDate: new Date().toISOString(),
+    bannedBy: reason
+  };
+  if (isListRound) {
+    banEntry.questionId = `list:${question.clue}`;
+    banEntry.source = 'list-round';
+  }
+  banned.push(banEntry);
+
+  saveBannedQuestions(banned);
+
+  // Update the question in currentGame
+  if (question) {
+    question.isBanned = true;
+  }
+
+  // Find the question element
+  const questionDiv = document.querySelector(
+    `.round[data-round="${roundNumber}"] .question[data-question-index="${questionIndex}"]`
+  );
+  
+  if (!questionDiv) {
+    console.error('Question element not found');
+    banningQuestions.delete(banKey);
+    return;
+  }
+  
+  // Disable the button immediately
+  const btn = questionDiv.querySelector('.banned-btn');
+  if (btn) {
+    btn.disabled = true;
+    btn.title = 'Question is banned';
+  }
+  
+  // Step 1: Add "banning" class to trigger strikethrough animation
+  questionDiv.classList.add('banning');
+  
+  // Verify elements exist and log for debugging
+  const clueEl = questionDiv.querySelector('.question-clue');
+  const answerEl = questionDiv.querySelector('.question-answer');
+  
+  console.log('Added banning class to question element', {
+    questionDiv,
+    hasClue: !!clueEl,
+    hasAnswer: !!answerEl,
+    classes: questionDiv.className
+  });
+  
+  // Force a reflow to ensure the class is applied before animation starts
+  void questionDiv.offsetHeight;
+  
+  // Step 2: After strikethrough animation (600ms) + rest (400ms), start slide out
+  setTimeout(async () => {
+    // Add banned class for final styling
+    questionDiv.classList.add('banned');
+    questionDiv.classList.remove('banning');
+    
+    // Step 3: Generate replacement question (from archive or family-feud-questions.json when round is family-feud)
+    const replacement = await generateReplacementQuestion(roundNumber, question.category, round.subType, round.questions || []);
+    
+    if (replacement) {
+      // Step 4: Add sliding-out class to old question
+      questionDiv.classList.add('sliding-out');
+      
+      // Step 5: Build new question from replacement (preserve round-specific fields)
+      let newQuestion;
+      if (round.roundType === 'list-round' && replacement.answers) {
+        newQuestion = {
+          clue: replacement.clue,
+          answers: replacement.answers,
+          pointsAvailable: replacement.pointsAvailable ?? replacement.answers.length,
+          isBanned: false
+        };
+      } else if (round.roundType === 'over-under' && replacement.actualNumber !== undefined) {
+        newQuestion = {
+          clue: replacement.clue,
+          answer: replacement.answer,
+          actualNumber: replacement.actualNumber,
+          targetNumber: replacement.targetNumber,
+          overOrUnder: replacement.overOrUnder,
+          isBanned: false
+        };
+      } else if (round.roundType === 'game-show-style' || round.roundType === 'mixing-things-up' || round.roundType === 'entertainment-trivia') {
+        newQuestion = { ...replacement, isBanned: false };
+      } else {
+        newQuestion = {
+          clue: replacement.clue,
+          answer: replacement.answer,
+          category: replacement.category,
+          isBanned: false
+        };
+        if (replacement.topAnswers) newQuestion.topAnswers = replacement.topAnswers;
+      }
+
+      // Update the question in currentGame
+      round.questions[questionIndex] = newQuestion;
+      
+      // Track new question and persist
+      trackUsedQuestion(newQuestion);
+      persistCurrentGame();
+      syncUIDataToServer();
+      
+      // Create new question element
+      const newQuestionDiv = createQuestionElement(newQuestion, questionIndex + 1, round);
+      newQuestionDiv.classList.add('sliding-in');
+      newQuestionDiv.setAttribute('data-question-index', questionIndex);
+      
+      // Get the round content container
+      const roundContent = questionDiv.parentNode;
+      
+      // Insert new question in the same position (before the old one)
+      roundContent.insertBefore(newQuestionDiv, questionDiv);
+      
+      // Re-initialize Lucide icons for new content
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+      
+      // Step 6: After slide-out animation completes (500ms), remove old question
+      setTimeout(() => {
+        // Only remove if it still exists (safety check)
+        if (questionDiv.parentNode) {
+          questionDiv.remove();
+        }
+        // Remove sliding-in class after animation
+        setTimeout(() => {
+          if (newQuestionDiv.parentNode) {
+            newQuestionDiv.classList.remove('sliding-in');
+          }
+          // Clear the banning flag
+          banningQuestions.delete(banKey);
+        }, 500);
+      }, 500);
+    } else {
+      // If no replacement, just keep the banned question
+      console.warn('Could not generate replacement question');
+      banningQuestions.delete(banKey);
+    }
+  }, 1000); // 600ms animation + 400ms rest
+  
+  console.log(`Question banned: Round ${roundNumber}, Q${questionIndex + 1}`);
+}
+
+/**
+ * Check if a question is banned
+ */
+function isQuestionBanned(gameId, roundNumber, questionIndex) {
+  const banned = loadBannedQuestions();
+  return banned.some(b => 
+    b.gameId === gameId && 
+    b.roundNumber === roundNumber && 
+    b.questionIndex === questionIndex
+  );
 }
 
 /**
@@ -100,6 +648,21 @@ async function loadGame() {
     if (typeof perfLab !== 'undefined') {
       perfLab.end('parseGameData');
       perfLab.end('fetchGameData');
+    }
+    
+    // Check for persisted modifications (from replace/shuffle)
+    const persisted = localStorage.getItem(`triviabot-game-${currentGame.id}`);
+    if (persisted) {
+      try {
+        const persistedGame = JSON.parse(persisted);
+        // Only use persisted if it's the same game (same id and date)
+        if (persistedGame.id === currentGame.id && persistedGame.date === currentGame.date) {
+          currentGame = persistedGame;
+          console.log('Loaded persisted game modifications from localStorage');
+        }
+      } catch (e) {
+        console.warn('Error loading persisted game:', e);
+      }
     }
     
     // Get game number
@@ -216,6 +779,9 @@ function createRoundElement(round) {
   roundDiv.className = 'round';
   roundDiv.setAttribute('data-round', round.roundNumber);
   
+  // Get template for this round
+  const template = ROUND_TEMPLATES[round.roundNumber] || {};
+  
   // Round header (collapsible)
   if (typeof perfLab !== 'undefined') perfLab.start('createRoundHeader');
   const header = document.createElement('div');
@@ -223,11 +789,34 @@ function createRoundElement(round) {
   header.onclick = () => toggleRound(roundDiv);
   
   const title = document.createElement('h2');
-  title.textContent = `Round ${round.roundNumber}`;
+  // Use round title from data or template
+  const roundTitle = round.title || template.title || `Round ${round.roundNumber}`;
+  title.textContent = `Round ${round.roundNumber}: ${roundTitle}`;
+  
+  // Show subType badge if applicable
+  const badges = document.createElement('div');
+  badges.className = 'round-badges';
+  
+  if (round.subType) {
+    const subTypeBadge = document.createElement('span');
+    subTypeBadge.className = 'subtype-badge';
+    subTypeBadge.textContent = round.subType.replace(/-/g, ' ');
+    badges.appendChild(subTypeBadge);
+  }
   
   const difficulty = document.createElement('span');
   difficulty.className = 'difficulty';
-  difficulty.textContent = round.difficulty;
+  difficulty.textContent = round.difficulty || template.difficulty || '';
+  if (difficulty.textContent) {
+    badges.appendChild(difficulty);
+  }
+  
+  // Points badge
+  const pointsBadge = document.createElement('span');
+  pointsBadge.className = 'points-badge';
+  const pts = round.pointsPerQuestion || template.points || '?';
+  pointsBadge.textContent = `${pts} pts`;
+  badges.appendChild(pointsBadge);
   
   const toggle = document.createElement('span');
   toggle.className = 'toggle';
@@ -235,7 +824,7 @@ function createRoundElement(round) {
   
   const shuffleRoundBtn = document.createElement('button');
   shuffleRoundBtn.className = 'shuffle-round-btn';
-  shuffleRoundBtn.title = 'Generate new round';
+  shuffleRoundBtn.title = template.useLLM ? 'Regenerate round (LLM)' : 'Generate new round';
   shuffleRoundBtn.style.background = 'rgba(255, 255, 255, 0.2)';
   shuffleRoundBtn.style.border = 'none';
   shuffleRoundBtn.style.color = 'inherit';
@@ -254,11 +843,11 @@ function createRoundElement(round) {
   
   shuffleRoundBtn.onclick = async (e) => {
     e.stopPropagation(); // Prevent round toggle
-    await generateNewRound(roundDiv, round.roundNumber, round.difficulty);
+    await generateNewRound(roundDiv, round.roundNumber, round.difficulty, round.subType);
   };
   
   header.appendChild(title);
-  header.appendChild(difficulty);
+  header.appendChild(badges);
   header.appendChild(shuffleRoundBtn);
   header.appendChild(toggle);
   if (typeof perfLab !== 'undefined') perfLab.end('createRoundHeader');
@@ -268,12 +857,21 @@ function createRoundElement(round) {
   const content = document.createElement('div');
   content.className = 'round-content';
   
+  // Show instructions if present
+  if (round.instructions) {
+    const instructions = document.createElement('div');
+    instructions.className = 'round-instructions';
+    instructions.textContent = round.instructions;
+    content.appendChild(instructions);
+  }
+  
   // Use DocumentFragment to batch question DOM operations
   const questionFragment = document.createDocumentFragment();
   
   round.questions.forEach((question, index) => {
     if (typeof perfLab !== 'undefined') perfLab.start(`createQuestion-${round.roundNumber}-${index}`);
-    const questionElement = createQuestionElement(question, index + 1, round.roundNumber);
+    // Pass full round object for type-specific rendering
+    const questionElement = createQuestionElement(question, index + 1, round);
     questionFragment.appendChild(questionElement);
     if (typeof perfLab !== 'undefined') perfLab.end(`createQuestion-${round.roundNumber}-${index}`);
   });
@@ -294,15 +892,74 @@ function createRoundElement(round) {
 }
 
 /**
- * Create a question element
+ * Create a question element based on round type
  */
-function createQuestionElement(question, number, roundNumber) {
+function createQuestionElement(question, number, round) {
+  const roundNumber = round.roundNumber || round;
+  const roundType = round.roundType || 'standard';
+  const subType = round.subType;
+  
+  // Route to specific renderer based on type
+  switch(roundType) {
+    case 'over-under':
+      return createOverUnderElement(question, number, roundNumber);
+    case 'list-round':
+      return createListElement(question, number, roundNumber);
+    case 'game-show-style':
+      if (subType === 'family-feud') {
+        return createFamilyFeudElement(question, number, roundNumber);
+      } else if (subType === 'to-tell-the-truth') {
+        return createTrueFalseElement(question, number, roundNumber);
+      } else if (subType === 'millionaire') {
+        return createMultipleChoiceElement(question, number, roundNumber);
+      }
+      return createStandardElement(question, number, roundNumber);
+    default:
+      return createStandardElement(question, number, roundNumber);
+  }
+}
+
+/**
+ * Create standard question element
+ */
+function createStandardElement(question, number, roundNumber) {
   const questionDiv = document.createElement('div');
   questionDiv.className = 'question';
+  questionDiv.setAttribute('data-question-index', number - 1);
+  
+  // Check if banned - only use the isBanned flag from the question object
+  // Don't check localStorage to avoid false positives for new questions
+  // Use truthy check to handle both true and undefined (for initial load)
+  if (question.isBanned) {
+    questionDiv.classList.add('banned');
+  }
+  
+  // Question header with category and ban button
+  const header = document.createElement('div');
+  header.className = 'question-header';
   
   const category = document.createElement('div');
   category.className = 'question-category';
-  category.textContent = `Q${number}: ${question.category}`;
+  category.textContent = `Q${number}: ${question.category || 'General'}`;
+  
+  const bannedBtn = document.createElement('button');
+  bannedBtn.className = 'banned-btn';
+  bannedBtn.title = 'Mark as banned';
+  bannedBtn.innerHTML = '<i data-lucide="circle-slash"></i>';
+  bannedBtn.onclick = (e) => {
+    e.stopPropagation();
+    if (confirm('Ban this question? It will not be used in future games.')) {
+      markQuestionAsBanned(currentGame.id, roundNumber, number - 1);
+    }
+  };
+  
+  if (questionDiv.classList.contains('banned')) {
+    bannedBtn.disabled = true;
+    bannedBtn.title = 'Question is banned';
+  }
+  
+  header.appendChild(category);
+  header.appendChild(bannedBtn);
   
   const clue = document.createElement('div');
   clue.className = 'question-clue';
@@ -310,20 +967,263 @@ function createQuestionElement(question, number, roundNumber) {
   
   const answer = document.createElement('div');
   answer.className = 'question-answer';
-  
-  // Ensure answer is properly set - defensive coding
   const answerText = question.answer || '';
-  if (typeof answerText !== 'string') {
-    console.warn('Answer is not a string:', question.answer, typeof question.answer);
-  }
   answer.textContent = String(answerText);
   
-  // Verify the answer was set correctly (for debugging)
-  if (answer.textContent !== answerText) {
-    console.error('Answer mismatch! Expected:', answerText, 'Got:', answer.textContent);
+  // Add explanation if present
+  if (question.explanation) {
+    const explanation = document.createElement('div');
+    explanation.className = 'question-explanation';
+    explanation.textContent = question.explanation;
+    answer.appendChild(document.createElement('br'));
+    answer.appendChild(explanation);
   }
   
-  questionDiv.appendChild(category);
+  questionDiv.appendChild(header);
+  questionDiv.appendChild(clue);
+  questionDiv.appendChild(answer);
+  
+  return questionDiv;
+}
+
+/**
+ * Create Over/Under question element
+ */
+function createOverUnderElement(question, number, roundNumber) {
+  const questionDiv = createStandardElement(question, number, roundNumber);
+  questionDiv.classList.add('over-under-question');
+  
+  // If question has targetNumber and actualNumber, show "Over" or "Under" in bold, actual number in parentheses
+  if (question.targetNumber !== undefined && question.actualNumber !== undefined) {
+    const clue = questionDiv.querySelector('.question-clue');
+    clue.innerHTML = `${question.clue} <strong>– ${question.targetNumber}</strong>`;
+    const overOrUnder = question.overOrUnder ?? (question.actualNumber > question.targetNumber ? 'Over' : 'Under');
+    const answer = questionDiv.querySelector('.question-answer');
+    answer.innerHTML = `<strong>${overOrUnder}</strong> (${question.actualNumber})`;
+  }
+  
+  return questionDiv;
+}
+
+/**
+ * Create List Round question element
+ */
+function createListElement(question, number, roundNumber) {
+  const questionDiv = document.createElement('div');
+  questionDiv.className = 'question list-question';
+  questionDiv.setAttribute('data-question-index', number - 1);
+  
+  // Check if banned - only use the isBanned flag from the question object
+  if (question.isBanned) {
+    questionDiv.classList.add('banned');
+  }
+  
+  const header = document.createElement('div');
+  header.className = 'question-header';
+  
+  const category = document.createElement('div');
+  category.className = 'question-category';
+  const points = question.pointsAvailable || (question.answers?.length) || '?';
+  category.textContent = `List Round (${points} points possible)`;
+  
+  const bannedBtn = document.createElement('button');
+  bannedBtn.className = 'banned-btn';
+  bannedBtn.title = 'Mark as banned';
+  bannedBtn.innerHTML = '<i data-lucide="circle-slash"></i>';
+  bannedBtn.onclick = (e) => {
+    e.stopPropagation();
+    if (confirm('Ban this question? It will not be used in future games.')) {
+      markQuestionAsBanned(currentGame.id, roundNumber, number - 1);
+    }
+  };
+  
+  header.appendChild(category);
+  header.appendChild(bannedBtn);
+  
+  const clue = document.createElement('div');
+  clue.className = 'question-clue';
+  clue.textContent = question.clue;
+  
+  const answer = document.createElement('div');
+  answer.className = 'question-answer list-answers';
+  
+  // Show answers as a list
+  if (question.answers && Array.isArray(question.answers)) {
+    const list = document.createElement('ul');
+    question.answers.forEach(ans => {
+      const item = document.createElement('li');
+      item.textContent = ans;
+      list.appendChild(item);
+    });
+    answer.appendChild(list);
+  } else {
+    answer.textContent = question.answer || '';
+  }
+  
+  questionDiv.appendChild(header);
+  questionDiv.appendChild(clue);
+  questionDiv.appendChild(answer);
+  
+  return questionDiv;
+}
+
+/**
+ * Create True/False question element
+ */
+function createTrueFalseElement(question, number, roundNumber) {
+  const questionDiv = createStandardElement(question, number, roundNumber);
+  questionDiv.classList.add('true-false-question');
+  
+  const answer = questionDiv.querySelector('.question-answer');
+  const isTrue = question.answer === 'True' || question.answer === true;
+  answer.classList.add(isTrue ? 'answer-true' : 'answer-false');
+  
+  return questionDiv;
+}
+
+/**
+ * Create Multiple Choice question element
+ */
+function createMultipleChoiceElement(question, number, roundNumber) {
+  const questionDiv = document.createElement('div');
+  questionDiv.className = 'question multiple-choice-question';
+  questionDiv.setAttribute('data-question-index', number - 1);
+  
+  // Check if banned - only use the isBanned flag from the question object
+  if (question.isBanned) {
+    questionDiv.classList.add('banned');
+  }
+  
+  const header = document.createElement('div');
+  header.className = 'question-header';
+  
+  const category = document.createElement('div');
+  category.className = 'question-category';
+  category.textContent = `Q${number}: Multiple Choice`;
+  
+  const bannedBtn = document.createElement('button');
+  bannedBtn.className = 'banned-btn';
+  bannedBtn.title = 'Mark as banned';
+  bannedBtn.innerHTML = '<i data-lucide="circle-slash"></i>';
+  bannedBtn.onclick = (e) => {
+    e.stopPropagation();
+    if (confirm('Ban this question?')) {
+      markQuestionAsBanned(currentGame.id, roundNumber, number - 1);
+    }
+  };
+  
+  header.appendChild(category);
+  header.appendChild(bannedBtn);
+  
+  const clue = document.createElement('div');
+  clue.className = 'question-clue';
+  clue.textContent = question.clue;
+  
+  // Options
+  const optionsDiv = document.createElement('div');
+  optionsDiv.className = 'question-options';
+  if (question.options && Array.isArray(question.options)) {
+    question.options.forEach(opt => {
+      const optEl = document.createElement('div');
+      optEl.className = 'option';
+      optEl.textContent = opt;
+      optionsDiv.appendChild(optEl);
+    });
+  }
+  
+  const answer = document.createElement('div');
+  answer.className = 'question-answer';
+  answer.innerHTML = `<strong>Answer: ${question.correctAnswer || question.answer}</strong>`;
+  if (question.explanation) {
+    answer.innerHTML += `<br><span class="explanation">${question.explanation}</span>`;
+  }
+  
+  questionDiv.appendChild(header);
+  questionDiv.appendChild(clue);
+  questionDiv.appendChild(optionsDiv);
+  questionDiv.appendChild(answer);
+  
+  return questionDiv;
+}
+
+/**
+ * Create Family Feud question element
+ */
+function createFamilyFeudElement(question, number, roundNumber) {
+  const questionDiv = document.createElement('div');
+  questionDiv.className = 'question family-feud-question';
+  questionDiv.setAttribute('data-question-index', number - 1);
+  
+  // Check if banned - only use the isBanned flag from the question object
+  if (question.isBanned) {
+    questionDiv.classList.add('banned');
+  }
+  
+  const header = document.createElement('div');
+  header.className = 'question-header';
+  
+  const category = document.createElement('div');
+  category.className = 'question-category';
+  category.textContent = `Q${number}: Family Feud`;
+  
+  const bannedBtn = document.createElement('button');
+  bannedBtn.className = 'banned-btn';
+  bannedBtn.title = 'Mark as banned';
+  bannedBtn.innerHTML = '<i data-lucide="circle-slash"></i>';
+  bannedBtn.onclick = (e) => {
+    e.stopPropagation();
+    if (confirm('Ban this question?')) {
+      markQuestionAsBanned(currentGame.id, roundNumber, number - 1);
+    }
+  };
+  
+  header.appendChild(category);
+  header.appendChild(bannedBtn);
+  
+  const clue = document.createElement('div');
+  clue.className = 'question-clue';
+  clue.textContent = question.clue;
+  
+  const answer = document.createElement('div');
+  answer.className = 'question-answer family-feud-answers';
+  
+  // Top answer highlight
+  const topAnswer = document.createElement('div');
+  topAnswer.className = 'top-answer';
+  topAnswer.innerHTML = `<strong>#1 Answer:</strong> ${question.answer}`;
+  answer.appendChild(topAnswer);
+  
+  // Top 10 answers table (2 columns, 5 rows)
+  if (question.topAnswers && Array.isArray(question.topAnswers)) {
+    const table = document.createElement('table');
+    table.className = 'feud-table';
+    
+    for (let i = 0; i < 5; i++) {
+      const row = document.createElement('tr');
+      
+      // Left column
+      const left = question.topAnswers[i];
+      const leftCell = document.createElement('td');
+      if (left) {
+        leftCell.innerHTML = `<span class="rank">${i + 1}.</span> ${left.answer} <span class="points">(${left.points})</span>`;
+      }
+      row.appendChild(leftCell);
+      
+      // Right column
+      const right = question.topAnswers[i + 5];
+      const rightCell = document.createElement('td');
+      if (right) {
+        rightCell.innerHTML = `<span class="rank">${i + 6}.</span> ${right.answer} <span class="points">(${right.points})</span>`;
+      }
+      row.appendChild(rightCell);
+      
+      table.appendChild(row);
+    }
+    
+    answer.appendChild(table);
+  }
+  
+  questionDiv.appendChild(header);
   questionDiv.appendChild(clue);
   questionDiv.appendChild(answer);
   
@@ -371,41 +1271,119 @@ function renderFinalTrivia() {
 
 /**
  * Mark game as played
+ * @param {string} gameId - The game ID
+ * @param {boolean} manual - Whether this was manually triggered (show feedback)
  */
-async function markGameAsPlayed(gameId) {
+async function markGameAsPlayed(gameId, manual = false) {
   try {
     if (typeof perfLab !== 'undefined') perfLab.start('loadPlayedStatus');
     // Load current played status
-    let playedStatus = {};
+    let playedStatus = { games: {} };
     try {
       const response = await fetch('data/played-status.json');
       if (response.ok) {
         playedStatus = await response.json();
+        if (!playedStatus.games) playedStatus.games = {};
       }
     } catch (error) {
       // Fallback to localStorage
       const stored = localStorage.getItem('triviabot-played-status');
       if (stored) {
         if (typeof perfLab !== 'undefined') perfLab.start('parseLocalStorage');
-        playedStatus = JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        // Handle old format (direct boolean) and new format (games object)
+        if (parsed.games) {
+          playedStatus = parsed;
+        } else {
+          // Convert old format
+          playedStatus = { games: {} };
+          Object.keys(parsed).forEach(key => {
+            playedStatus.games[key] = { played: parsed[key], playedDate: new Date().toISOString() };
+          });
+        }
         if (typeof perfLab !== 'undefined') perfLab.end('parseLocalStorage');
       }
     }
     if (typeof perfLab !== 'undefined') perfLab.end('loadPlayedStatus');
     
-    // Update status
-    playedStatus[gameId] = true;
+    // Update status with new structure
+    playedStatus.games[gameId] = {
+      played: true,
+      playedDate: new Date().toISOString()
+    };
+    
+    // Also update game data
+    if (currentGame) {
+      currentGame.isPlayed = true;
+    }
     
     // Save to localStorage (debounced to prevent blocking)
     if (typeof perfLab !== 'undefined') perfLab.start('saveToLocalStorage');
     debouncedLocalStorageWrite('triviabot-played-status', playedStatus);
     if (typeof perfLab !== 'undefined') perfLab.end('saveToLocalStorage');
     
-    // Note: To save to GitHub, you'd need to use GitHub API
-    // For now, we just use localStorage
+    // Update UI if manually triggered
+    if (manual) {
+      const markPlayedBtn = document.getElementById('mark-played-btn');
+      if (markPlayedBtn) {
+        markPlayedBtn.disabled = true;
+        markPlayedBtn.innerHTML = '<i data-lucide="check-circle-2"></i><span>Marked as Played</span>';
+        markPlayedBtn.classList.add('played');
+        if (typeof lucide !== 'undefined') {
+          lucide.createIcons();
+        }
+      }
+      console.log(`Game ${gameId} manually marked as played`);
+    }
     
   } catch (error) {
     console.error('Error marking game as played:', error);
+  }
+}
+
+/**
+ * Check if a game is marked as played
+ */
+function isGamePlayed(gameId) {
+  try {
+    const stored = localStorage.getItem('triviabot-played-status');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Handle both old and new formats
+      if (parsed.games && parsed.games[gameId]) {
+        return parsed.games[gameId].played === true;
+      }
+      return parsed[gameId] === true;
+    }
+  } catch (error) {
+    console.warn('Error checking played status:', error);
+  }
+  return false;
+}
+
+/**
+ * Setup the Mark as Played button
+ */
+function setupMarkPlayedButton() {
+  const markPlayedBtn = document.getElementById('mark-played-btn');
+  if (!markPlayedBtn || !currentGame) return;
+  
+  const alreadyPlayed = isGamePlayed(currentGame.id) || currentGame.isPlayed;
+  
+  if (alreadyPlayed) {
+    markPlayedBtn.disabled = true;
+    markPlayedBtn.innerHTML = '<i data-lucide="check-circle-2"></i><span>Marked as Played</span>';
+    markPlayedBtn.classList.add('played');
+  } else {
+    markPlayedBtn.onclick = () => {
+      if (confirm('Mark this game as played? This helps track which games have been used.')) {
+        markGameAsPlayed(currentGame.id, true);
+      }
+    };
+  }
+  
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
   }
 }
 
@@ -446,11 +1424,12 @@ function shuffleQuestion(questionDiv, roundNumber) {
 }
 
 /**
- * Generate a new round from the archive
+ * Generate a new round from the archive (or LLM for rounds 5 and 7)
  */
-async function generateNewRound(roundDiv, roundNumber, targetDifficulty) {
+async function generateNewRound(roundDiv, roundNumber, targetDifficulty, currentSubType = null) {
   const shuffleBtn = roundDiv.querySelector('.shuffle-round-btn');
   const originalContent = shuffleBtn.innerHTML;
+  const template = ROUND_TEMPLATES[roundNumber];
   
   // Show loading state
   shuffleBtn.disabled = true;
@@ -459,17 +1438,332 @@ async function generateNewRound(roundDiv, roundNumber, targetDifficulty) {
     lucide.createIcons();
   }
   
+  // Find current round and mark old questions as banned (silently, no animation)
+  const round = currentGame.rounds.find(r => r.roundNumber === roundNumber);
+  if (round && round.questions) {
+    round.questions.forEach((q, idx) => {
+      markQuestionAsBannedSilent(currentGame.id, roundNumber, idx, 'shuffled');
+    });
+    console.log(`Auto-banned ${round.questions.length} questions from shuffled round ${roundNumber}`);
+  }
+  
   try {
-    // Load archive data
+    // Check if this is an LLM-generated round
+    if (template && template.useLLM) {
+      // Try to generate via LLM
+      const newSubType = currentSubType || (template.subTypes ? template.subTypes[Math.floor(Math.random() * template.subTypes.length)] : null);
+      
+      console.log(`Generating LLM round ${roundNumber} with subType: ${newSubType}`);
+      
+      // Call server-side API or use client-side LLM (placeholder for API endpoint)
+      // For now, show a message that LLM generation requires server-side processing
+      const useLLMApi = typeof window.TRIVIA_CONFIG !== 'undefined' && window.TRIVIA_CONFIG.openaiApiKey;
+      
+      if (!useLLMApi) {
+        alert('LLM generation requires server-side processing or API key configuration. Falling back to archive-based generation.');
+      } else {
+        // TODO: Implement client-side LLM call when API is available
+        console.warn('Client-side LLM generation not yet implemented');
+      }
+    }
+
+    // List round: use data/list-round-questions.json
+    if (template?.roundType === 'list-round' && round) {
+      try {
+        const listResponse = await fetch('data/list-round-questions.json');
+        if (listResponse.ok) {
+          const { questions = [] } = await listResponse.json();
+          const bannedQuestions = loadBannedQuestions();
+          const listId = (clue) => `list:${clue}`;
+          const isListBanned = (clue) =>
+            bannedQuestions.some(b => b.questionId === listId(clue) || (b.clue === clue && b.questionId?.startsWith('list:')));
+          const available = (questions || []).filter(q =>
+            q.clue && Array.isArray(q.answers) && q.answers.length >= 2 && !isListBanned(q.clue)
+          );
+          if (available.length > 0) {
+            const selected = available[Math.floor(Math.random() * available.length)];
+            const listQuestion = {
+              clue: selected.clue,
+              answers: selected.answers,
+              pointsAvailable: selected.answers.length,
+              isBanned: false
+            };
+            round.questions = [listQuestion];
+            // Track new questions and persist
+            [listQuestion].forEach(q => trackUsedQuestion(q));
+            persistCurrentGame();
+            syncUIDataToServer();
+            const content = roundDiv.querySelector('.round-content');
+            const instructionsEl = content.querySelector('.round-instructions');
+            content.innerHTML = '';
+            if (instructionsEl) content.appendChild(instructionsEl);
+            const questionFragment = document.createDocumentFragment();
+            round.questions.forEach((q, index) => {
+              questionFragment.appendChild(createQuestionElement(q, index + 1, round));
+            });
+            content.appendChild(questionFragment);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('List round fallback failed:', err.message);
+      }
+    }
+
+    // Entertainment round: only use entertainment-themed questions from archive
+    if (template?.roundType === 'entertainment-trivia' && round) {
+      try {
+        const archiveResponse = await fetch('data/archive-backup.json');
+        if (archiveResponse.ok) {
+          const archive = await archiveResponse.json();
+          const bannedQuestions = loadBannedQuestions();
+          const entertainment = filterEntertainmentArchive(archive);
+          const available = entertainment.filter(q => {
+            if (!q.clue || !q.answer || !q.category) return false;
+            return !bannedQuestions.some(b => b.clue === q.clue && b.answer === q.answer);
+          });
+          if (available.length >= 3) {
+            const shuffled = [...available].sort(() => Math.random() - 0.5);
+            const selectedQuestions = shuffled.slice(0, 3).map(q => ({
+              clue: q.clue,
+              answer: q.answer,
+              category: q.category,
+              isBanned: false
+            }));
+            round.questions = selectedQuestions;
+            // Track new questions and persist
+            selectedQuestions.forEach(q => trackUsedQuestion(q));
+            persistCurrentGame();
+            syncUIDataToServer();
+            const content = roundDiv.querySelector('.round-content');
+            const instructionsEl = content.querySelector('.round-instructions');
+            content.innerHTML = '';
+            if (instructionsEl) content.appendChild(instructionsEl);
+            const questionFragment = document.createDocumentFragment();
+            selectedQuestions.forEach((question, index) => {
+              questionFragment.appendChild(createQuestionElement(question, index + 1, round));
+            });
+            content.appendChild(questionFragment);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            return;
+          } else {
+            alert('Not enough entertainment questions available to generate a new round.');
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Entertainment round generation failed:', err.message);
+        alert('Failed to generate entertainment round: ' + err.message);
+        return;
+      }
+    }
+
+    // Game-show-style Family Feud: use data from family-feud-questions.json (populated by convert-protoqa script)
+    const isFamilyFeudRound = template?.roundType === 'game-show-style' && (currentSubType === 'family-feud' || (template.subTypes && template.subTypes.includes('family-feud')));
+    if (isFamilyFeudRound && round) {
+      try {
+        const ffResponse = await fetch('data/family-feud-questions.json');
+        if (ffResponse.ok) {
+          const { questions = [] } = await ffResponse.json();
+          const bannedQuestions = loadBannedQuestions();
+          const available = questions.filter(q => {
+            const clue = q.question;
+            const answer = q.topAnswers?.[0]?.answer;
+            if (!clue || !answer) return false;
+            return !bannedQuestions.some(b => b.clue === clue && (b.answer === answer || !b.answer));
+          });
+          if (available.length > 0) {
+            const selected = available[Math.floor(Math.random() * available.length)];
+            const selectedQuestions = [{
+              clue: selected.question,
+              answer: selected.topAnswers?.[0]?.answer || 'Unknown',
+              topAnswers: selected.topAnswers || [],
+              isBanned: false
+            }];
+            round.subType = 'family-feud';
+            round.questions = selectedQuestions;
+            // Track new questions and persist
+            selectedQuestions.forEach(q => trackUsedQuestion(q));
+            persistCurrentGame();
+            syncUIDataToServer();
+            const content = roundDiv.querySelector('.round-content');
+            const instructionsEl = content.querySelector('.round-instructions');
+            content.innerHTML = '';
+            if (instructionsEl) content.appendChild(instructionsEl);
+            const questionFragment = document.createDocumentFragment();
+            selectedQuestions.forEach((question, index) => {
+              questionFragment.appendChild(createQuestionElement(question, index + 1, round));
+            });
+            content.appendChild(questionFragment);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Family Feud round fallback failed, using archive:', err.message);
+      }
+    }
+
+    // Over/Under round: use pool file
+    if (template?.roundType === 'over-under' && round) {
+      try {
+        const ouResponse = await fetch(`data/${POOL_FILES['over-under']}`);
+        if (ouResponse.ok) {
+          const { questions = [] } = await ouResponse.json();
+          const bannedQuestions = loadBannedQuestions();
+          const available = questions.filter(q =>
+            q.clue && (q.actualNumber !== undefined || q.answer) &&
+            !bannedQuestions.some(b => b.clue === q.clue && (b.answer === String(q.answer) || b.answer === String(q.actualNumber)))
+          );
+          if (available.length >= 3) {
+            const shuffled = [...available].sort(() => Math.random() - 0.5);
+            const selectedQuestions = shuffled.slice(0, 3).map(q => {
+              const actual = typeof q.actualNumber === 'number' ? q.actualNumber : Number(q.answer) || 0;
+              const target = typeof q.targetNumber === 'number' ? q.targetNumber : actual;
+              const overOrUnder = q.overOrUnder ?? (actual > target ? 'Over' : 'Under');
+              return { clue: q.clue, answer: String(q.answer ?? actual), actualNumber: actual, targetNumber: target, overOrUnder, isBanned: false };
+            });
+            round.questions = selectedQuestions;
+            // Track new questions and persist
+            selectedQuestions.forEach(q => trackUsedQuestion(q));
+            persistCurrentGame();
+            syncUIDataToServer();
+            const content = roundDiv.querySelector('.round-content');
+            const instructionsEl = content.querySelector('.round-instructions');
+            content.innerHTML = '';
+            if (instructionsEl) content.appendChild(instructionsEl);
+            const questionFragment = document.createDocumentFragment();
+            selectedQuestions.forEach((q, index) => {
+              questionFragment.appendChild(createQuestionElement(q, index + 1, round));
+            });
+            content.appendChild(questionFragment);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            return;
+          } else {
+            alert('Not enough Over/Under questions available to generate a new round.');
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Over/Under round generation failed:', err.message);
+        alert('Failed to generate Over/Under round: ' + err.message);
+        return;
+      }
+    }
+
+    // Game-show-style (non-Family-Feud): use pool files
+    const gameShowPools = POOL_FILES['game-show-style'];
+    if (template?.roundType === 'game-show-style' && round && currentSubType && currentSubType !== 'family-feud' && gameShowPools[currentSubType]) {
+      try {
+        const gsResponse = await fetch(`data/${gameShowPools[currentSubType]}`);
+        if (gsResponse.ok) {
+          const { questions = [] } = await gsResponse.json();
+          const bannedQuestions = loadBannedQuestions();
+          const available = questions.filter(q =>
+            q.clue && (q.answer || q.correctAnswer) &&
+            !bannedQuestions.some(b => b.clue === q.clue && (b.answer === q.answer || b.answer === q.correctAnswer))
+          );
+          if (available.length >= 3) {
+            const shuffled = [...available].sort(() => Math.random() - 0.5);
+            const selectedQuestions = shuffled.slice(0, 3).map(q => ({
+              clue: q.clue,
+              answer: q.answer ?? q.correctAnswer,
+              options: q.options,
+              correctAnswer: q.correctAnswer ?? q.answer,
+              explanation: q.explanation,
+              isBanned: false
+            }));
+            round.questions = selectedQuestions;
+            round.subType = currentSubType;
+            // Track new questions and persist
+            selectedQuestions.forEach(q => trackUsedQuestion(q));
+            persistCurrentGame();
+            syncUIDataToServer();
+            const content = roundDiv.querySelector('.round-content');
+            const instructionsEl = content.querySelector('.round-instructions');
+            content.innerHTML = '';
+            if (instructionsEl) content.appendChild(instructionsEl);
+            const questionFragment = document.createDocumentFragment();
+            selectedQuestions.forEach((q, index) => {
+              questionFragment.appendChild(createQuestionElement(q, index + 1, round));
+            });
+            content.appendChild(questionFragment);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            return;
+          } else {
+            alert(`Not enough ${currentSubType} questions available to generate a new round.`);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn(`${currentSubType} round generation failed:`, err.message);
+        alert(`Failed to generate ${currentSubType} round: ` + err.message);
+        return;
+      }
+    }
+
+    // Mixing-things-up: use pool files
+    const mixingPools = POOL_FILES['mixing-things-up'];
+    if (template?.roundType === 'mixing-things-up' && round && currentSubType && mixingPools[currentSubType]) {
+      try {
+        const mixResponse = await fetch(`data/${mixingPools[currentSubType]}`);
+        if (mixResponse.ok) {
+          const { questions = [] } = await mixResponse.json();
+          const bannedQuestions = loadBannedQuestions();
+          const available = questions.filter(q =>
+            q.clue && q.answer &&
+            !bannedQuestions.some(b => b.clue === q.clue && b.answer === q.answer)
+          );
+          if (available.length >= 3) {
+            const shuffled = [...available].sort(() => Math.random() - 0.5);
+            const selectedQuestions = shuffled.slice(0, 3).map(q => ({
+              clue: q.clue,
+              answer: q.answer,
+              details: q.details,
+              league: q.league,
+              category: q.category,
+              isBanned: false
+            }));
+            round.questions = selectedQuestions;
+            round.subType = currentSubType;
+            // Track new questions and persist
+            selectedQuestions.forEach(q => trackUsedQuestion(q));
+            persistCurrentGame();
+            syncUIDataToServer();
+            const content = roundDiv.querySelector('.round-content');
+            const instructionsEl = content.querySelector('.round-instructions');
+            content.innerHTML = '';
+            if (instructionsEl) content.appendChild(instructionsEl);
+            const questionFragment = document.createDocumentFragment();
+            selectedQuestions.forEach((q, index) => {
+              questionFragment.appendChild(createQuestionElement(q, index + 1, round));
+            });
+            content.appendChild(questionFragment);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            return;
+          } else {
+            alert(`Not enough ${currentSubType} questions available to generate a new round.`);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn(`${currentSubType} round generation failed:`, err.message);
+        alert(`Failed to generate ${currentSubType} round: ` + err.message);
+        return;
+      }
+    }
+
+    // Fall back to archive-based generation (data from Python jeopardy-parser + db-to-archive → archive-backup.json).
+    // Note: Standard rounds (1, 3, 8) use the generic archive. Themed rounds (4, 6) have their own dedicated paths above.
     const archiveResponse = await fetch('data/archive-backup.json');
     if (!archiveResponse.ok) {
       throw new Error('Failed to load archive');
     }
-    
     const archive = await archiveResponse.json();
-    
+    const bannedQuestions = loadBannedQuestions();
+
     // Filter archive for questions matching difficulty
-    // We'll use a simple heuristic: easy rounds get easier questions, etc.
     const difficultyMap = {
       'easy': ['easy'],
       'medium': ['easy', 'medium'],
@@ -479,7 +1773,7 @@ async function generateNewRound(roundDiv, roundNumber, targetDifficulty) {
     
     const targetDifficulties = difficultyMap[targetDifficulty] || ['easy', 'medium'];
     
-    // Calculate difficulty for each question (simple heuristic based on clue length and answer length)
+    // Calculate difficulty for each question
     const calculateQuestionDifficulty = (question) => {
       const clueLength = question.clue?.length || 0;
       const answerLength = question.answer?.length || 0;
@@ -491,11 +1785,17 @@ async function generateNewRound(roundDiv, roundNumber, targetDifficulty) {
       return 'expert';
     };
     
-    // Filter questions by difficulty
+    // Filter questions by difficulty and exclude banned
     const matchingQuestions = archive.filter(q => {
       if (!q.clue || !q.answer || !q.category) return false;
       const qDifficulty = calculateQuestionDifficulty(q);
-      return targetDifficulties.includes(qDifficulty);
+      if (!targetDifficulties.includes(qDifficulty)) return false;
+      
+      // Check if banned
+      const isBanned = bannedQuestions.some(b => 
+        b.clue === q.clue && b.answer === q.answer
+      );
+      return !isBanned;
     });
     
     if (matchingQuestions.length < 3) {
@@ -529,22 +1829,32 @@ async function generateNewRound(roundDiv, roundNumber, targetDifficulty) {
     const selectedQuestions = shuffled.slice(0, 3).map(q => ({
       clue: q.clue,
       answer: q.answer,
-      category: q.category
+      category: q.category,
+      isBanned: false
     }));
     
     // Update the round in currentGame
-    const round = currentGame.rounds.find(r => r.roundNumber === roundNumber);
     if (round) {
       round.questions = selectedQuestions;
+      // Track new questions and persist
+      selectedQuestions.forEach(q => trackUsedQuestion(q));
+      persistCurrentGame();
+      syncUIDataToServer();
     }
     
-    // Re-render the round
+    // Re-render the round content
     const content = roundDiv.querySelector('.round-content');
+    
+    // Keep instructions if present
+    const instructionsEl = content.querySelector('.round-instructions');
     content.innerHTML = '';
+    if (instructionsEl) {
+      content.appendChild(instructionsEl);
+    }
     
     const questionFragment = document.createDocumentFragment();
     selectedQuestions.forEach((question, index) => {
-      const questionElement = createQuestionElement(question, index + 1, roundNumber);
+      const questionElement = createQuestionElement(question, index + 1, round);
       questionFragment.appendChild(questionElement);
     });
     content.appendChild(questionFragment);
@@ -596,7 +1906,10 @@ function init() {
     });
   }
   
-  loadGame();
+  loadGame().then(() => {
+    // Setup Mark as Played button after game loads
+    setupMarkPlayedButton();
+  });
   
   // Initialize Lucide icons for back button
   if (typeof lucide !== 'undefined') {

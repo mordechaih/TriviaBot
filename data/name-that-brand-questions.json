@@ -1,0 +1,10 @@
+{
+  "questions": [
+    { "clue": "Aventador and Huracán", "answer": "Lamborghini" },
+    { "clue": "Big Mac and McFlurry", "answer": "McDonald's" },
+    { "clue": "iPhone and MacBook", "answer": "Apple" },
+    { "clue": "Whopper and Chicken Fries", "answer": "Burger King" },
+    { "clue": "PlayStation and Bravia", "answer": "Sony" },
+    { "clue": "Corolla and Camry", "answer": "Toyota" }
+  ]
+}

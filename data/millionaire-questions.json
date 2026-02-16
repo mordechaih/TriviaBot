@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "clue": "Which treaty ended the Thirty Years' War in 1648?",
+      "options": ["A) Treaty of Westphalia", "B) Treaty of Versailles", "C) Treaty of Paris", "D) Treaty of Tordesillas"],
+      "correctAnswer": "A",
+      "answer": "A",
+      "explanation": "The Treaty of Westphalia ended the Thirty Years' War in Europe."
+    },
+    {
+      "clue": "What is the chemical symbol for the element gold?",
+      "options": ["A) Go", "B) Gd", "C) Au", "D) Ag"],
+      "correctAnswer": "C",
+      "answer": "C",
+      "explanation": "Au comes from the Latin 'aurum' for gold."
+    },
+    {
+      "clue": "In which year did the Berlin Wall fall?",
+      "options": ["A) 1987", "B) 1989", "C) 1991", "D) 1985"],
+      "correctAnswer": "B",
+      "answer": "B",
+      "explanation": "The Berlin Wall fell in November 1989."
+    },
+    {
+      "clue": "What is the smallest prime number?",
+      "options": ["A) 0", "B) 1", "C) 2", "D) 3"],
+      "correctAnswer": "C",
+      "answer": "C",
+      "explanation": "2 is the only even prime number."
+    },
+    {
+      "clue": "Which planet has the most moons in our solar system?",
+      "options": ["A) Jupiter", "B) Saturn", "C) Uranus", "D) Neptune"],
+      "correctAnswer": "B",
+      "answer": "B",
+      "explanation": "Saturn has over 80 known moons."
+    }
+  ]
+}
