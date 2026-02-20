@@ -1,6 +1,10 @@
 // Game display functionality
+import { animate } from 'motion';
 
 let currentGame = null;
+
+/** Spring config for accordion and chevron (sensible defaults, not converted from eases) */
+const SPRING = { type: 'spring', duration: 0.5, bounce: 0.2 };
 
 // Debounce utility for localStorage writes
 let localStorageWriteTimeout = null;
@@ -341,17 +345,6 @@ function markQuestionAsBannedSilent(gameId, roundNumber, questionIndex, reason =
   if (!question) {
     return;
   }
-  
-  // Check if already banned
-  const existingIndex = banned.findIndex(b => 
-    b.gameId === gameId && 
-    b.roundNumber === roundNumber && 
-    b.questionIndex === questionIndex
-  );
-  
-  if (existingIndex !== -1) {
-    return; // Already banned
-  }
 
   const isListRound = round?.roundType === 'list-round' && question?.answers && Array.isArray(question.answers);
   const banEntry = {
@@ -397,20 +390,8 @@ async function markQuestionAsBanned(gameId, roundNumber, questionIndex, reason =
     console.error('Question not found');
     return;
   }
-  
-  // Check if already banned
-  const existingIndex = banned.findIndex(b => 
-    b.gameId === gameId && 
-    b.roundNumber === roundNumber && 
-    b.questionIndex === questionIndex
-  );
-  
-  if (existingIndex !== -1) {
-    console.log('Question already banned');
-    return;
-  }
-  
-  // Mark as being banned
+
+  // Mark as being banned (prevents double-firing animation only)
   banningQuestions.add(banKey);
   
   const isListRound = round?.roundType === 'list-round' && question?.answers && Array.isArray(question.answers);
@@ -793,10 +774,9 @@ function createRoundElement(round) {
   const roundTitle = round.title || template.title || `Round ${round.roundNumber}`;
   title.textContent = `Round ${round.roundNumber}: ${roundTitle}`;
   
-  // Show subType badge if applicable
+  // Show subType badge if applicable (next to title)
   const badges = document.createElement('div');
   badges.className = 'round-badges';
-  
   if (round.subType) {
     const subTypeBadge = document.createElement('span');
     subTypeBadge.className = 'subtype-badge';
@@ -804,23 +784,11 @@ function createRoundElement(round) {
     badges.appendChild(subTypeBadge);
   }
   
-  const difficulty = document.createElement('span');
-  difficulty.className = 'difficulty';
-  difficulty.textContent = round.difficulty || template.difficulty || '';
-  if (difficulty.textContent) {
-    badges.appendChild(difficulty);
-  }
-  
-  // Points badge
-  const pointsBadge = document.createElement('span');
-  pointsBadge.className = 'points-badge';
-  const pts = round.pointsPerQuestion || template.points || '?';
-  pointsBadge.textContent = `${pts} pts`;
-  badges.appendChild(pointsBadge);
-  
   const toggle = document.createElement('span');
   toggle.className = 'toggle';
-  toggle.textContent = '▼';
+  const toggleIcon = document.createElement('i');
+  toggleIcon.setAttribute('data-lucide', 'chevron-down');
+  toggle.appendChild(toggleIcon);
   
   const shuffleRoundBtn = document.createElement('button');
   shuffleRoundBtn.className = 'shuffle-round-btn';
@@ -835,21 +803,31 @@ function createRoundElement(round) {
   shuffleRoundBtn.style.display = 'inline-flex';
   shuffleRoundBtn.style.alignItems = 'center';
   shuffleRoundBtn.style.justifyContent = 'center';
-  
-  // Add Lucide shuffle icon
   const iconElement = document.createElement('i');
   iconElement.setAttribute('data-lucide', 'shuffle');
   shuffleRoundBtn.appendChild(iconElement);
-  
   shuffleRoundBtn.onclick = async (e) => {
-    e.stopPropagation(); // Prevent round toggle
+    e.stopPropagation();
     await generateNewRound(roundDiv, round.roundNumber, round.difficulty, round.subType);
   };
   
-  header.appendChild(title);
-  header.appendChild(badges);
-  header.appendChild(shuffleRoundBtn);
-  header.appendChild(toggle);
+  const pointsBadge = document.createElement('span');
+  pointsBadge.className = 'points-badge';
+  const pts = round.pointsPerQuestion || template.points || '?';
+  pointsBadge.textContent = `${pts} pts`;
+  
+  const headerActions = document.createElement('div');
+  headerActions.className = 'round-header-actions';
+  headerActions.appendChild(pointsBadge);
+  headerActions.appendChild(shuffleRoundBtn);
+  headerActions.appendChild(toggle);
+  
+  const headerLeft = document.createElement('div');
+  headerLeft.className = 'round-header-left';
+  headerLeft.appendChild(title);
+  headerLeft.appendChild(badges);
+  header.appendChild(headerLeft);
+  header.appendChild(headerActions);
   if (typeof perfLab !== 'undefined') perfLab.end('createRoundHeader');
   
   // Round content
@@ -958,8 +936,8 @@ function createStandardElement(question, number, roundNumber) {
     bannedBtn.title = 'Question is banned';
   }
   
-  header.appendChild(bannedBtn);
   header.appendChild(category);
+  header.appendChild(bannedBtn);
   
   const clue = document.createElement('div');
   clue.className = 'question-clue';
@@ -1037,8 +1015,8 @@ function createListElement(question, number, roundNumber) {
     }
   };
   
-  header.appendChild(bannedBtn);
   header.appendChild(category);
+  header.appendChild(bannedBtn);
   
   const clue = document.createElement('div');
   clue.className = 'question-clue';
@@ -1112,8 +1090,8 @@ function createMultipleChoiceElement(question, number, roundNumber) {
     }
   };
   
-  header.appendChild(bannedBtn);
   header.appendChild(category);
+  header.appendChild(bannedBtn);
   
   const clue = document.createElement('div');
   clue.className = 'question-clue';
@@ -1177,8 +1155,8 @@ function createFamilyFeudElement(question, number, roundNumber) {
     }
   };
   
-  header.appendChild(bannedBtn);
   header.appendChild(category);
+  header.appendChild(bannedBtn);
   
   const clue = document.createElement('div');
   clue.className = 'question-clue';
@@ -1230,22 +1208,89 @@ function createFamilyFeudElement(question, number, roundNumber) {
   return questionDiv;
 }
 
+/** Rounds currently mid-animation (re-entry guard) */
+const animatingRounds = new WeakSet();
+
 /**
- * Toggle round collapse/expand
+ * Clear all inline styles we use for accordion so the next animation starts clean.
  */
-function toggleRound(roundDiv) {
+function clearAccordionInlineStyles(content, toggle) {
+  content.style.maxHeight = '';
+  content.style.paddingTop = '';
+  content.style.paddingBottom = '';
+  content.style.borderBottomLeftRadius = '';
+  content.style.borderBottomRightRadius = '';
+  Array.from(content.children).forEach(el => { el.style.opacity = ''; });
+  toggle.style.transform = '';
+}
+
+/**
+ * Toggle round collapse/expand (Motion spring animations)
+ */
+async function toggleRound(roundDiv) {
   const header = roundDiv.querySelector('.round-header');
   const content = roundDiv.querySelector('.round-content');
   const toggle = roundDiv.querySelector('.toggle');
-  
-  header.classList.toggle('collapsed');
-  content.classList.toggle('collapsed');
-  
-  // Rotate toggle arrow
-  if (header.classList.contains('collapsed')) {
-    toggle.textContent = '▶';
-  } else {
-    toggle.textContent = '▼';
+  const children = Array.from(content.children);
+  const isCollapsed = content.classList.contains('collapsed');
+
+  if (animatingRounds.has(roundDiv)) return;
+  animatingRounds.add(roundDiv);
+
+  try {
+    if (isCollapsed) {
+      // Expand: force from 0 with keyframes so Motion always animates
+      clearAccordionInlineStyles(content, toggle);
+      content.style.maxHeight = '0';
+      content.style.paddingTop = '0';
+      content.style.paddingBottom = '0';
+      content.style.borderBottomLeftRadius = '0';
+      content.style.borderBottomRightRadius = '0';
+      children.forEach(el => { el.style.opacity = '0'; });
+      toggle.style.transform = 'rotate(-90deg)';
+      header.classList.remove('collapsed');
+      content.classList.remove('collapsed');
+      content.offsetHeight; // reflow
+
+      await Promise.all([
+        animate(content, {
+          maxHeight: [0, 2000],
+          paddingTop: [0, 16],
+          paddingBottom: [0, 16],
+          borderBottomLeftRadius: [0, 8],
+          borderBottomRightRadius: [0, 8]
+        }, SPRING),
+        ...children.map(el => animate(el, { opacity: [0, 1] }, SPRING)),
+        animate(toggle, { rotate: [-90, 0] }, SPRING)
+      ]);
+    } else {
+      // Collapse: capture height, force keyframes so Motion always animates
+      const startHeight = content.scrollHeight;
+      clearAccordionInlineStyles(content, toggle);
+      content.style.maxHeight = `${startHeight}px`;
+      content.style.paddingTop = '16px';
+      content.style.paddingBottom = '16px';
+      content.style.borderBottomLeftRadius = '8px';
+      content.style.borderBottomRightRadius = '8px';
+      content.offsetHeight;
+
+      await Promise.all([
+        animate(content, {
+          maxHeight: [startHeight, 0],
+          paddingTop: [16, 0],
+          paddingBottom: [16, 0],
+          borderBottomLeftRadius: [8, 0],
+          borderBottomRightRadius: [8, 0]
+        }, SPRING),
+        ...children.map(el => animate(el, { opacity: [1, 0] }, SPRING)),
+        animate(toggle, { rotate: [0, -90] }, SPRING)
+      ]);
+      header.classList.add('collapsed');
+      content.classList.add('collapsed');
+    }
+  } finally {
+    clearAccordionInlineStyles(content, toggle);
+    animatingRounds.delete(roundDiv);
   }
 }
 
@@ -1455,16 +1500,65 @@ async function generateNewRound(roundDiv, roundNumber, targetDifficulty, current
       
       console.log(`Generating LLM round ${roundNumber} with subType: ${newSubType}`);
       
-      // Call server-side API or use client-side LLM (placeholder for API endpoint)
-      // For now, show a message that LLM generation requires server-side processing
-      const useLLMApi = typeof window.TRIVIA_CONFIG !== 'undefined' && window.TRIVIA_CONFIG.openaiApiKey;
-      
-      if (!useLLMApi) {
-        alert('LLM generation requires server-side processing or API key configuration. Falling back to archive-based generation.');
-      } else {
-        // TODO: Implement client-side LLM call when API is available
-        console.warn('Client-side LLM generation not yet implemented');
+      // Call server-side API (dev server or serverless) to generate replacement round via LLM
+      try {
+        const apiRes = await fetch('/api/generate-replacement-question', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ roundNumber, subType: newSubType })
+        });
+        if (apiRes.ok) {
+          const data = await apiRes.json();
+          if (data.questions && data.questions.length >= 3) {
+            const newQuestions = data.questions.slice(0, 3).map(q => ({
+              ...q,
+              isBanned: false
+            }));
+            round.questions = newQuestions;
+            newQuestions.forEach(q => trackUsedQuestion(q));
+            persistCurrentGame();
+            syncUIDataToServer();
+            const content = roundDiv.querySelector('.round-content');
+            const instructionsEl = content.querySelector('.round-instructions');
+            if (content) {
+              content.innerHTML = '';
+              if (instructionsEl) content.appendChild(instructionsEl);
+              newQuestions.forEach((question, index) => {
+                content.appendChild(createQuestionElement(question, index + 1, round));
+              });
+              if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Replacement-round API failed, using pool fallback:', e.message);
       }
+      // Fallback: fill from pool files (over-under, game-show, mixing-things-up) one question at a time
+      const fallbackQuestions = [];
+      for (let i = 0; i < 3; i++) {
+        const q = await generateReplacementQuestion(roundNumber, null, newSubType, round.questions);
+        if (!q) break;
+        fallbackQuestions.push({ ...q, isBanned: false });
+      }
+      if (fallbackQuestions.length >= 3) {
+        round.questions = fallbackQuestions;
+        fallbackQuestions.forEach(q => trackUsedQuestion(q));
+        persistCurrentGame();
+        syncUIDataToServer();
+        const content = roundDiv.querySelector('.round-content');
+        const instructionsEl = content?.querySelector('.round-instructions');
+        if (content) {
+          content.innerHTML = '';
+          if (instructionsEl) content.appendChild(instructionsEl);
+          fallbackQuestions.forEach((question, index) => {
+            content.appendChild(createQuestionElement(question, index + 1, round));
+          });
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        return;
+      }
+      alert('LLM generation unavailable and not enough pool questions to refill this round. Try again or use a different round.');
     }
 
     // List round: use data/list-round-questions.json

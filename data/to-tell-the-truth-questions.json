@@ -1,9 +1,44 @@
 {
   "questions": [
-    { "clue": "The Great Wall of China is visible from space with the naked eye.", "answer": "False", "explanation": "It is a myth; the Wall is not visible from space without magnification." },
-    { "clue": "Humans share about 98% of their DNA with chimpanzees.", "answer": "True", "explanation": "Chimpanzees are our closest living relatives." },
-    { "clue": "Napoleon Bonaparte was short by modern standards.", "answer": "False", "explanation": "He was about 5'7\", average for his time." },
-    { "clue": "Lightning can strike the same place twice.", "answer": "True", "explanation": "Tall structures are often hit repeatedly." },
-    { "clue": "Goldfish have a three-second memory.", "answer": "False", "explanation": "Studies show they can remember for months." }
+    {
+      "clue": "The Great Wall of China is visible from space with the naked eye.",
+      "answer": "False",
+      "explanation": "It is a myth; the Wall is not visible from space without magnification."
+    },
+    {
+      "clue": "Humans share about 98% of their DNA with chimpanzees.",
+      "answer": "True",
+      "explanation": "Chimpanzees are our closest living relatives."
+    },
+    {
+      "clue": "Napoleon Bonaparte was short by modern standards.",
+      "answer": "False",
+      "explanation": "He was about 5'7\", average for his time."
+    },
+    {
+      "clue": "Lightning can strike the same place twice.",
+      "answer": "True",
+      "explanation": "Tall structures are often hit repeatedly."
+    },
+    {
+      "clue": "Goldfish have a three-second memory.",
+      "answer": "False",
+      "explanation": "Studies show they can remember for months."
+    },
+    {
+      "clue": "Honey never spoils and has been found in ancient Egyptian tombs still edible.",
+      "answer": "True",
+      "explanation": "Honey's low moisture content and acidic pH create an inhospitable environment for bacteria, allowing it to last indefinitely. Archaeologists have discovered pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible."
+    },
+    {
+      "clue": "Sharks are mammals and give live birth to their young.",
+      "answer": "False",
+      "explanation": "Sharks are actually fish, not mammals. They are part of the class Chondrichthyes, which includes cartilage-based fish like rays and skates, and most species lay eggs rather than giving live birth (though some do)."
+    },
+    {
+      "clue": "The shortest war in history lasted only 38 minutes.",
+      "answer": "True",
+      "explanation": "The Anglo-Zanzibar War fought between the United Kingdom and the Sultanate of Zanzibar on August 27, 1896, is recognized as the shortest war in history, officially lasting only 38 minutes before a decisive British victory."
+    }
   ]
 }

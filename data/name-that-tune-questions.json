@@ -1,9 +1,48 @@
 {
   "questions": [
-    { "clue": "This 1979 one-hit-wonder by The Knack has a famously catchy riff and a woman's name in the title.", "answer": "My Sharona by The Knack" },
-    { "clue": "This 1983 hit asks you to hold on for one more day.", "answer": "Hold On by Wilson Phillips" },
-    { "clue": "This 1985 song by A-ha was a massive MTV hit with a distinctive rotoscoped video.", "answer": "Take On Me by A-ha" },
-    { "clue": "This 1997 song by Chumbawamba is about getting knocked down and getting up again.", "answer": "Tubthumping by Chumbawamba" },
-    { "clue": "This 2000 song by Smash Mouth is from the Shrek soundtrack and is about being an all-star.", "answer": "All Star by Smash Mouth" }
+    {
+      "clue": "This 1979 one-hit-wonder by The Knack has a famously catchy riff and a woman's name in the title.",
+      "answer": "My Sharona by The Knack"
+    },
+    {
+      "clue": "This 1983 hit asks you to hold on for one more day.",
+      "answer": "Hold On by Wilson Phillips"
+    },
+    {
+      "clue": "This 1985 song by A-ha was a massive MTV hit with a distinctive rotoscoped video.",
+      "answer": "Take On Me by A-ha"
+    },
+    {
+      "clue": "This 1997 song by Chumbawamba is about getting knocked down and getting up again.",
+      "answer": "Tubthumping by Chumbawamba"
+    },
+    {
+      "clue": "This 2000 song by Smash Mouth is from the Shrek soundtrack and is about being an all-star.",
+      "answer": "All Star by Smash Mouth"
+    },
+    {
+      "clue": "This 1999 one-hit-wonder features a catchy hook about a summertime romance and the thrill of love at first sight.",
+      "answer": "Steal My Sunshine by Len"
+    },
+    {
+      "clue": "This 1979 hit is known for its infectious melody and is often played at parties, with lyrics that tell a tale of a carefree night out.",
+      "answer": "My Sharona by The Knack"
+    },
+    {
+      "clue": "This iconic 1982 song by a renowned pop icon features a memorable chorus and is often associated with dancing and breaking free.",
+      "answer": "Billie Jean by Michael Jackson"
+    },
+    {
+      "clue": "This 1999 one-hit-wonder features a catchy hook about a feeling of euphoria that can make you dance all night long.",
+      "answer": "Steal My Sunshine by Len"
+    },
+    {
+      "clue": "This 1982 classic is about a young girl experiencing the pains of love and longing, with a memorable melody that's hard to forget.",
+      "answer": "I Ran (So Far Away) by A Flock of Seagulls"
+    },
+    {
+      "clue": "This blockbuster hit from 2015 is known for its infectious beat and gets everyone on the dance floor with its plea to not let the night end.",
+      "answer": "Uptown Funk by Mark Ronson feat. Bruno Mars"
+    }
   ]
 }

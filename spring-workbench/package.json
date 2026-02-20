@@ -1,0 +1,28 @@
+{
+  "name": "spring-workbench",
+  "version": "1.0.0",
+  "description": "Interactive spring animation workbench with real-time curve visualization and parameter tuning",
+  "type": "module",
+  "main": "dist/spring-workbench.bundle.js",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch"
+  },
+  "dependencies": {
+    "lucide": "^0.460.0",
+    "motion": "^11.15.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  },
+  "keywords": [
+    "spring",
+    "animation",
+    "workbench",
+    "physics",
+    "easing"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+

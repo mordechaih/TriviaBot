@@ -1,0 +1,233 @@
+{
+  "id": "game-2026-02-19",
+  "date": "2026-02-19",
+  "isPlayed": false,
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "roundType": "get-your-feet-wet",
+      "title": "Get Your Feet Wet",
+      "pointsPerQuestion": 2,
+      "instructions": "Generally VERY easy questions to ease into the game.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "It's no small thing that Tom DeLonge of this pop-punk band was mentioned during a congressional hearing about UFOs",
+          "answer": "Blink-182",
+          "category": "Unknown",
+          "isBanned": false
+        },
+        {
+          "clue": "A Western Hemisphere nation: REGAIN TAN",
+          "answer": "Argentina",
+          "category": "Unknown",
+          "isBanned": false
+        },
+        {
+          "clue": "This community in southeastern Pennsylvania gave its name to a convenience store chain very big in Penn. & nearby",
+          "answer": "Wawa",
+          "category": "Unknown",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "roundType": "over-under",
+      "title": "Over/Under",
+      "pointsPerQuestion": 3,
+      "subType": null,
+      "instructions": "Numeric guessing questions. Pick a number close to the actual answer.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "How many keys on a standard piano?",
+          "answer": "88",
+          "actualNumber": 88,
+          "targetNumber": 90,
+          "overOrUnder": "Under",
+          "isBanned": false
+        },
+        {
+          "clue": "In what year did the first iPhone go on sale?",
+          "answer": "2007",
+          "actualNumber": 2007,
+          "targetNumber": 2005,
+          "overOrUnder": "Over",
+          "isBanned": false
+        },
+        {
+          "clue": "How many days are there in a leap year?",
+          "answer": "366",
+          "actualNumber": 366,
+          "targetNumber": 365,
+          "overOrUnder": "Over",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "roundType": "trifecta-trivia",
+      "title": "Trifecta Trivia",
+      "pointsPerQuestion": 3,
+      "instructions": "First \"trivia in earnest\" round. Still easy questions.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Willie Nelson's tour bus runs on BioWillie, this fuel made of soybean & vegetable oils",
+          "answer": "biodiesel",
+          "category": "Unknown",
+          "isBanned": false
+        },
+        {
+          "clue": "A Latin word for \"sun\" ends this word for a stylish item that protects you from the rain as well as the Sun",
+          "answer": "a parasol",
+          "category": "Unknown",
+          "isBanned": false
+        },
+        {
+          "clue": "Swimming, cycling & running all in one event",
+          "answer": "a triathlon",
+          "category": "Unknown",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "roundType": "list-round",
+      "title": "The List Round",
+      "pointsPerQuestion": "variable",
+      "instructions": "One question with multiple answers. 1 point per correct answer.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Name the four cardinal directions.",
+          "answers": [
+            "North",
+            "South",
+            "East",
+            "West"
+          ],
+          "pointsAvailable": 4,
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "roundType": "game-show-style",
+      "title": "Game Show Style",
+      "pointsPerQuestion": 4,
+      "subType": "name-that-tune",
+      "instructions": "Varies weekly: True/False, Name That Tune, Multiple Choice, or Family Feud.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "This 1999 one-hit-wonder features a catchy hook about a feeling of euphoria that can make you dance all night long.",
+          "answer": "Steal My Sunshine by Len",
+          "isBanned": false
+        },
+        {
+          "clue": "This 1982 classic is about a young girl experiencing the pains of love and longing, with a memorable melody that's hard to forget.",
+          "answer": "I Ran (So Far Away) by A Flock of Seagulls",
+          "isBanned": false
+        },
+        {
+          "clue": "This blockbuster hit from 2015 is known for its infectious beat and gets everyone on the dance floor with its plea to not let the night end.",
+          "answer": "Uptown Funk by Mark Ronson feat. Bruno Mars",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "roundType": "entertainment-trivia",
+      "title": "Entertainment Trivia",
+      "pointsPerQuestion": 4,
+      "instructions": "Movies, music, and TV from 1980s onward. Books can be older (early 1900s).",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Cassandra Clare's \"City of Glass\", the ancestral home of the Shadowhunters, is book 3 in this lethal series",
+          "answer": "The",
+          "category": "Unknown",
+          "isBanned": false
+        },
+        {
+          "clue": "In 1914, 5-year-old May Pierstorff's parents bought 53 cents of stamps to mail the child this alliterative way to see Grammy & Grampy",
+          "answer": "parcel post",
+          "category": "Unknown",
+          "isBanned": false
+        },
+        {
+          "clue": "In 1941 artist Jcob Lwrence cptioned the first in a series \"during the world wr there ws a\" this \"north by Southern Negroes\"",
+          "answer": "a",
+          "category": "Unknown",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "roundType": "mixing-things-up",
+      "title": "Mixing Things Up",
+      "pointsPerQuestion": 5,
+      "subType": "name-that-brand",
+      "instructions": "Varies weekly: Who Am I, Size Matters, Name That Brand, or Sports Team.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Aventador and Huracán",
+          "answer": "Lamborghini",
+          "isBanned": false
+        },
+        {
+          "clue": "Big Mac and McFlurry",
+          "answer": "McDonald's",
+          "isBanned": false
+        },
+        {
+          "clue": "iPhone and MacBook",
+          "answer": "Apple",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "roundType": "game-changer",
+      "title": "Game Changer Round",
+      "pointsPerQuestion": 6,
+      "instructions": "Medium difficulty standard questions. No shared theme.",
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "A Puck-ish play goes top 10 in 1976 singing, \"I believe you can get me through the night\"",
+          "answer": "A Midsummer Night's",
+          "category": "Unknown",
+          "isBanned": false
+        },
+        {
+          "clue": "A major European port, this second-largest Dutch city straddles both banks of the",
+          "answer": "Rotterdam",
+          "category": "Unknown",
+          "isBanned": false
+        },
+        {
+          "clue": "A sophisticated fellow who frequents nightspots & by day, shouts the village's news to the people",
+          "answer": "a man about town crier",
+          "category": "Unknown",
+          "isBanned": false
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "U.S.S.R.I.P.",
+    "question": "Of the 15 countries formed by the collapse of the Soviet Union in 1991, this one is alphabetically last",
+    "answer": "Uzbekistan",
+    "isBanned": false
+  }
+}

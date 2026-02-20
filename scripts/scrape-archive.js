@@ -1,3 +1,8 @@
+/**
+ * @deprecated Use the Python jeopardy-parser + db-to-archive pipeline instead.
+ * Run: bash scripts/populate-archive.sh then npm run db-to-archive.
+ * This scraper is kept only for reference; parser data is preferred (cleaner, no HTML cleaning bugs).
+ */
 import fs from 'fs';
 import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
@@ -149,7 +154,11 @@ function cleanClueText(text, answer = null) {
     text = beforeFinalCleanup;
   }
   
-  return text.trim();
+  text = text.trim();
+  // If stripping the answer left the clue ending with a trailing article (incomplete sentence),
+  // trim it so we don't store e.g. "...straddles both banks of the" (answer "Rotterdam" was removed).
+  text = text.replace(/\s+(the|a|an)\s*$/i, '').trim();
+  return text;
 }
 
 /**

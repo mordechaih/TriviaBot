@@ -41,6 +41,69 @@
       "actualNumber": 7,
       "targetNumber": 5,
       "overOrUnder": "Over"
+    },
+    {
+      "clue": "How many keys on a standard piano?",
+      "answer": "88",
+      "actualNumber": 88,
+      "targetNumber": 90,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "In what year did the first iPhone go on sale?",
+      "answer": "2007",
+      "actualNumber": 2007,
+      "targetNumber": 2005,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "How many days are there in a leap year?",
+      "answer": "366",
+      "actualNumber": 366,
+      "targetNumber": 365,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "How many keys on a standard piano?",
+      "answer": "88",
+      "actualNumber": 88,
+      "targetNumber": 90,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "In what year did the first iPhone go on sale?",
+      "answer": "2007",
+      "actualNumber": 2007,
+      "targetNumber": 2005,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "How many days are there in a leap year?",
+      "answer": "366",
+      "actualNumber": 366,
+      "targetNumber": 365,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "How many keys on a standard piano?",
+      "answer": "88",
+      "actualNumber": 88,
+      "targetNumber": 90,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "In what year did the first iPhone go on sale?",
+      "answer": "2007",
+      "actualNumber": 2007,
+      "targetNumber": 2005,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "How many continents are there on Earth?",
+      "answer": "7",
+      "actualNumber": 7,
+      "targetNumber": 6,
+      "overOrUnder": "Over"
     }
   ]
 }

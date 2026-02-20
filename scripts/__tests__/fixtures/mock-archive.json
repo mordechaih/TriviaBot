@@ -1,0 +1,53 @@
+[
+  { "clue": "Easy A 1", "answer": "A1", "category": "Easy Category A", "round": "Jeopardy", "value": 200, "gameId": "game-1" },
+  { "clue": "Easy A 2", "answer": "A2", "category": "Easy Category A", "round": "Jeopardy", "value": 400, "gameId": "game-1" },
+  { "clue": "Easy A 3", "answer": "A3", "category": "Easy Category A", "round": "Jeopardy", "value": 600, "gameId": "game-1" },
+  { "clue": "Easy A 4", "answer": "A4", "category": "Easy Category A", "round": "Jeopardy", "value": 600, "gameId": "game-1" },
+
+  { "clue": "Easy B 1", "answer": "B1", "category": "Easy Category B", "round": "Jeopardy", "value": 200, "gameId": "game-2" },
+  { "clue": "Easy B 2", "answer": "B2", "category": "Easy Category B", "round": "Jeopardy", "value": 400, "gameId": "game-2" },
+  { "clue": "Easy B 3", "answer": "B3", "category": "Easy Category B", "round": "Jeopardy", "value": 600, "gameId": "game-2" },
+  { "clue": "Easy B 4", "answer": "B4", "category": "Easy Category B", "round": "Jeopardy", "value": 600, "gameId": "game-2" },
+
+  { "clue": "Easy C 1", "answer": "C1", "category": "Easy Category C", "round": "Jeopardy", "value": 200, "gameId": "game-3" },
+  { "clue": "Easy C 2", "answer": "C2", "category": "Easy Category C", "round": "Jeopardy", "value": 400, "gameId": "game-3" },
+  { "clue": "Easy C 3", "answer": "C3", "category": "Easy Category C", "round": "Jeopardy", "value": 600, "gameId": "game-3" },
+  { "clue": "Easy C 4", "answer": "C4", "category": "Easy Category C", "round": "Jeopardy", "value": 600, "gameId": "game-3" },
+
+  { "clue": "Medium 1A", "answer": "M1A", "category": "Medium Category 1", "round": "Jeopardy", "value": 800, "gameId": "game-4" },
+  { "clue": "Medium 1B", "answer": "M1B", "category": "Medium Category 1", "round": "Jeopardy", "value": 1000, "gameId": "game-4" },
+  { "clue": "Medium 1C", "answer": "M1C", "category": "Medium Category 1", "round": "Double Jeopardy", "value": 400, "gameId": "game-4" },
+  { "clue": "Medium 1D", "answer": "M1D", "category": "Medium Category 1", "round": "Double Jeopardy", "value": 800, "gameId": "game-4" },
+
+  { "clue": "Medium 2A", "answer": "M2A", "category": "Medium Category 2", "round": "Jeopardy", "value": 800, "gameId": "game-5" },
+  { "clue": "Medium 2B", "answer": "M2B", "category": "Medium Category 2", "round": "Jeopardy", "value": 1000, "gameId": "game-5" },
+  { "clue": "Medium 2C", "answer": "M2C", "category": "Medium Category 2", "round": "Double Jeopardy", "value": 400, "gameId": "game-5" },
+  { "clue": "Medium 2D", "answer": "M2D", "category": "Medium Category 2", "round": "Double Jeopardy", "value": 800, "gameId": "game-5" },
+
+  { "clue": "Medium 3A", "answer": "M3A", "category": "Medium Category 3", "round": "Jeopardy", "value": 800, "gameId": "game-6" },
+  { "clue": "Medium 3B", "answer": "M3B", "category": "Medium Category 3", "round": "Jeopardy", "value": 1000, "gameId": "game-6" },
+  { "clue": "Medium 3C", "answer": "M3C", "category": "Medium Category 3", "round": "Double Jeopardy", "value": 400, "gameId": "game-6" },
+  { "clue": "Medium 3D", "answer": "M3D", "category": "Medium Category 3", "round": "Double Jeopardy", "value": 800, "gameId": "game-6" },
+
+  { "clue": "Medium 4A", "answer": "M4A", "category": "Medium Category 4", "round": "Jeopardy", "value": 800, "gameId": "game-7" },
+  { "clue": "Medium 4B", "answer": "M4B", "category": "Medium Category 4", "round": "Jeopardy", "value": 1000, "gameId": "game-7" },
+  { "clue": "Medium 4C", "answer": "M4C", "category": "Medium Category 4", "round": "Double Jeopardy", "value": 400, "gameId": "game-7" },
+  { "clue": "Medium 4D", "answer": "M4D", "category": "Medium Category 4", "round": "Double Jeopardy", "value": 800, "gameId": "game-7" },
+
+  { "clue": "Medium 5A", "answer": "M5A", "category": "Medium Category 5", "round": "Jeopardy", "value": 800, "gameId": "game-8" },
+  { "clue": "Medium 5B", "answer": "M5B", "category": "Medium Category 5", "round": "Jeopardy", "value": 1000, "gameId": "game-8" },
+  { "clue": "Medium 5C", "answer": "M5C", "category": "Medium Category 5", "round": "Double Jeopardy", "value": 400, "gameId": "game-8" },
+  { "clue": "Medium 5D", "answer": "M5D", "category": "Medium Category 5", "round": "Double Jeopardy", "value": 800, "gameId": "game-8" },
+
+  { "clue": "Hard A", "answer": "H1", "category": "Hard Category", "round": "Double Jeopardy", "value": 1000, "gameId": "game-9" },
+  { "clue": "Hard B", "answer": "H2", "category": "Hard Category", "round": "Double Jeopardy", "value": 1200, "gameId": "game-9" },
+  { "clue": "Hard C", "answer": "H3", "category": "Hard Category", "round": "Double Jeopardy", "value": 1600, "gameId": "game-9" },
+  { "clue": "Hard D", "answer": "H4", "category": "Hard Category", "round": "Double Jeopardy", "value": 1400, "gameId": "game-9" },
+  { "clue": "Hard E", "answer": "H5", "category": "Hard Category", "round": "Double Jeopardy", "value": 1800, "gameId": "game-9" },
+
+  { "clue": "Final 1", "answer": "F1", "category": "Final Category 1", "round": "Final Jeopardy", "value": null, "gameId": "game-f1" },
+  { "clue": "Final 2", "answer": "F2", "category": "Final Category 2", "round": "Final Jeopardy", "value": null, "gameId": "game-f2" },
+  { "clue": "Final 3", "answer": "F3", "category": "Final Category 3", "round": "Final Jeopardy", "value": null, "gameId": "game-f3" },
+  { "clue": "Final 4", "answer": "F4", "category": "Final Category 4", "round": "Final Jeopardy", "value": null, "gameId": "game-f4" },
+  { "clue": "Final 5", "answer": "F5", "category": "Final Category 5", "round": "Final Jeopardy", "value": null, "gameId": "game-f5" }
+]

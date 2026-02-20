@@ -106,6 +106,40 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Generate replacement questions for an LLM round (shuffle). Uses OPENAI_API_KEY from env.
+  if (req.url === '/api/generate-replacement-question' && req.method === 'POST') {
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', async () => {
+      try {
+        const { roundNumber, subType } = JSON.parse(body || '{}');
+        if (!roundNumber || ![2, 5, 7].includes(roundNumber)) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ error: 'roundNumber must be 2, 5, or 7' }));
+          return;
+        }
+        const { generateLLMRound } = await import('./scripts/generate-game.js');
+        const result = await generateLLMRound(roundNumber, subType || null, new Set(), []);
+        if (!result?.questions?.length) {
+          res.writeHead(503);
+          res.end(JSON.stringify({ error: 'LLM round generation returned no questions' }));
+          return;
+        }
+        res.writeHead(200);
+        res.end(JSON.stringify({ questions: result.questions, subType: result.subType }));
+      } catch (err) {
+        console.error('generate-replacement-question error:', err);
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: err.message || 'Failed to generate replacement round' }));
+      }
+    });
+    return;
+  }
+
   // Handle UI data sync endpoint (bans + used questions → data/ files for generator)
   if (req.url === '/api/sync-ui-data' && req.method === 'POST') {
     res.setHeader('Content-Type', 'application/json');

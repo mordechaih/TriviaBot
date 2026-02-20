@@ -1,0 +1,261 @@
+{
+  "id": "game-2026-02-18",
+  "date": "2026-02-18",
+  "isPlayed": false,
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "roundType": "get-your-feet-wet",
+      "title": "Get Your Feet Wet",
+      "pointsPerQuestion": 2,
+      "instructions": "Generally VERY easy questions to ease into the game.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "The Belmonts",
+          "answer": "Dion",
+          "category": "FRONTMEN",
+          "isBanned": false
+        },
+        {
+          "clue": "Tequila is named for a town near Guadalajara in this country",
+          "answer": "Mexico",
+          "category": "POTENT POTABLES",
+          "isBanned": false
+        },
+        {
+          "clue": "Baseball Hall of Famer Christy Mathewson was injured by this WWI weapon, leading to his death from TB",
+          "answer": "mustard gas",
+          "category": "WORLD WAR I VETS",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "roundType": "over-under",
+      "title": "Over/Under",
+      "pointsPerQuestion": 3,
+      "subType": null,
+      "instructions": "Numeric guessing questions. Pick a number close to the actual answer.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "How many keys are on a standard piano?",
+          "answer": "88",
+          "actualNumber": 88,
+          "targetNumber": 90,
+          "overOrUnder": "Under",
+          "isBanned": false
+        },
+        {
+          "clue": "In what year did the first iPhone go on sale?",
+          "answer": "2007",
+          "actualNumber": 2007,
+          "targetNumber": 2005,
+          "overOrUnder": "Over",
+          "isBanned": false
+        },
+        {
+          "clue": "How many days are in a leap year?",
+          "answer": "366",
+          "actualNumber": 366,
+          "targetNumber": 365,
+          "overOrUnder": "Over",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "roundType": "trifecta-trivia",
+      "title": "Trifecta Trivia",
+      "pointsPerQuestion": 3,
+      "instructions": "First \"trivia in earnest\" round. Still easy questions.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Sailing down the Orinoco, you'll wind up in this ocean",
+          "answer": "Atlantic Ocean",
+          "category": "THE MAP OF SOUTH AMERICA",
+          "isBanned": false
+        },
+        {
+          "clue": "This animal feed company began using its familiar red & white checkerboard trademark around 1900",
+          "answer": "Ralston-Purina",
+          "category": "BUSINESS & INDUSTRY",
+          "isBanned": false
+        },
+        {
+          "clue": "Inti was the sun god prayed to by the ruling family of this South American empire",
+          "answer": "Incas",
+          "category": "WORLD RELIGION",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "roundType": "list-round",
+      "title": "The List Round",
+      "pointsPerQuestion": "variable",
+      "instructions": "One question with multiple answers. 1 point per correct answer.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Name the eight planets in our solar system (in order from the Sun).",
+          "answers": [
+            "Mercury",
+            "Venus",
+            "Earth",
+            "Mars",
+            "Jupiter",
+            "Saturn",
+            "Uranus",
+            "Neptune"
+          ],
+          "pointsAvailable": 8,
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "roundType": "game-show-style",
+      "title": "Game Show Style",
+      "pointsPerQuestion": 4,
+      "subType": "millionaire",
+      "instructions": "Varies weekly: True/False, Name That Tune, Multiple Choice, or Family Feud.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Which ancient civilization is credited with the first known writing system, cuneiform?",
+          "options": [
+            "A) Sumerians",
+            "B) Egyptians",
+            "C) Greeks",
+            "D) Romans"
+          ],
+          "correctAnswer": "A",
+          "explanation": "The Sumerians, an ancient civilization in Mesopotamia, developed cuneiform, one of the earliest writing systems, around 3200 BCE.",
+          "isBanned": false
+        },
+        {
+          "clue": "Which scientist is known for the uncertainty principle in quantum mechanics?",
+          "options": [
+            "A) Albert Einstein",
+            "B) Niels Bohr",
+            "C) Max Planck",
+            "D) Werner Heisenberg"
+          ],
+          "correctAnswer": "D",
+          "explanation": "Werner Heisenberg formulated the uncertainty principle, which states that certain pairs of physical properties cannot both be known to arbitrary precision.",
+          "isBanned": false
+        },
+        {
+          "clue": "In which film did the phrase 'Here's looking at you, kid' become iconic?",
+          "options": [
+            "A) Casablanca",
+            "B) The Godfather",
+            "C) Citizen Kane",
+            "D) Gone with the Wind"
+          ],
+          "correctAnswer": "A",
+          "explanation": "The phrase 'Here's looking at you, kid' was famously spoken by Humphrey Bogart in the classic film 'Casablanca' (1942).",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "roundType": "entertainment-trivia",
+      "title": "Entertainment Trivia",
+      "pointsPerQuestion": 4,
+      "instructions": "Movies, music, and TV from 1980s onward. Books can be older (early 1900s).",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "(1964)Peter Sellers:\"Gentlemen, you can't fight in here!  This is the War Room!\"",
+          "answer": "Dr. Strangelove (or: How I Learned to Stop Worrying and Love the Bomb)",
+          "category": "MOVIE QUOTES",
+          "isBanned": false
+        },
+        {
+          "clue": "\"I got a b-i-i-i-g mouth\"",
+          "answer": "The Honeymooners",
+          "category": "TV CATCHPHRASES",
+          "isBanned": false
+        },
+        {
+          "clue": "\"Big Girls Don’t Cry\" over \"Jersey Boys\", a musical bio of this '60s group that had its peaks & \"Valli\"s",
+          "answer": "The Four Seasons",
+          "category": "ON BROADWAY",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "roundType": "mixing-things-up",
+      "title": "Mixing Things Up",
+      "pointsPerQuestion": 5,
+      "subType": "size-matters",
+      "instructions": "Varies weekly: Who Am I, Size Matters, Name That Brand, or Sports Team.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Which is taller: The Empire State Building or the Willis Tower (formerly Sears Tower)?",
+          "answer": "The Willis Tower",
+          "details": "Empire State Building: 1,454 ft (including antenna), Willis Tower: 1,730 ft.",
+          "isBanned": false
+        },
+        {
+          "clue": "Which is taller: The Leaning Tower of Pisa or the Colosseum in Rome?",
+          "answer": "The Colosseum",
+          "details": "Leaning Tower of Pisa: 186 ft, Colosseum: 157 ft.",
+          "isBanned": false
+        },
+        {
+          "clue": "Which is taller: The Burj Khalifa or the Shanghai Tower?",
+          "answer": "The Burj Khalifa",
+          "details": "Burj Khalifa: 2,717 ft, Shanghai Tower: 2,073 ft.",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "roundType": "game-changer",
+      "title": "Game Changer Round",
+      "pointsPerQuestion": 6,
+      "instructions": "Medium difficulty standard questions. No shared theme.",
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "At the Rosenbach Museum & Library in Philadelphia, you'll find his handwritten manuscript for \"Ulysses\"",
+          "answer": "James Joyce",
+          "category": "U.S. MUSEUMS",
+          "isBanned": false
+        },
+        {
+          "clue": "In an 1870 Delibes ballet, Swanilda, the heroine, gets all dolled up to impersonate this title doll",
+          "answer": "Coppélia",
+          "category": "BALLET",
+          "isBanned": false
+        },
+        {
+          "clue": "Norma Jean Baker's name was changed to this, after she signed a contract with 20th Century Fox in 1946",
+          "answer": "Marilyn Monroe",
+          "category": "AMERICAN MOVIE STARS",
+          "isBanned": false
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "1980s BESTSELLERS",
+    "question": "A defection attempt by crew members of the Soviet frigate Storozhevoy inspired this 1984 bestseller",
+    "answer": "The Hunt for Red October",
+    "isBanned": false
+  }
+}

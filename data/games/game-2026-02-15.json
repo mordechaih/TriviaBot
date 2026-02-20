@@ -1,0 +1,237 @@
+{
+  "id": "game-2026-02-15",
+  "date": "2026-02-15",
+  "isPlayed": false,
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "roundType": "get-your-feet-wet",
+      "title": "Get Your Feet Wet",
+      "pointsPerQuestion": 2,
+      "instructions": "Generally VERY easy questions to ease into the game.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "Built for Spanish trade with Asia, this Mexican city is now famous for the cliff divers of La Quebrada",
+          "answer": "Acapulco",
+          "category": "A LOVELY PORT",
+          "isBanned": false
+        },
+        {
+          "clue": "The drier white port is served as this, a French term for a drink to stimulate appetite",
+          "answer": "aperitif",
+          "category": "A LOVELY PORT",
+          "isBanned": false
+        },
+        {
+          "clue": "If you take the last train to this Tennessee port, you'll be at the junction of the Red & Cumberland Rivers",
+          "answer": "Clarksville",
+          "category": "A LOVELY PORT",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "roundType": "over-under",
+      "title": "Over/Under",
+      "pointsPerQuestion": 3,
+      "instructions": "Numeric guessing questions. Pick a number close to the actual answer.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "This character seen here has perhaps the most famous name in the film:(play it again)",
+          "answer": "Sam (the piano player)",
+          "category": "CASABLANCA",
+          "isBanned": false
+        },
+        {
+          "clue": "That crucial flight at the end of the film is bound for this city",
+          "answer": "Lisbon",
+          "category": "CASABLANCA",
+          "isBanned": false
+        },
+        {
+          "clue": "It completes the film's last line, \"Louis, I think this is the beginning of...\"",
+          "answer": "A beautiful friendship",
+          "category": "CASABLANCA",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "roundType": "trifecta-trivia",
+      "title": "Trifecta Trivia",
+      "pointsPerQuestion": 3,
+      "instructions": "First \"trivia in earnest\" round. Still easy questions.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Julius is the first name of this James Bond movie title villain played by Joseph Wiseman",
+          "answer": "Dr. No",
+          "category": "PLAYING DOCTOR",
+          "isBanned": false
+        },
+        {
+          "clue": "For consultations about Loraxes & McBoing Boings, I'd see this \"physician\"",
+          "answer": "Dr. Seuss",
+          "category": "PLAYING DOCTOR",
+          "isBanned": false
+        },
+        {
+          "clue": "In 2005 a woman birthed a twin 59 days after the 1st, as she had 2 of these body parts instead of just one",
+          "answer": "a uterus",
+          "category": "PLAYING DOCTOR",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "roundType": "list-round",
+      "title": "The List Round",
+      "pointsPerQuestion": "variable",
+      "instructions": "One question with multiple answers. 1 point per correct answer.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "One myth says this landmark was set up by Merlin as the sepulcher of Pendragon",
+          "answer": "Stonehenge",
+          "category": "THE STONES",
+          "isBanned": false
+        },
+        {
+          "clue": "The 1799 discovery of this object ultimately unlocked the secrets of Egyptian hieroglyphics",
+          "answer": "the Rosetta Stone",
+          "category": "THE STONES",
+          "isBanned": false
+        },
+        {
+          "clue": "The Black Stone set in this holy landmark in Mecca is actually a meteorite",
+          "answer": "the Kaaba",
+          "category": "THE STONES",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "roundType": "game-show-style",
+      "title": "Game Show Style",
+      "pointsPerQuestion": 4,
+      "instructions": "Varies weekly: True/False, Name That Tune, Multiple Choice, or Family Feud.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Tell, tell, tell us the name of this composer who died in 1868, & now rests in the Church of Santa Croce",
+          "answer": "Rossini",
+          "category": "LET'S GO TO FLORENCE",
+          "isBanned": false
+        },
+        {
+          "clue": "In \"Growing Up Brady\", Barry Williams admits he had \"a case of the hots for\" this actress, his TV mom",
+          "answer": "Florence Henderson",
+          "category": "LET'S GO TO FLORENCE",
+          "isBanned": false
+        },
+        {
+          "clue": "Now an art museum, it was originally built as the government judiciary's offices, hence its name",
+          "answer": "Uffizi",
+          "category": "LET'S GO TO FLORENCE",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "roundType": "entertainment-trivia",
+      "title": "Entertainment Trivia",
+      "pointsPerQuestion": 4,
+      "instructions": "Movies, music, and TV from 1980s onward. Books can be older (early 1900s).",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Before heading forces in Vietnam, he was superintendent of West Point",
+          "answer": "William Westmoreland",
+          "category": "GENERAL KNOWLEDGE",
+          "isBanned": false
+        },
+        {
+          "clue": "This 4-star general was President Bush's top military adviser from 1989 to 1993",
+          "answer": "Colin Powell",
+          "category": "GENERAL KNOWLEDGE",
+          "isBanned": false
+        },
+        {
+          "clue": "This \"Old Blood & Guts\" general once served as military governor of Bavaria",
+          "answer": "George Patton",
+          "category": "GENERAL KNOWLEDGE",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "roundType": "mixing-things-up",
+      "title": "Mixing Things Up",
+      "pointsPerQuestion": 5,
+      "instructions": "Varies weekly: Who Am I, Size Matters, Name That Brand, or Sports Team.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "In his diaries, this pop artist mentions directing The Cars' \"Hello Again\" music video",
+          "answer": "Andy Warhol",
+          "category": "THE CARS",
+          "isBanned": false
+        },
+        {
+          "clue": "You can buy this Lincoln off the shelf -- the shelf off North America",
+          "answer": "a Continental",
+          "category": "THE CARS",
+          "isBanned": false
+        },
+        {
+          "clue": "One of this legendary pin-up artist's girls graced the cover of The Cars' album \"Candy-O\"",
+          "answer": "Vargas",
+          "category": "THE CARS",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "roundType": "game-changer",
+      "title": "Game Changer Round",
+      "pointsPerQuestion": 6,
+      "instructions": "Medium difficulty standard questions. No shared theme.",
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "Last name of Edouard, who created a new liqueur by blending sweet & bitter orange peels",
+          "answer": "Cointreau",
+          "category": "BEHIND BARS",
+          "isBanned": false
+        },
+        {
+          "clue": "Look for the pirate on the label of the Captain Morgan brand of this",
+          "answer": "Rum",
+          "category": "BEHIND BARS",
+          "isBanned": false
+        },
+        {
+          "clue": "Seeing the symbol of this German drink may induce a college flashback",
+          "answer": "Jagermeister",
+          "category": "BEHIND BARS",
+          "isBanned": false
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "GEOGRAPHY",
+    "question": "Since the breakup of the Soviet Union, this is the largest country in area in the world",
+    "answer": "Russia",
+    "isBanned": false
+  }
+}

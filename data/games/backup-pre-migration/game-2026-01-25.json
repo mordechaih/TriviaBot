@@ -1,0 +1,179 @@
+{
+  "id": "game-2026-01-25",
+  "date": "2026-01-25",
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "Each summer, one of these rainy seasons briefly transforms the Salalah region of Oman from desert into a pop-up rainforest",
+          "answer": "monsoon season",
+          "category": "RAINFOREST, MEET DESERT"
+        },
+        {
+          "clue": "NASA imagery shows how nutrient-rich dust blown from this desert feeds the Amazon Rainforest, thousands of miles to the west",
+          "answer": "the Sahara",
+          "category": "RAINFOREST, MEET DESERT"
+        },
+        {
+          "clue": "The eastern edge of Egypt's Eastern Desert lies mostly along this body of water",
+          "answer": "the",
+          "category": "RAINFOREST, MEET DESERT"
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "In 1921 Bessie Coleman became the first Black woman to earn her license as one of these",
+          "answer": "a pilot",
+          "category": "HISTORIC AMERICANS"
+        },
+        {
+          "clue": "John Adams & Thomas Jefferson both died on this date, exactly 50 years after the Decl. of Independence was adopted",
+          "answer": "July 4, 1826",
+          "category": "HISTORIC AMERICANS"
+        },
+        {
+          "clue": "Mathew Brady's studio photographed him as a senator before he was elected President of the Confederacy",
+          "answer": "Jefferson Davis",
+          "category": "HISTORIC AMERICANS"
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Thou wishest to party in this South American city & climb its 1,300-foot Sugarloaf Mountain, verily",
+          "answer": "Rio",
+          "category": "O BROTHER, WHERE ART THOU?"
+        },
+        {
+          "clue": "What? You drove all the way from Duncansby Head to Land's End in this country? No wonder you're tired!",
+          "answer": "the UK",
+          "category": "O BROTHER, WHERE ART THOU?"
+        },
+        {
+          "clue": "Zoinks! Thou findest thyself at this South American country's border with Panama",
+          "answer": "Colombia",
+          "category": "O BROTHER, WHERE ART THOU?"
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "In the 1940s this country's Magyar Nemzeti Bank printed the million billion pengő note to fight inflation",
+          "answer": "Hungary",
+          "category": "STRANGE CURRENCIES"
+        },
+        {
+          "clue": "Named for a signature sandwich, it was a cryptocurrency launched by the Russian branch of Burger King in 2017",
+          "answer": "WhopperCoin",
+          "category": "STRANGE CURRENCIES"
+        },
+        {
+          "clue": "Using cheese as \"cheese\", a dairy cooperative near Bologna backed loans with wheels of this hard cheese",
+          "answer": "Parmesan",
+          "category": "STRANGE CURRENCIES"
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "It's the 2-word term for the physical separation of a computer system from others, & a good way to protect against hacking",
+          "answer": "an air gap",
+          "category": "CYBERTALK"
+        },
+        {
+          "clue": "If you see this error number followed by \"forbidden\", you don't have permission to access that webpage, chump",
+          "answer": "403",
+          "category": "CYBERTALK"
+        },
+        {
+          "clue": "Measured in bits per second, it's the data capacity that can be transmitted over a network connection",
+          "answer": "a bandwidth",
+          "category": "CYBERTALK"
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "In 1508 Diego Columbus, Christopher's son, was named governor of these",
+          "answer": "the Indies",
+          "category": "WORLD HISTORY"
+        },
+        {
+          "clue": "In 1917 Britain turned down an offer to save the family of 7 with this last name",
+          "answer": "Romanov",
+          "category": "WORLD HISTORY"
+        },
+        {
+          "clue": "Christianity reached this vast island with Leif Eriksson in the 11th century & a bishop's seat was established there in 1124",
+          "answer": "Greenland",
+          "category": "WORLD HISTORY"
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "A 2013 film starring",
+          "answer": "Blue Jasmine",
+          "category": "PICTURE THE 21st CENTURY FILM"
+        },
+        {
+          "clue": "Hurry, get in",
+          "answer": "Baby Driver",
+          "category": "PICTURE THE 21st CENTURY FILM"
+        },
+        {
+          "clue": "From 2019",
+          "answer": "Knives Out",
+          "category": "PICTURE THE 21st CENTURY FILM"
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "The first cemetery called this was located on a hill in 1867 north of Hays, Kansas, not",
+          "answer": "Boot Hill",
+          "category": "THE HILL YOU SAY"
+        },
+        {
+          "clue": "Hills in this Los Angeles park include Mount Bell, Mount Chapel & Mount Hollywood",
+          "answer": "Griffith Park",
+          "category": "THE HILL YOU SAY"
+        },
+        {
+          "clue": "Todt Hill in this island borough is the highest on the Atlantic coast s. of Maine; area houses were film locations for Corleone homes",
+          "answer": "Staten Island",
+          "category": "THE HILL YOU SAY"
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "MYTHOLOGY",
+    "question": "On an early book of Flemish cartographer Gerardus Mercator's maps, an image of this Titan holding the world was used",
+    "answer": "Atlas"
+  }
+}

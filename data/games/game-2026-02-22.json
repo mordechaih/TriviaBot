@@ -1,0 +1,242 @@
+{
+  "id": "game-2026-02-22",
+  "date": "2026-02-22",
+  "isPlayed": false,
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "roundType": "get-your-feet-wet",
+      "title": "Get Your Feet Wet",
+      "pointsPerQuestion": 2,
+      "instructions": "Generally VERY easy questions to ease into the game.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "Montevideo,Buenos Aires,Bogota",
+          "answer": "Bogota",
+          "category": "THE NORTHERNMOST CAPITAL CITY",
+          "isBanned": false
+        },
+        {
+          "clue": "A slit-like wound is called this, like the sharp cut a doctor makes with a scalpel",
+          "answer": "an incision",
+          "category": "FIRST AID",
+          "isBanned": false
+        },
+        {
+          "clue": "In this religion, prayer time is announced from a minaret by a muezzin, or crier",
+          "answer": "Islam",
+          "category": "RELIGION",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "roundType": "over-under",
+      "title": "Over/Under",
+      "pointsPerQuestion": 3,
+      "subType": null,
+      "instructions": "Numeric guessing questions. Pick a number close to the actual answer.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "How many keys on a standard piano?",
+          "answer": "88",
+          "actualNumber": 88,
+          "targetNumber": 90,
+          "overOrUnder": "Under",
+          "isBanned": false
+        },
+        {
+          "clue": "In what year did the first iPhone go on sale?",
+          "answer": "2007",
+          "actualNumber": 2007,
+          "targetNumber": 2005,
+          "overOrUnder": "Over",
+          "isBanned": false
+        },
+        {
+          "clue": "How many days are there in a leap year?",
+          "answer": "366",
+          "actualNumber": 366,
+          "targetNumber": 365,
+          "overOrUnder": "Over",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "roundType": "trifecta-trivia",
+      "title": "Trifecta Trivia",
+      "pointsPerQuestion": 3,
+      "instructions": "First \"trivia in earnest\" round. Still easy questions.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "In 1985 the \"Grand Ole Opry\" began broadcasting live on this cable network",
+          "answer": "TNN (The Nashville Network)",
+          "category": "THE GRAND OLE OPRY",
+          "isBanned": false
+        },
+        {
+          "clue": "The Bonus Army that marched on Washington in 1932 was made up of veterans of this war",
+          "answer": "World War I",
+          "category": "VETERANS",
+          "isBanned": false
+        },
+        {
+          "clue": "He explained the genesis of his masterpiece in the following passage\"It was on the 15th of October, 1764, as I sat musing amidst the ruins of the capital, that the idea of writing the decline and fall of the city first started to my mind.\"",
+          "answer": "Edward Gibbon",
+          "category": "BRITISH AUTHORS",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "roundType": "list-round",
+      "title": "The List Round",
+      "pointsPerQuestion": "variable",
+      "instructions": "One question with multiple answers. 1 point per correct answer.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Name the five Great Lakes.",
+          "answers": [
+            "Lake Superior",
+            "Lake Michigan",
+            "Lake Huron",
+            "Lake Erie",
+            "Lake Ontario"
+          ],
+          "pointsAvailable": 5,
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "roundType": "game-show-style",
+      "title": "Game Show Style",
+      "pointsPerQuestion": 4,
+      "subType": "family-feud",
+      "instructions": "Varies weekly: True/False, Name That Tune, Multiple Choice, or Family Feud.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Past or present, name a famous Joan.",
+          "answer": "joan rivers",
+          "topAnswers": [
+            {
+              "answer": "joan rivers",
+              "points": 40
+            },
+            {
+              "answer": "joan of arc",
+              "points": 36
+            },
+            {
+              "answer": "joan crawford",
+              "points": 18
+            },
+            {
+              "answer": "joan collins",
+              "points": 4
+            }
+          ],
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "roundType": "entertainment-trivia",
+      "title": "Entertainment Trivia",
+      "pointsPerQuestion": 4,
+      "instructions": "Movies, music, and TV from 1980s onward. Books can be older (early 1900s).",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Before he played \"Dirty Harry\", he made a name for himself as the \"Man With No Name\" in Sergio Leone westerns",
+          "answer": "Clint Eastwood",
+          "category": "ACTORS & ACTRESSES",
+          "isBanned": false
+        },
+        {
+          "clue": "\"And a Voice to Sing With\" & \"Daybreak\" are autobiographies by this famous folk singer",
+          "answer": "Joan Baez",
+          "category": "\"EZ\" DOES IT",
+          "isBanned": false
+        },
+        {
+          "clue": "Entranced, or a 1945 Hitchcock film",
+          "answer": "spellbound",
+          "category": "10-LETTER WORDS",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "roundType": "mixing-things-up",
+      "title": "Mixing Things Up",
+      "pointsPerQuestion": 5,
+      "subType": "who-am-i",
+      "instructions": "Varies weekly: Who Am I, Size Matters, Name That Brand, or Sports Team.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "I'm an actor known for my roles in 'Titanic' and 'Inception'. I have won an Academy Award for Best Actor.",
+          "answer": "Leonardo DiCaprio",
+          "isBanned": false
+        },
+        {
+          "clue": "I was born in 1964, and I am a renowned musician famous for my hits like 'Purple Rain' and 'Kiss'.",
+          "answer": "Prince",
+          "isBanned": false
+        },
+        {
+          "clue": "I'm a civil rights leader born in 1929, famous for my 'I Have a Dream' speech and my work in the American civil rights movement.",
+          "answer": "Martin Luther King Jr.",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "roundType": "game-changer",
+      "title": "Game Changer Round",
+      "pointsPerQuestion": 6,
+      "instructions": "Medium difficulty standard questions. No shared theme.",
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "Long-time companion of Dashiell Hammett, she was played in \"Julia\" by Jane Fonda",
+          "answer": "Lillian Hellman",
+          "category": "WOMEN AUTHORS",
+          "isBanned": false
+        },
+        {
+          "clue": "This cabinet department operates foreign trade programs & establishes weights & measures",
+          "answer": "Commerce",
+          "category": "U.S. GOVERNMENT",
+          "isBanned": false
+        },
+        {
+          "clue": "Winning for Best Supporting Actress, she called Jon Voight \"A great actor, but a better father\"",
+          "answer": "Angelina Jolie",
+          "category": "THE OSCARS",
+          "isBanned": false
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "20th CENTURY HISTORY",
+    "question": "The NKVD, which liquidated its own first 2 chiefs in the 1930s, developed into this group in 1954",
+    "answer": "the KGB",
+    "isBanned": false
+  }
+}

@@ -37,25 +37,49 @@ export OPENAI_API_KEY=your-api-key-here
 
    If you don't set the API key, the system will use basic pattern matching to filter questions, but LLM-powered filtering and rewriting will be disabled.
 
-### Initial Data Collection
+### Populate J! Archive (parser — recommended)
 
-Before generating games, you need to scrape J! Archive data:
+Before generating games, populate the question archive from J! Archive using the Python parser pipeline. This produces cleaner data than the deprecated Node scraper.
 
 ```bash
-# Test mode: scrape just 5 games
-npm run scrape -- --test
+# One-time: clone parser, download HTML (parallel), parse into clues.db, then export to archive
+npm run populate-archive
 
-# Scrape a specific season
-npm run scrape -- --season 42
-
-# Scrape recent seasons (default: seasons 40-42)
-npm run scrape
+# Or run steps manually: after clues.db exists,
+npm run db-to-archive
 ```
 
-The scraper will:
-- Respect rate limits (2 second delay between requests)
-- Save data to `data/archive-backup.json`
-- Skip already-scraped games
+Download uses a parallel script (default 3 workers, 1.5s between requests, gzip) to avoid overloading j-archive.com. To tune: run the script directly with `-w` and `--delay` (e.g. `data/jeopardy-parser/.venv/bin/python scripts/download-archive-parallel.py -d data/jeopardy-parser -w 4 --delay 1`). Use higher values only if the site is clearly fine with it; aggressive rates can lead to connection refused or IP blocks.
+
+This writes `data/archive-backup.json` from `data/clues.db` (created by [iamsix/jeopardy-parser](https://github.com/iamsix/jeopardy-parser) and `scripts/parser-with-memory.py`).
+
+**If your archive was ever from the old scraper** and you want clean parser-only data, delete it and re-parse:
+
+```bash
+rm data/archive-backup.json
+npm run populate-archive
+```
+
+To re-download and re-parse everything from scratch (e.g. fresh `clues.db`), also remove the parser output and DB, then run populate again:
+
+```bash
+rm -rf data/archive-backup.json data/clues.db data/jeopardy-parser
+npm run populate-archive
+```
+
+### Family Feud (ProtoQA)
+
+Family Feud questions come from [ProtoQA](https://github.com/iesl/protoqa-data). To populate `data/family-feud-questions.json`:
+
+```bash
+# Download dev set from GitHub and convert (~979 questions)
+node scripts/convert-protoqa-to-family-feud.js --fetch
+
+# Or use a local clone: pass a path to get more questions (e.g. train set)
+node scripts/convert-protoqa-to-family-feud.js ./protoqa-data/data/train/train.jsonl
+```
+
+Using `train.jsonl` (e.g. after cloning protoqa-data) gives many more questions than the default dev set.
 
 ### Generate a Game
 
@@ -83,6 +107,15 @@ To avoid differences between your environment and production (styling, icons, fe
 - **Assets**: CSS/JS are served as-is (no build step). Production uses the same files; Vercel sets short cache headers for `/css/*` and `/js/*` so deploys propagate.
 - **Icons**: Lucide is pinned to a specific version in the HTML so local and production use the same icon set.
 
+### Round types
+
+Some rounds use special data or LLM generation instead of the main archive:
+
+- **Round 2 (Over/Under)**: LLM-generated numeric questions. Requires `OPENAI_API_KEY`. When the key is missing, generation falls back to pool files if available.
+- **Round 4 (List Round)**: One question with multiple answers, loaded from `data/list-round-questions.json` (not from the J! Archive backup). Add or edit that file to change list-round content.
+
+TODO: Document pool sources (over-under, game-show, mixing-things-up) and operator options for rounds 2 and 4 in more detail.
+
 ## Project Structure
 
 ```
@@ -95,15 +128,17 @@ TriviaBot/
 │   ├── game-list.js       # Game list logic
 │   └── game-display.js     # Game rendering logic
 ├── data/
-│   ├── archive-backup.json    # Scraped J! Archive data
+│   ├── archive-backup.json    # J! Archive data (from parser: populate-archive + db-to-archive)
 │   ├── games/
 │   │   ├── index.json         # Games index
 │   │   └── game-YYYY-MM-DD.json  # Generated games
 │   └── played-status.json     # Played status tracking
 ├── scripts/
-│   ├── scrape-archive.js      # J! Archive scraper
-│   ├── generate-game.js       # Game generator
-│   └── update-games-index.js  # Index updater
+│   ├── populate-archive.sh   # Clone parser, run download + parse → clues.db
+│   ├── db-to-archive.js      # clues.db → archive-backup.json
+│   ├── scrape-archive.js     # (Deprecated) J! Archive scraper
+│   ├── generate-game.js      # Game generator
+│   └── update-games-index.js # Index updater
 └── .github/
     └── workflows/
         └── weekly-game.yml    # GitHub Actions automation
@@ -134,6 +169,7 @@ The project is configured to deploy to Vercel, which hosts both the static site 
 3. **Deploy**:
    - Vercel will automatically deploy on every push to `main`
    - Your site will be available at `https://your-project.vercel.app`
+   - **When are changes on production?** Production runs whatever is deployed from this repo. If you deploy from Vercel linked to GitHub, that is usually the latest `main` after each push. Uncommitted or unpushed changes (e.g. in `scripts/generate-game.js`) are not on production until you commit, push to `main`, and Vercel finishes the deploy.
 
 ### GitHub Pages (Alternative)
 

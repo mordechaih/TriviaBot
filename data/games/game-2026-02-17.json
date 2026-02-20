@@ -1,0 +1,242 @@
+{
+  "id": "game-2026-02-17",
+  "date": "2026-02-17",
+  "isPlayed": false,
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "roundType": "get-your-feet-wet",
+      "title": "Get Your Feet Wet",
+      "pointsPerQuestion": 2,
+      "instructions": "Generally VERY easy questions to ease into the game.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "In 1970 George Bush ran against Lloyd Bentsen Jr. for this position",
+          "answer": "U.S. Senator from Texas",
+          "category": "PRESIDENTIAL TRIVIA",
+          "isBanned": false
+        },
+        {
+          "clue": "He penned the immortal line \"The fault, dear Brutus, is not in our stars, but in ourselves\"",
+          "answer": "William Shakespeare",
+          "category": "BRUTUS",
+          "isBanned": false
+        },
+        {
+          "clue": "\"Come mothers and fathers throughout the land and don't criticize what you can't understand\"",
+          "answer": "\"The Times They Are A-Changin'\"",
+          "category": "BOB DYLAN CHRONICLES",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "roundType": "over-under",
+      "title": "Over/Under",
+      "pointsPerQuestion": 3,
+      "subType": null,
+      "instructions": "Numeric guessing questions. Pick a number close to the actual answer.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "How many keys on a standard piano?",
+          "answer": "88",
+          "actualNumber": 88,
+          "targetNumber": 90,
+          "isBanned": false
+        },
+        {
+          "clue": "In what year did the first iPhone go on sale?",
+          "answer": "2007",
+          "actualNumber": 2007,
+          "targetNumber": 2005,
+          "isBanned": false
+        },
+        {
+          "clue": "How many days are there in a leap year?",
+          "answer": "366",
+          "actualNumber": 366,
+          "targetNumber": 365,
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "roundType": "trifecta-trivia",
+      "title": "Trifecta Trivia",
+      "pointsPerQuestion": 3,
+      "instructions": "First \"trivia in earnest\" round. Still easy questions.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "He developed the V-2 for Germany & while in Alabama, the Saturn V for the U.S.",
+          "answer": "Wernher von Braun",
+          "category": "SCIENTISTS",
+          "isBanned": false
+        },
+        {
+          "clue": "These \"whoopers\" breed in marshy areas of Wood Buffalo National Park in Canada",
+          "answer": "whooping cranes",
+          "category": "ENDANGERED SPECIES",
+          "isBanned": false
+        },
+        {
+          "clue": "\"Sartoris\" published in 1929 was his first novel to deal with Yoknapatawpha County",
+          "answer": "Faulkner",
+          "category": "AMERICAN LITERATURE",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "roundType": "list-round",
+      "title": "The List Round",
+      "pointsPerQuestion": "variable",
+      "instructions": "One question with multiple answers. 1 point per correct answer.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "The Bayeux Tapestry is a graphic representation of this man's conquest of England",
+          "answer": "William the Conqueror",
+          "category": "WORLD HISTORY",
+          "isBanned": false
+        },
+        {
+          "clue": "In 1500 Francisco de Bobadilla arrived in Santo Domingo & sent this man back to Spain in shackles",
+          "answer": "Christopher Columbus",
+          "category": "EVERYBODY HATES CHRIS",
+          "isBanned": false
+        },
+        {
+          "clue": "The economic center of this river's basin is the city of Manaus, Brazil",
+          "answer": "Amazon",
+          "category": "TOUGH GEOGRAPHY",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "roundType": "game-show-style",
+      "title": "Game Show Style",
+      "pointsPerQuestion": 4,
+      "instructions": "Varies weekly: True/False, Name That Tune, Multiple Choice, or Family Feud.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "In the 20th century these neighboring countries each had a king named Faisal",
+          "answer": "Saudi Arabia & Iraq",
+          "category": "GEOGRAPHY",
+          "isBanned": false
+        },
+        {
+          "clue": "Barney Frank,Edward Markey",
+          "answer": "Massachusetts",
+          "category": "U.S. REPS BY STATE",
+          "isBanned": false
+        },
+        {
+          "clue": "Dating from medieval times, Gamla Stan (\"Old Town\") is the \"cradle\" of this Scandinavian capital",
+          "answer": "Stockholm",
+          "category": "SOMEWHERE",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "roundType": "entertainment-trivia",
+      "title": "Entertainment Trivia",
+      "pointsPerQuestion": 4,
+      "instructions": "Movies, music, and TV from 1980s onward. Books can be older (early 1900s).",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "This author of the Uncle Remus stories also wrote \"Wally Wanderoon and His Story-Telling Machine\"",
+          "answer": "Joel Chandler Harris",
+          "category": "CHILDREN'S BOOKS & AUTHORS",
+          "isBanned": false
+        },
+        {
+          "clue": "In 1999 he pumped up nightclubs with a musical tribute to his hero Frank Sinatra",
+          "answer": "Joe Piscopo",
+          "category": "SNL ALUMNI",
+          "isBanned": false
+        },
+        {
+          "clue": "God said this elderly mother of Isaac \"shall be a mother of nations; kings of people shall be of her\"",
+          "answer": "Sarah",
+          "category": "ISAAC",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "roundType": "mixing-things-up",
+      "title": "Mixing Things Up",
+      "pointsPerQuestion": 5,
+      "subType": "name-that-sports-team",
+      "instructions": "Varies weekly: Who Am I, Size Matters, Name That Brand, or Sports Team.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "University of Oregon",
+          "answer": "Ducks",
+          "league": "College",
+          "isBanned": false
+        },
+        {
+          "clue": "University of Alabama",
+          "answer": "Crimson Tide",
+          "league": "College",
+          "isBanned": false
+        },
+        {
+          "clue": "University of Michigan",
+          "answer": "Wolverines",
+          "league": "College",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "roundType": "game-changer",
+      "title": "Game Changer Round",
+      "pointsPerQuestion": 6,
+      "instructions": "Medium difficulty standard questions. No shared theme.",
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "This 1925 novel contains the line \"They were careless people, Tom and Daisy\"",
+          "answer": "The Great Gatsby",
+          "category": "AMERICAN LITERATURE",
+          "isBanned": false
+        },
+        {
+          "clue": "Its 3 main sections are the duodenum, the jejunum & the ileum",
+          "answer": "the small intestine",
+          "category": "THE BODY HUMAN",
+          "isBanned": false
+        },
+        {
+          "clue": "It's the great detective's London address",
+          "answer": "221B Baker St.",
+          "category": "YO, HOLMES!",
+          "isBanned": false
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "RELIGIOUS PLACES",
+    "question": "A bullet that struck Pope John Paul II was placed in the crown of a statue of the Virgin Mary in this Iberian village",
+    "answer": "Fatima",
+    "isBanned": false
+  }
+}

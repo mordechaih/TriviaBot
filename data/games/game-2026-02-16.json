@@ -1,0 +1,237 @@
+{
+  "id": "game-2026-02-16",
+  "date": "2026-02-16",
+  "isPlayed": false,
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "roundType": "get-your-feet-wet",
+      "title": "Get Your Feet Wet",
+      "pointsPerQuestion": 2,
+      "instructions": "Generally VERY easy questions to ease into the game.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "The Beehive Cluster is on this zodiac constellation's carapace",
+          "answer": "Cancer the Crab",
+          "category": "THE STARS",
+          "isBanned": false
+        },
+        {
+          "clue": "Among the horse constellations in the sky are one with a horn, the unicorn & this one with wings",
+          "answer": "Pegasus",
+          "category": "THE STARS",
+          "isBanned": false
+        },
+        {
+          "clue": "This constellation abbreviated Sgr is best seen in August",
+          "answer": "Sagittarius",
+          "category": "THE STARS",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "roundType": "over-under",
+      "title": "Over/Under",
+      "pointsPerQuestion": 3,
+      "instructions": "Numeric guessing questions. Pick a number close to the actual answer.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "This famous son, the \"Choirboy of the Board\", played himself & joined the richest poker game in Jersey",
+          "answer": "Frank Sinatra Jr.",
+          "category": "THE SOPRANOS",
+          "isBanned": false
+        },
+        {
+          "clue": "Once rock & roll's Little Steven & Miami Steve, he plays Soprano lieutenant Silvio Dante",
+          "answer": "Steven Van Zandt",
+          "category": "THE SOPRANOS",
+          "isBanned": false
+        },
+        {
+          "clue": "Before she played Tony's mom, Nancy Marchand won 4 Emmys as Ed Asner's publisher boss on this show",
+          "answer": "Lou Grant",
+          "category": "THE SOPRANOS",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "roundType": "trifecta-trivia",
+      "title": "Trifecta Trivia",
+      "pointsPerQuestion": 3,
+      "instructions": "First \"trivia in earnest\" round. Still easy questions.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Between 1823 & 1831 the artist Hokusai created a series of 36 views of this",
+          "answer": "Mount Fuji",
+          "category": "FAMOUS MOUNTS",
+          "isBanned": false
+        },
+        {
+          "clue": "You can take it for granite that this South Dakota landmark has four 60' heads carved into it",
+          "answer": "Mount Rushmore",
+          "category": "FAMOUS MOUNTS",
+          "isBanned": false
+        },
+        {
+          "clue": "Noah was probably the first to climb down this mount without first climbing up it",
+          "answer": "Mount Ararat",
+          "category": "FAMOUS MOUNTS",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "roundType": "list-round",
+      "title": "The List Round",
+      "pointsPerQuestion": "variable",
+      "instructions": "One question with multiple answers. 1 point per correct answer.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Cooked rice with raw fish; 2 popular types are nigiri & hosomaki",
+          "answer": "sushi",
+          "category": "RICE, RICE BABY",
+          "isBanned": false
+        },
+        {
+          "clue": "In 1924 this sportswriter coined the term \"The Four Horsemen\" about Notre Dame football players",
+          "answer": "Grantland Rice",
+          "category": "RICE, RICE BABY",
+          "isBanned": false
+        },
+        {
+          "clue": "The throwing of rice at these ceremonies is a superstition to ensure prosperity & fertility",
+          "answer": "weddings",
+          "category": "RICE, RICE BABY",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "roundType": "game-show-style",
+      "title": "Game Show Style",
+      "pointsPerQuestion": 4,
+      "instructions": "Varies weekly: True/False, Name That Tune, Multiple Choice, or Family Feud.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "This \"Earthy\" Kentucky politician was among those who wanted European hands off South America",
+          "answer": "Henry Clay",
+          "category": "THE MONROE DOCTRINE",
+          "isBanned": false
+        },
+        {
+          "clue": "This president's 1904 \"Corollary\" to the doctrine allows for U.S. intervention in Latin America",
+          "answer": "Theodore Roosevelt",
+          "category": "THE MONROE DOCTRINE",
+          "isBanned": false
+        },
+        {
+          "clue": "The doctrine might have been issued jointly with Britain but for opposition from John Quincy Adams in this post",
+          "answer": "Secretary of State",
+          "category": "THE MONROE DOCTRINE",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "roundType": "entertainment-trivia",
+      "title": "Entertainment Trivia",
+      "pointsPerQuestion": 4,
+      "instructions": "Movies, music, and TV from 1980s onward. Books can be older (early 1900s).",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Port got a boost from the 1703 Methuen Treaty, which gave Portuguese goods low tariffs in this country",
+          "answer": "Great Britain (England)",
+          "category": "A LOVELY PORT",
+          "isBanned": false
+        },
+        {
+          "clue": "Fine port that can be drunk at once may be marked L.B.V., \"late bottled\" this",
+          "answer": "vintage",
+          "category": "A LOVELY PORT",
+          "isBanned": false
+        },
+        {
+          "clue": "Because of the deposit it leaves in the bottle, one must do this to crusted port before serving",
+          "answer": "decant it (or strain it)",
+          "category": "A LOVELY PORT",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "roundType": "mixing-things-up",
+      "title": "Mixing Things Up",
+      "pointsPerQuestion": 5,
+      "instructions": "Varies weekly: Who Am I, Size Matters, Name That Brand, or Sports Team.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Like Toronto's Skydome, Casablanca's Hassan II Mosque has this feature for variable weather",
+          "answer": "Retractable roof",
+          "category": "CASABLANCA",
+          "isBanned": false
+        },
+        {
+          "clue": "With about 3 million people, Casablanca is this country's biggest city by far",
+          "answer": "Morocco",
+          "category": "CASABLANCA",
+          "isBanned": false
+        },
+        {
+          "clue": "Casablanca is this type of \"port\" for European ships, a 3-word phrase referring to their brief stays",
+          "answer": "Port of call",
+          "category": "CASABLANCA",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "roundType": "game-changer",
+      "title": "Game Changer Round",
+      "pointsPerQuestion": 6,
+      "instructions": "Medium difficulty standard questions. No shared theme.",
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "A 1964 film featured Major \"King\" Kong, Gen. Buck Turgidson & this title character",
+          "answer": "Dr. Strangelove",
+          "category": "PLAYING DOCTOR",
+          "isBanned": false
+        },
+        {
+          "clue": "Alan Alda was Emmy nominated for \"ER\", but he's slightly better known for playing this Korean War doctor",
+          "answer": "Hawkeye Pierce",
+          "category": "PLAYING DOCTOR",
+          "isBanned": false
+        },
+        {
+          "clue": "Spongy gums, weakness, depression, had no vitamin C in a year?  Must be this disease (& cut the pirate act)",
+          "answer": "scurvy",
+          "category": "PLAYING DOCTOR",
+          "isBanned": false
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "ART HISTORY",
+    "question": "Carel Fabritius, whose self-portrait is seen here, is considered this man's greatest pupil",
+    "answer": "Rembrandt",
+    "isBanned": false
+  }
+}

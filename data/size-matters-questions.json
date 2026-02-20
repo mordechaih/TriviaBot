@@ -1,9 +1,44 @@
 {
   "questions": [
-    { "clue": "Which is taller: the Eiffel Tower or the Statue of Liberty (including pedestal)?", "answer": "The Eiffel Tower", "details": "Eiffel Tower: 1,063 ft; Statue of Liberty with pedestal: 305 ft" },
-    { "clue": "Which is taller: the Washington Monument or the Empire State Building?", "answer": "The Empire State Building", "details": "Empire State Building: 1,454 ft; Washington Monument: 555 ft" },
-    { "clue": "Which is taller: Big Ben's clock tower or the Leaning Tower of Pisa?", "answer": "Big Ben's clock tower", "details": "Big Ben: 316 ft; Leaning Tower of Pisa: 183 ft" },
-    { "clue": "Which is taller: the Great Pyramid of Giza or the Colosseum?", "answer": "The Great Pyramid of Giza", "details": "Great Pyramid: 455 ft; Colosseum: 157 ft" },
-    { "clue": "Which is taller: the Space Needle or the Gateway Arch?", "answer": "The Gateway Arch", "details": "Gateway Arch: 630 ft; Space Needle: 605 ft" }
+    {
+      "clue": "Which is taller: the Eiffel Tower or the Statue of Liberty (including pedestal)?",
+      "answer": "The Eiffel Tower",
+      "details": "Eiffel Tower: 1,063 ft; Statue of Liberty with pedestal: 305 ft"
+    },
+    {
+      "clue": "Which is taller: the Washington Monument or the Empire State Building?",
+      "answer": "The Empire State Building",
+      "details": "Empire State Building: 1,454 ft; Washington Monument: 555 ft"
+    },
+    {
+      "clue": "Which is taller: Big Ben's clock tower or the Leaning Tower of Pisa?",
+      "answer": "Big Ben's clock tower",
+      "details": "Big Ben: 316 ft; Leaning Tower of Pisa: 183 ft"
+    },
+    {
+      "clue": "Which is taller: the Great Pyramid of Giza or the Colosseum?",
+      "answer": "The Great Pyramid of Giza",
+      "details": "Great Pyramid: 455 ft; Colosseum: 157 ft"
+    },
+    {
+      "clue": "Which is taller: the Space Needle or the Gateway Arch?",
+      "answer": "The Gateway Arch",
+      "details": "Gateway Arch: 630 ft; Space Needle: 605 ft"
+    },
+    {
+      "clue": "Which is taller: The Empire State Building or the Chrysler Building?",
+      "answer": "The Empire State Building",
+      "details": "Empire State Building: 1,454 ft (including antenna), Chrysler Building: 1,046 ft"
+    },
+    {
+      "clue": "Which is taller: The Leaning Tower of Pisa or The Colosseum in Rome?",
+      "answer": "The Leaning Tower of Pisa",
+      "details": "Leaning Tower of Pisa: 183 ft, Colosseum: 157 ft"
+    },
+    {
+      "clue": "Which is taller: The Burj Khalifa or the Shanghai Tower?",
+      "answer": "The Burj Khalifa",
+      "details": "Burj Khalifa: 2,717 ft, Shanghai Tower: 2,073 ft"
+    }
   ]
 }

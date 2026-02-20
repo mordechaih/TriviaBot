@@ -1,0 +1,179 @@
+{
+  "id": "game-2026-01-19",
+  "date": "2026-01-19",
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "Mark Watney in this novel says, \"I don't want to come off as arrogant here, but I'm the best botanist on the planet\"",
+          "answer": "The Martian",
+          "category": "SCIENCE FICTION"
+        },
+        {
+          "clue": "The title refers to cataclysms that can last for years in N.K. Jemisin's Hugo Award winner \"The Fifth\" this",
+          "answer": "Season",
+          "category": "SCIENCE FICTION"
+        },
+        {
+          "clue": "Also known as Melange, this mystical substance created by Arrakis' sandworms helps in space navigation",
+          "answer": "Spice",
+          "category": "SCIENCE FICTION"
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "\"So all the\" these \"from Abraham to David are fourteen\" these",
+          "answer": "generations",
+          "category": "KING JAMES BIBLE TALK"
+        },
+        {
+          "clue": "The KJV loves this synonym for \"strike\" or \"bash\", as in \"thou shalt\" do this to \"the rock, and there shall come water out of it\"",
+          "answer": "smite",
+          "category": "KING JAMES BIBLE TALK"
+        },
+        {
+          "clue": "\"Pride\" does this \"before destruction, and an haughty spirit before a fall\"",
+          "answer": "goeth",
+          "category": "KING JAMES BIBLE TALK"
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Playing Achilles in the movie \"Troy\", this actor managed to injure his, yep, you guessed it, Achilles tendon",
+          "answer": "Brad Pitt",
+          "category": "LIFE IMITATES POP CULTURE"
+        },
+        {
+          "clue": "Talk about life imitating art: after nannying identical twins played by Lindsay Lohan in this 1998 film, I had real-life identical twins & they even share the characters' birthday",
+          "answer": "The Parent Trap",
+          "category": "LIFE IMITATES POP CULTURE"
+        },
+        {
+          "clue": "This show correctly predicts the future: a 2000 episode shows a grown-up Lisa as U.S. president; her predecessor: Donald Trump",
+          "answer": "The Simpsons",
+          "category": "LIFE IMITATES POP CULTURE"
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "After a hurricane & a tidal wave hit Belize City in 1961, the capital was moved 50 miles inland to this city to avoid flooding",
+          "answer": "Belmopan",
+          "category": "YOU BETTER BELIZE IT"
+        },
+        {
+          "clue": "Belize's Great Blue Hole was featured in a 1970s episode of \"The Undersea World of\" him who called it one of Earth's best diving sites",
+          "answer": "Jacques Cousteau",
+          "category": "YOU BETTER BELIZE IT"
+        },
+        {
+          "clue": "1981's constitution set up a bicameral national assembly of these 2 familiar-sounding bodies, but members of each serve 5-year terms",
+          "answer": "the Senate & the House of Representatives",
+          "category": "YOU BETTER BELIZE IT"
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "A nearly 4-hour-long Western, one of Hollywood's biggest bombs",
+          "answer": "Heaven's Gate",
+          "category": "PICTURE THE FILM"
+        },
+        {
+          "clue": "A 1986 Oliver Stone film",
+          "answer": "Platoon",
+          "category": "PICTURE THE FILM"
+        },
+        {
+          "clue": "It tells the true story of a Pulitzer Prize-winning investigation",
+          "answer": "Spotlight",
+          "category": "PICTURE THE FILM"
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Dwight Eisenhower & John Diefenbaker were there for the opening of this North American waterway in 1959",
+          "answer": "the St. Lawrence Seaway",
+          "category": "IN THE PAST"
+        },
+        {
+          "clue": "All your favorite medieval travel influencers went through South India, like Ibn Battuta, Zheng He & this Venetian guy",
+          "answer": "Marco Polo",
+          "category": "IN THE PAST"
+        },
+        {
+          "clue": "In ancient Rome the conflict of the orders refers to the struggle between these 2 social classes with names that start with \"P\"",
+          "answer": "patricians & plebeians",
+          "category": "IN THE PAST"
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "The Treaty of Nanjing in 1842 ended the first of these wars instigated by British drug dealers",
+          "answer": "the Opium Wars",
+          "category": "IN THE 19th CENTURY"
+        },
+        {
+          "clue": "At this 1805 naval battle, Lord Nelson gave his famous signal, \"England expects that every man will do his duty\"",
+          "answer": "Trafalgar",
+          "category": "IN THE 19th CENTURY"
+        },
+        {
+          "clue": "It traces its roots to the founding of the International Committee for the Relief of the Wounded in 1863",
+          "answer": "the Red Cross",
+          "category": "IN THE 19th CENTURY"
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "Dating from 1522, the oldest house still standing in Cuba is in this city \"de Cuba\", the country's 2nd largest",
+          "answer": "Santiago de Cuba",
+          "category": "CITIES AROUND THE WORLD"
+        },
+        {
+          "clue": "This pilgrimage city about 250 miles from Mecca was once known as Yathrib",
+          "answer": "Medina",
+          "category": "CITIES AROUND THE WORLD"
+        },
+        {
+          "clue": "Today it's around 10 million strong & known as Ho Chi Minh City, but before 1975 the city was known by this name",
+          "answer": "Saigon",
+          "category": "CITIES AROUND THE WORLD"
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "THE ANCIENT WORLD",
+    "question": "This text helped the soul, or ka, navigate a journey into a region called Amenti",
+    "answer": "the Book of the Dead"
+  }
+}
