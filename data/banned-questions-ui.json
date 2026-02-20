@@ -1,105 +1,15 @@
 {
   "questions": [
     {
-      "gameId": "game-2026-02-15",
-      "roundNumber": 2,
-      "questionIndex": 0,
-      "clue": "This character seen here has perhaps the most famous name in the film:(play it again)",
-      "answer": "Sam (the piano player)",
-      "reason": "shuffled",
-      "flaggedDate": "2026-02-15T21:48:49.120Z",
-      "bannedBy": "shuffled"
-    },
-    {
-      "gameId": "game-2026-02-15",
-      "roundNumber": 2,
-      "questionIndex": 1,
-      "clue": "That crucial flight at the end of the film is bound for this city",
-      "answer": "Lisbon",
-      "reason": "shuffled",
-      "flaggedDate": "2026-02-15T21:48:49.120Z",
-      "bannedBy": "shuffled"
-    },
-    {
-      "gameId": "game-2026-02-15",
-      "roundNumber": 2,
-      "questionIndex": 2,
-      "clue": "It completes the film's last line, \"Louis, I think this is the beginning of...\"",
-      "answer": "A beautiful friendship",
-      "reason": "shuffled",
-      "flaggedDate": "2026-02-15T21:48:49.120Z",
-      "bannedBy": "shuffled"
-    },
-    {
-      "gameId": "game-2026-02-15",
-      "roundNumber": 5,
-      "questionIndex": 0,
-      "clue": "Tell, tell, tell us the name of this composer who died in 1868, & now rests in the Church of Santa Croce",
-      "answer": "Rossini",
-      "reason": "shuffled",
-      "flaggedDate": "2026-02-15T21:50:59.506Z",
-      "bannedBy": "shuffled"
-    },
-    {
-      "gameId": "game-2026-02-15",
-      "roundNumber": 5,
-      "questionIndex": 1,
-      "clue": "In \"Growing Up Brady\", Barry Williams admits he had \"a case of the hots for\" this actress, his TV mom",
-      "answer": "Florence Henderson",
-      "reason": "shuffled",
-      "flaggedDate": "2026-02-15T21:50:59.507Z",
-      "bannedBy": "shuffled"
-    },
-    {
-      "gameId": "game-2026-02-15",
-      "roundNumber": 5,
-      "questionIndex": 2,
-      "clue": "Now an art museum, it was originally built as the government judiciary's offices, hence its name",
-      "answer": "Uffizi",
-      "reason": "shuffled",
-      "flaggedDate": "2026-02-15T21:50:59.507Z",
-      "bannedBy": "shuffled"
-    },
-    {
-      "gameId": "game-2026-02-16",
-      "roundNumber": 1,
-      "questionIndex": 2,
-      "clue": "This constellation abbreviated Sgr is best seen in August",
-      "answer": "Sagittarius",
-      "reason": "manual",
-      "flaggedDate": "2026-02-15T21:59:16.166Z",
-      "bannedBy": "manual"
-    },
-    {
       "gameId": "game-2026-02-22",
       "roundNumber": 2,
       "questionIndex": 2,
       "clue": "How many days are there in a leap year?",
       "answer": "366",
       "reason": "manual",
-      "flaggedDate": "2026-02-16T02:30:42.941Z",
-      "bannedBy": "manual"
-    },
-    {
-      "gameId": "game-2026-02-19",
-      "roundNumber": 7,
-      "questionIndex": 2,
-      "clue": "iPhone and MacBook",
-      "answer": "Apple",
-      "reason": "manual",
-      "flaggedDate": "2026-02-18T16:45:29.709Z",
-      "bannedBy": "manual"
-    },
-    {
-      "gameId": "game-2026-02-19",
-      "roundNumber": 7,
-      "questionIndex": 1,
-      "clue": "Big Mac and McFlurry",
-      "answer": "McDonald's",
-      "reason": "manual",
-      "flaggedDate": "2026-02-18T16:47:07.167Z",
+      "flaggedDate": "2026-02-20T13:30:50.207Z",
       "bannedBy": "manual"
     }
   ],
-  "lastUpdated": "2026-02-18T16:47:08.177Z"
+  "lastUpdated": "2026-02-20T13:30:51.342Z"
 }
