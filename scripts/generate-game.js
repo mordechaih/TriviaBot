@@ -33,6 +33,27 @@ if (process.env.OPENAI_API_KEY) {
   console.warn('Warning: OPENAI_API_KEY not set. LLM filtering and rewriting will be skipped.');
 }
 
+// Shared system prompt for LLM-generated trivia rounds
+const TRIVIA_GENERATOR_SYSTEM_PROMPT = `You are a trivia question generator for a competitive pub trivia night. Your goal is to create questions that spark table debate and reward genuine knowledge.
+
+Difficulty calibration (IMPORTANT):
+- Target the "satisfying aha" zone: answers ~30-50% of a bar crowd would know, NOT 80%+ gimmes
+- Prefer "second-tier" facts: the interesting detail behind the famous thing, not the famous thing itself
+- A good question makes teams debate before answering; a bad question has everyone nodding immediately
+- Avoid: Wikipedia opening sentences, elementary school facts, "everyone knows this" trivia, first-thing-that-comes-to-mind answers
+
+Examples of TOO EASY (avoid these patterns):
+- "What planet is known as the Red Planet?" (Mars - everyone knows)
+- "Who painted the Mona Lisa?" (Da Vinci - too obvious)
+- "What year did WWII end?" (1945 - common knowledge)
+
+Examples of GOOD difficulty:
+- "What planet has the longest day, taking 243 Earth days to rotate?" (Venus - specific, learnable)
+- "What artistic technique did Da Vinci pioneer that creates a smoky, hazy effect?" (sfumato - deeper cut)
+- "In what year did rationing finally end in the UK after WWII?" (1954 - surprising, debatable)
+
+Always return valid JSON as specified in the prompt.`;
+
 // Ensure games directory exists
 if (!fs.existsSync(GAMES_DIR)) {
   fs.mkdirSync(GAMES_DIR, { recursive: true });
@@ -451,9 +472,18 @@ async function generateGameShowStyleRound(subType, usedQuestions = new Set()) {
 
 Requirements:
 - Mix of true and false answers (not all the same)
-- Medium difficulty - challenging but fair
+- Statements should be SURPRISING or COUNTERINTUITIVE - things that make people second-guess themselves
+- Avoid obvious facts everyone knows (e.g., "The Great Wall of China is visible from space" - too familiar)
+- Prefer deeper-cut facts: unusual animal behaviors, surprising historical details, counterintuitive science
 - Include a brief explanation/source for each answer
-- Questions should be interesting and surprising facts
+
+BAD (too easy/obvious):
+- "Goldfish have a 3-second memory" (everyone's heard this myth)
+- "Humans use only 10% of their brain" (too common)
+
+GOOD (surprising, debatable):
+- "Honey never spoils - edible honey has been found in 3000-year-old Egyptian tombs" (True - surprising)
+- "A group of flamingos is called a 'flamboyance'" (True - unexpected, fun)
 
 Return a JSON object with a "questions" key containing an array of exactly 3 objects:
 {"questions": [
@@ -465,10 +495,18 @@ Return a JSON object with a "questions" key containing an array of exactly 3 obj
     'name-that-tune': `Generate 3 "Name That Tune" questions for pub trivia.
 
 Requirements:
-- 2 should be earworms/one-hit-wonders with lesser-known song names (e.g., "My Sharona" by The Knack)
-- 1 should be an easier "gimme" - a very popular song
-- Describe each song in a way that hints at it without giving away the title
+- Focus on songs where the TITLE is not obvious from the lyrics or hook (the fun is in the disconnect)
+- 2 should be recognizable songs with surprisingly unfamiliar official titles (e.g., "Baba O'Riley" not "Teenage Wasteland")
+- 1 can be more straightforward but still interesting
+- Describe the song's sound, era, or cultural moment - don't just quote lyrics
 - Include both song title AND artist in the answer
+
+BAD examples (title too obvious):
+- Songs where the title IS the main hook ("Sweet Home Alabama", "Bohemian Rhapsody")
+
+GOOD examples (title surprises people):
+- "Baba O'Riley" by The Who (everyone calls it "Teenage Wasteland")
+- "Jump Around" by House of Pain (people know the song, forget the title)
 
 Return a JSON object with a "questions" key containing an array of exactly 3 objects:
 {"questions": [
@@ -480,10 +518,18 @@ Return a JSON object with a "questions" key containing an array of exactly 3 obj
     'millionaire': `Generate 3 hard trivia questions with 4 multiple choice options each, like "Who Wants to Be a Millionaire".
 
 Requirements:
-- Hard difficulty - should make people think
-- One correct answer, 3 plausible but incorrect distractors
-- For ONE question, make the wrong options obviously wrong (for easier elimination)
-- Cover different topics (history, science, pop culture, etc.)
+- These should be HARD - the kind that would appear in later rounds of the actual show ($125K+)
+- One correct answer, 3 plausible distractors that could fool someone who half-remembers the fact
+- Questions should reward DEPTH of knowledge, not just surface familiarity
+- Cover different topics (history, science, pop culture, geography, etc.)
+
+BAD (too easy):
+- "What is the capital of France?" (everyone knows)
+- "Who wrote Romeo and Juliet?" (too basic)
+
+GOOD (makes you think):
+- "Which US state was the last to ratify the 19th Amendment granting women's suffrage?" (Mississippi, 1984)
+- "What element has the chemical symbol 'W'?" (Tungsten - from German 'Wolfram')
 
 Return a JSON object with a "questions" key containing an array of exactly 3 objects:
 {"questions": [
@@ -514,7 +560,7 @@ Return a JSON object with a "questions" key containing an array of exactly 3 obj
       messages: [
         {
           role: 'system',
-          content: 'You are a trivia question generator for a pub trivia night. Generate engaging, accurate questions. Always return a single JSON object with a "questions" key containing an array of question objects.'
+          content: TRIVIA_GENERATOR_SYSTEM_PROMPT
         },
         {
           role: 'user',
@@ -569,13 +615,31 @@ async function generateOverUnderRound(usedQuestions = new Set()) {
 
 Requirements:
 - Every answer must be a single number (integer or one decimal place): year, count, amount, percentage, etc.
-- Questions must be relatable to normal human experience — things people might have a rough sense of — but NOT completely obvious. Avoid trivia that almost everyone knows (e.g. days in a leap year, keys on a piano, year of first iPhone). Aim for "interesting and guessable" not "trivial."
-- Do NOT use obscure facts or niche knowledge. The ideal difficulty: players can make a reasonable guess from everyday knowledge, but the answer is not common-knowledge automatic.
-- For each question provide:
+- Questions should be DEBATABLE at the table - things people have a rough sense of but would argue about
+- The targetNumber should create genuine tension - neither answer should be obviously right
+- Avoid common knowledge numbers that most people know or can easily calculate
+
+BAD (too obvious or well-known):
+- "How many keys on a standard piano?" (88 - music people know this instantly)
+- "What year was the iPhone released?" (2007 - tech common knowledge)
+- "How many states in the US?" (50 - elementary school)
+- "How many days in a leap year?" (366 - easy math)
+
+BAD (too obscure - no basis to guess):
+- "How many species of beetle exist?" (no one has any frame of reference)
+- "What's the population of Moldova?" (too niche)
+
+GOOD (debatable, estimable):
+- "How many countries are in Africa?" (54 - people can reason but often guess wrong)
+- "What year did the Berlin Wall fall?" (1989 - history people debate between late 80s/early 90s)
+- "How many bones in the human hand?" (27 - surprising, but can estimate)
+- "What percentage of the ocean floor has been mapped?" (~20% - surprising, discussable)
+
+For each question provide:
   - clue: the question text
   - answer: the numeric answer as a string
   - actualNumber: the same value as a number for display
-  - targetNumber: a round number that makes a good "over or under" guess, close to the answer so the game is interesting.
+  - targetNumber: a round number close enough to create real debate (within 10-20% of actual)
 ${avoidSection}
 Return JSON with a "questions" array of exactly 3 objects:
 [
@@ -590,7 +654,7 @@ Return JSON with a "questions" array of exactly 3 objects:
       messages: [
         {
           role: 'system',
-          content: 'You are a trivia question generator for a pub trivia night. Generate engaging, accurate questions. Always return valid JSON with a "questions" array.'
+          content: TRIVIA_GENERATOR_SYSTEM_PROMPT
         },
         {
           role: 'user',
@@ -651,10 +715,17 @@ async function generateMixingThingsUpRound(subType, usedQuestions = new Set()) {
     'who-am-i': `Generate 3 "Who Am I?" questions describing famous/notable individuals for pub trivia.
 
 Requirements:
-- Medium difficulty - people should recognize these individuals
+- Target people who are KNOWN but not OBVIOUS - avoid the first 10 people everyone would guess
 - Write clues in first person ("I'm a...", "I was born in...", "My famous work includes...")
-- Can have an optional theme (e.g., "Famous women", "Musicians") but not too obscure
-- Mix of celebrities, historical figures, athletes, etc.
+- Give 3-4 clues that progressively narrow it down; the first clue alone shouldn't give it away
+- Mix of celebrities, historical figures, athletes, scientists, etc.
+
+BAD (too obvious):
+- "I'm a basketball player who won 6 NBA championships with the Bulls" (Michael Jordan - everyone's first guess)
+
+GOOD (recognizable but requires thinking):
+- "I was born in Austria, became a bodybuilder, then an actor, then a governor" (Arnold Schwarzenegger - known but multi-layered)
+- "I'm a scientist who fled Nazi Germany and later regretted writing a letter to FDR" (Einstein - the clue makes you think)
 
 Return a JSON object with a "questions" key containing an array of exactly 3 objects:
 {"questions": [
@@ -666,10 +737,18 @@ Return a JSON object with a "questions" key containing an array of exactly 3 obj
     'size-matters': `Generate 3 "Size Matters" comparison questions about landmarks/famous buildings.
 
 Requirements:
-- Ask which of two famous structures is taller
-- Both structures should be well-known
+- Ask which of two famous structures is taller/larger
+- The comparison should be GENUINELY SURPRISING - the answer should make people say "really?!"
 - Include the actual heights in the details
-- Make the comparisons non-obvious (close heights are more interesting)
+- Prefer comparisons where the visually "smaller" thing is actually bigger, or where they're deceptively close
+
+BAD (obvious):
+- "Which is taller: The Empire State Building or a typical house?" (too easy)
+- "Which is taller: The Eiffel Tower or the Leaning Tower of Pisa?" (obviously Eiffel)
+
+GOOD (surprising):
+- "Which is taller: The Great Pyramid of Giza or the Statue of Liberty (without pedestal)?" (Pyramid, but close!)
+- "Which is taller: Big Ben's tower or the Leaning Tower of Pisa?" (Big Ben, but people often guess wrong)
 
 Return a JSON object with a "questions" key containing an array of exactly 3 objects:
 {"questions": [
@@ -681,15 +760,23 @@ Return a JSON object with a "questions" key containing an array of exactly 3 obj
     'name-that-brand': `Generate 3 "Name That Brand" questions for pub trivia.
 
 Requirements:
-- Give 2-3 product names from the same brand
-- Products should be well-known enough that people recognize them
-- The brand connection should be clear once revealed
-- Mix of categories (cars, food, tech, etc.)
+- Give 2-3 product names from the same PARENT company/brand
+- The connection should require a moment of thought - not immediately obvious
+- Prefer surprising corporate connections (products you didn't know were related)
+- Mix of categories (cars, food, tech, fashion, etc.)
+
+BAD (too obvious):
+- "Big Mac and McFlurry" (obviously McDonald's)
+- "iPhone and iPad" (obviously Apple)
+
+GOOD (makes you think):
+- "Hellmann's, Dove soap, and Ben & Jerry's" (Unilever - surprising connection)
+- "Bugatti, Lamborghini, and Ducati" (All owned by Volkswagen Group)
+- "Vans, The North Face, and Timberland" (VF Corporation)
 
 Return a JSON object with a "questions" key containing an array of exactly 3 objects:
 {"questions": [
   {"clue": "Aventador and Huracán", "answer": "Lamborghini"},
-  {"clue": "Big Mac and McFlurry", "answer": "McDonald's"},
   ...
 ]}
 `,
@@ -700,13 +787,20 @@ Requirements:
 - Name a US university or city
 - Answer should be the team name/mascot
 - Keep ALL questions in the same league (all college OR all NFL/NBA/MLB, not mixed)
-- Do NOT reference minor league sports
-- Include well-known teams
+- Prefer teams with UNUSUAL or UNEXPECTED names - not the obvious ones everyone knows
+- Avoid the top 10 most famous teams in any league
+
+BAD (too obvious):
+- "Dallas" -> "Cowboys" (everyone knows)
+- "University of Alabama" -> "Crimson Tide" (too famous)
+
+GOOD (known but less obvious):
+- "University of California Santa Cruz" -> "Banana Slugs" (surprising mascot)
+- "New Orleans" -> "Pelicans" (people forget this one)
 
 Return a JSON object with a "questions" key containing an array of exactly 3 objects, ALL from the same league:
 {"questions": [
   {"clue": "University of Oregon", "answer": "Ducks", "league": "College"},
-  {"clue": "University of Alabama", "answer": "Crimson Tide", "league": "College"},
   ...
 ]}
 `
@@ -724,7 +818,7 @@ Return a JSON object with a "questions" key containing an array of exactly 3 obj
       messages: [
         {
           role: 'system',
-          content: 'You are a trivia question generator for a pub trivia night. Generate engaging, accurate questions. Always return a single JSON object with a "questions" key containing an array of question objects.'
+          content: TRIVIA_GENERATOR_SYSTEM_PROMPT
         },
         {
           role: 'user',
