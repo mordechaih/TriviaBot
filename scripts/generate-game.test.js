@@ -218,7 +218,12 @@ test('selectEntertainmentQuestions returns empty when no entertainment questions
   assert.equal(result.length, 0);
 });
 
-test('generateGame round 4 has one list question with answers array', async () => {
+test('generateGame round 4 has one list question with answers array', async (t) => {
+  const archivePath = path.join(path.dirname(__dirname), 'data', 'archive-backup.json');
+  if (!fs.existsSync(archivePath)) {
+    t.skip('Skipping: archive-backup.json not present');
+    return;
+  }
   const gameId = await generateGame('2026-02-20', true);
   assert.ok(gameId);
   const gamesDir = path.join(path.dirname(__dirname), 'data', 'games');
@@ -232,7 +237,12 @@ test('generateGame round 4 has one list question with answers array', async () =
   assert.ok(round4.questions[0].pointsAvailable);
 });
 
-test('generateGame round 6 has 3 questions', async () => {
+test('generateGame round 6 has 3 questions', async (t) => {
+  const archivePath = path.join(path.dirname(__dirname), 'data', 'archive-backup.json');
+  if (!fs.existsSync(archivePath)) {
+    t.skip('Skipping: archive-backup.json not present');
+    return;
+  }
   const gameId = await generateGame('2026-02-21', true);
   assert.ok(gameId);
   const gamesDir = path.join(path.dirname(__dirname), 'data', 'games');

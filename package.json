@@ -4,6 +4,7 @@
   "description": "Weekly trivia game generator from J! Archive data",
   "type": "module",
   "scripts": {
+    "test": "node --test scripts/generate-game.test.js",
     "scrape": "node scripts/scrape-archive.js",
     "populate-archive": "bash scripts/populate-archive.sh",
     "db-to-archive": "node scripts/db-to-archive.js",
