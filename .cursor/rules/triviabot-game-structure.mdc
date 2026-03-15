@@ -1,0 +1,27 @@
+---
+description: TriviaBot game data model and round structure
+globs: scripts/generate-game.js,js/game-display.js,js/game-list.js,game.html
+alwaysApply: false
+---
+
+# TriviaBot Game Structure
+
+## Data model
+
+- **Rounds**: 8 rounds + Final Trivia. Each round has `roundType`, `title`, `pointsPerQuestion`, `instructions`, and `questions`.
+- **Questions**: `clue`, `answer`, `category`, `isBanned` (client-side). Filter using `banned-questions.json`, `played-status.json`, and in-memory `used-questions` when generating.
+- **Round types**: Rounds 1–4, 6, 8 are archive-based; rounds 5 and 7 are LLM (Game Show Style, Mixing Things Up) with subTypes. Use `ROUND_TEMPLATES` in `scripts/generate-game.js` for config.
+- **Game list**: `played-status.json` and `data/games/index.json`; games have `isPlayed`. Banned state is in `banned-questions.json` and localStorage.
+
+## Conventions
+
+- One category per round: select 3 questions from the same category per round; shuffle categories and questions (e.g. Fisher–Yates) before selection.
+- Shuffle/replace: when regenerating a round (e.g. LLM), mark replaced questions as banned (reason `"shuffled"`) before replacing.
+- UI: round color coding R1→R8 is yellow to red; round headers show title, badges, points; format-specific renderers for standard, over/under, list, multiple choice, true/false, Family Feud (top 10 table).
+
+## Key files
+
+- `scripts/generate-game.js` – game generation, `ROUND_TEMPLATES`, selection, LLM rounds, banned/played filtering.
+- `js/game-display.js` – render rounds/questions, banned/played UI, shuffle handlers.
+- `js/game-list.js` – game list, filters (all/unplayed/played), played status.
+- `game.html` – game page; `index.html` – game list.

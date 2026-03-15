@@ -1,0 +1,31 @@
+---
+description: TriviaBot DOM and storage performance patterns
+globs: js/game-display.js,js/game-list.js
+alwaysApply: false
+---
+
+# TriviaBot Performance
+
+## DOM batching
+
+- **Use DocumentFragment** for multiple inserts so the browser does one reflow:
+  - `renderRounds()`: append each round to a fragment, then `container.appendChild(fragment)` once.
+  - `createRoundElement()`: batch question elements in a fragment per round.
+  - `renderGames()`: batch game cards in a fragment, then append once.
+- Avoid sequential `container.appendChild()` in loops; avoid clearing with `innerHTML = ''` when a single fragment append is enough.
+
+```javascript
+// Prefer
+const fragment = document.createDocumentFragment();
+items.forEach(item => { fragment.appendChild(createElement(item)); });
+container.innerHTML = '';
+container.appendChild(fragment);
+```
+
+## localStorage
+
+- **Debounce writes** for played/banned status so rapid updates don't block the main thread. Use the existing debounced helper (e.g. 100ms); don't call `localStorage.setItem` directly in hot paths.
+
+## Measuring
+
+- `js/performance.js` and `benchmark.html` are used for instrumentation and benchmarks. Critical paths are already instrumented; preserve markers when changing `game-display.js` or `game-list.js` rendering.

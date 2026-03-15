@@ -1,0 +1,20 @@
+---
+description: TriviaBot answer vs clue cleaning when scraping or parsing
+globs: scripts/**/*.js,data/**/*
+alwaysApply: false
+---
+
+# TriviaBot Answer and Clue Cleaning
+
+## Rule: separate cleaning for clues vs answers
+
+- **Clues**: Use `cleanClueText()` (or equivalent) to strip player responses, host asides, and artifacts. This can be aggressive.
+- **Answers**: Use a **gentler** `cleanAnswerText()` (or equivalent) so full answer text is preserved. Do **not** use the same aggressive clue cleaner for answers.
+
+## Why
+
+- Using clue-style cleaning on answers led to truncated answers (e.g. only "the" or "The"). Answers should keep the full response text while only removing obvious artifacts (e.g. parenthetical asides, [Laughter], "Triple Stumper").
+
+## When editing scrapers or parsers
+
+- Any script that extracts both clues and answers should call separate cleaners. Preserve trailing words and normal phrasing in answers; only remove clear non-answer artifacts.

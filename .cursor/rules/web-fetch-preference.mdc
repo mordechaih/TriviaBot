@@ -1,0 +1,26 @@
+---
+description: Prefer free built-in web fetch over Firecrawl for URL content
+alwaysApply: true
+---
+
+# Web Fetching: Use Free Built-in Method
+
+When you need to fetch or scrape content from a URL:
+
+- **Use the built-in `mcp_web_fetch` tool** (or equivalent free fetch) to retrieve page content. It returns readable markdown and does not require an API key or paid service.
+- **Do not use Firecrawl or Firecrawl-scrape** unless the user explicitly asks for it or the free options below cannot satisfy the task.
+
+Prefer this order:
+
+1. **mcp_web_fetch** – for standard web pages and public URLs (free, no auth).
+2. **Web search** – when you need to find or verify information across the web rather than fetch a single URL.
+3. **Browser MCP** (e.g. cursor-ide-browser) – for JavaScript-heavy or interactive pages where fetch returns incomplete content; use navigate + snapshot instead of a paid scraper.
+4. Firecrawl or other paid scrapers – only when the user requests them or when all free options are insufficient.
+
+## Edge cases and limitations
+
+- **localhost / private IPs** – `mcp_web_fetch` runs from an isolated server and cannot reach localhost or private IPs. Use terminal (e.g. `curl`) or ask the user to paste content; do not default to Firecrawl for local URLs.
+- **Authentication** – Fetch does not support auth. Do not use Firecrawl as a fallback for "logged-in" pages unless the user explicitly asks; suggest the user paste the content or use another method.
+- **Binary content** – Fetch does not support PDFs, images, or other binary content. Use terminal (e.g. `curl -o`) or a dedicated tool; do not use Firecrawl just for binaries.
+- **Non-200 responses** – If fetch returns 404 or another error, report it to the user; do not automatically try Firecrawl unless the user asked for a fallback.
+- **Volume** – When fetching many URLs, use the free fetch first and be conservative with request rate; avoid switching to a paid service just for batch size.
