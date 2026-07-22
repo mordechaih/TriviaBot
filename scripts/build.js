@@ -1,92 +1,113 @@
 #!/usr/bin/env node
-// Build script for Vercel deployment
-// 1. Generates config.js from environment variables
-// 2. Optionally generates a new game if GENERATE_GAME=true
+/**
+ * Build static site into public/ for Vercel deployment.
+ * Excludes archive, scripts, and maintainer tooling from the browser bundle.
+ */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const root = path.join(__dirname, '..');
+const publicDir = path.join(root, 'public');
 
-console.log('=== TriviaBot Build Script ===\n');
+const STATIC_ROOT_FILES = [
+  'index.html',
+  'game.html',
+  'round-review.html',
+  'favicon.png',
+];
 
-// Step 1: Generate config.js
-console.log('Step 1: Generating config.js...');
-const configPath = path.join(__dirname, '..', 'js', 'config.js');
-const configDir = path.dirname(configPath);
+const COPY_DIRS = ['css', 'js', 'shared'];
 
-if (!fs.existsSync(configDir)) {
-  fs.mkdirSync(configDir, { recursive: true });
+const DATA_GLOBS = [
+  'data/games',
+  'data/played-status.json',
+  'data/list-round-questions.json',
+  'data/over-under-questions.json',
+  'data/family-feud-questions.json',
+  'data/to-tell-the-truth-questions.json',
+  'data/name-that-tune-questions.json',
+  'data/millionaire-questions.json',
+  'data/who-am-i-questions.json',
+  'data/size-matters-questions.json',
+  'data/name-that-brand-questions.json',
+  'data/name-that-sports-team-questions.json',
+];
+
+function rimraf(dir) {
+  if (fs.existsSync(dir)) fs.rmSync(dir, { recursive: true, force: true });
 }
 
-const owner = process.env.GITHUB_OWNER || 'mordechaih';
-const repo = process.env.GITHUB_REPO || 'TriviaBot';
-const branch = process.env.GITHUB_BRANCH || 'main';
+function copyFile(src, dest) {
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(src, dest);
+}
 
-let apiEndpoint = process.env.API_ENDPOINT;
-if (!apiEndpoint) {
-  const productionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
-  if (productionUrl) {
-    const url = productionUrl.startsWith('http') ? productionUrl : `https://${productionUrl}`;
-    apiEndpoint = `${url}/api/trigger-deploy`;
+function copyDir(src, dest) {
+  if (!fs.existsSync(src)) return;
+  fs.mkdirSync(dest, { recursive: true });
+  for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    const from = path.join(src, entry.name);
+    const to = path.join(dest, entry.name);
+    if (entry.isDirectory()) copyDir(from, to);
+    else copyFile(from, to);
   }
 }
 
-const configContent = `// TriviaBot Configuration
-// This file is auto-generated at build time - do not edit manually
+console.log('=== TriviaBot Build ===\n');
 
+rimraf(publicDir);
+fs.mkdirSync(publicDir, { recursive: true });
+
+for (const file of STATIC_ROOT_FILES) {
+  const src = path.join(root, file);
+  if (fs.existsSync(src)) copyFile(src, path.join(publicDir, file));
+}
+
+for (const dir of COPY_DIRS) {
+  copyDir(path.join(root, dir), path.join(publicDir, dir));
+}
+
+for (const item of DATA_GLOBS) {
+  const src = path.join(root, item);
+  const dest = path.join(publicDir, item);
+  if (!fs.existsSync(src)) continue;
+  if (fs.statSync(src).isDirectory()) copyDir(src, dest);
+  else copyFile(src, dest);
+}
+
+// Runtime config for production UI
+const owner = process.env.GITHUB_OWNER || 'mordechaih';
+const repo = process.env.GITHUB_REPO || 'TriviaBot';
+const branch = process.env.GITHUB_BRANCH || 'main';
+const productionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+const baseUrl = productionUrl
+  ? (productionUrl.startsWith('http') ? productionUrl : `https://${productionUrl}`)
+  : '';
+const apiEndpoint = process.env.API_ENDPOINT || (baseUrl ? `${baseUrl}/api/generate` : '/api/generate');
+
+const configContent = `// Auto-generated at build time
 const GITHUB_CONFIG = {
   owner: '${owner}',
   repo: '${repo}',
   branch: '${branch}',
-  apiEndpoint: '${apiEndpoint || ''}'
+  apiEndpoint: '${apiEndpoint}'
 };
 `;
 
-fs.writeFileSync(configPath, configContent, 'utf-8');
-console.log(`  Generated ${configPath}`);
-console.log(`  apiEndpoint: ${apiEndpoint || '(not set)'}`);
+fs.mkdirSync(path.join(publicDir, 'js'), { recursive: true });
+fs.writeFileSync(path.join(publicDir, 'js', 'config.js'), configContent, 'utf-8');
+console.log(`Wrote public/js/config.js (apiEndpoint: ${apiEndpoint})`);
 
-// Step 2: Generate a new game if requested
-const shouldGenerateGame = process.env.GENERATE_GAME === 'true';
-
-if (shouldGenerateGame) {
-  console.log('\nStep 2: Generating new game...');
-  try {
-    // Run the generate script
-    execSync('node scripts/generate-game.js', { 
-      stdio: 'inherit',
-      cwd: path.join(__dirname, '..')
-    });
-    
-    // Update the games index
-    execSync('node scripts/update-games-index.js', {
-      stdio: 'inherit', 
-      cwd: path.join(__dirname, '..')
-    });
-    
-    console.log('  Game generation complete!');
-  } catch (error) {
-    console.error('  Error generating game:', error.message);
-    // Don't fail the build if game generation fails
-  }
-} else {
-  console.log('\nStep 2: Skipping game generation (GENERATE_GAME not set to true)');
-}
-
-// Step 3: Update the games index (always run this to ensure it's current)
-console.log('\nStep 3: Updating games index...');
+// Keep repo index current (games live in git, copied above)
 try {
-  execSync('node scripts/update-games-index.js', {
-    stdio: 'inherit',
-    cwd: path.join(__dirname, '..')
-  });
-} catch (error) {
-  console.error('  Error updating index:', error.message);
+  execSync('node scripts/update-games-index.js', { cwd: root, stdio: 'inherit' });
+  copyDir(path.join(root, 'data', 'games'), path.join(publicDir, 'data', 'games'));
+} catch (err) {
+  console.warn('Index update skipped:', err.message);
 }
 
-console.log('\n=== Build Complete ===');
-
+console.log('\n=== Build complete → public/ ===');

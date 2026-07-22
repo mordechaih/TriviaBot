@@ -11,7 +11,7 @@
 
 2. **Open your browser:**
    ```
-   http://localhost:3000/index.dev.html
+   http://localhost:3000
    ```
 
 3. **Generate games locally:**
@@ -24,8 +24,41 @@
 
 - `server.js` - Simple HTTP server with a local game generation endpoint
 - `index.dev.html` - Development version of index.html with dev mode indicator
-- `js/config.dev.js` - Points to local API endpoint (`http://localhost:3000/api/generate-local`)
-- `/api/generate-local` - Runs `generate-game.js` and `update-games-index.js` directly
+- `js/config.dev.js` - Points to local API endpoint (`/api/generate`)
+- `/api/generate` - Runs `generate:publish` locally (same contract as production)
+
+### Testing while building
+
+Use **three tiers** so you can test thoroughly without downloading 148MB on every push:
+
+| Tier | Command | When | Needs archive | Needs OpenAI |
+|------|---------|------|---------------|--------------|
+| **Fast** | `npm run test:fast` | Every save / every push (CI `test.yml`) | No (fixtures) | No |
+| **Integration** | `npm run test:integration` | Before merging big generator changes | Yes (`data/archive-backup.json`) | Yes (rounds 2/5/7) |
+| **Full** | `npm run test:all` | Pre-release sanity check | Yes | Yes |
+
+**Local integration (recommended while building):**
+
+```bash
+# Unit + contract tests (~2s)
+npm run test:fast
+
+# Full generateGame against your local J! archive
+FAST_GENERATION=1 OPENAI_API_KEY=sk-... npm run test:integration
+
+# End-to-end: generate + index + ledger (pick a far-future date, --force overwrites)
+FAST_GENERATION=1 OPENAI_API_KEY=sk-... npm run generate:publish -- --date 2099-01-01 --force
+
+# UI smoke test
+npm run dev   # → http://localhost:3000
+```
+
+**CI integration (manual, not every push):**
+
+- GitHub → Actions → **Integration** → Run workflow
+- Or add the `run-integration` label to a PR
+
+That workflow checks out Git LFS (once the archive is stored there), runs fast + integration tests, and does a dry-run `generate:publish`. Day-to-day pushes only run `test.yml` (fast, no LFS).
 
 ### Development Workflow
 
@@ -84,6 +117,18 @@ Production Files (committed):
 - **Games persist** - generated games are saved to `data/games/` and work in both dev and production
 - **No quota limits** - generate as many games as you want locally
 - **Fast iteration** - changes are instant, no waiting for deployments
+
+## Git Hooks
+
+Run once after cloning:
+
+```bash
+./scripts/install-hooks.sh
+```
+
+This installs a post-commit hook that automatically reviews Mermaid diagrams in `CODE_MAP.md` (and any other `.md` files with mermaid blocks) after each commit, updating them if the commit affects the documented architecture. The update runs in the background so it never blocks your terminal.
+
+Log: `.git/codemap-update.log`
 
 ### Troubleshooting
 

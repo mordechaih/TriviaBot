@@ -2,337 +2,274 @@
  * Ingest LLM rounds (2, 5, 7) from example game markdown under example games/
  * into data/llm-rounds.db. Idempotent by source_file.
  *
+ * Parsing is done against a real markdown token stream (via `marked`) rather
+ * than ad-hoc regex, which fixes a class of silent extraction bugs — notably
+ * that the first question of every round lives in a table's HEADER row, which
+ * the old line-based parser skipped entirely.
+ *
+ * Subtypes are normalized to the canonical labels in lib/round-subtypes.js so
+ * the ingested data lines up with what generate-game.js actually generates.
+ *
+ * Every run prints a per-file extraction report (rounds, questions, and any
+ * dropped/low-confidence rows) so silent data loss surfaces immediately.
+ *
  * Run: node scripts/ingest-llm-rounds-from-examples.js
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { marked } from 'marked';
 import initSqlJs from 'sql.js';
+import { matchSubType, SUBTYPE_LABELS } from './lib/round-subtypes.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 const EXAMPLE_GAMES_DIR = path.join(PROJECT_ROOT, 'example games');
 const DB_PATH = path.join(PROJECT_ROOT, 'data', 'llm-rounds.db');
 
-const ROUND_HEADER_RE = /^#?\s*Round\s*([257])\s*[–\-:]/im;
 const TARGET_ROUNDS = new Set([2, 5, 7]);
+// Matches "Round 2 –", "# Round 5 -", "Round 7:" at the start of any block's text.
+const ROUND_HEADER_RE = /^#*\s*Round\s*(\d+)\s*[–\-:]/i;
+// Over/Under answer marker, e.g. "Over (7)" / "Under (78)".
+const OVER_UNDER_RE = /\b(Over|Under)\s*\(([^)]+)\)/i;
+// Target number in an over/under clue: the last "– N" before the Over/Under
+// marker, tolerating trailing junk after it (e.g. "... – 80 !" or "– 57 Born…").
+const TARGET_NUMBER_RE = /[–\-]\s*([\d][\d,.]*)[^–\-]*$/;
 
-const TABLE_SEP_RE = /^\|[\s\-:|\s]+\|/m;
-const TABLE_ROW_RE = /^\|(.+)\|$/m;
-const HEADER_ROW_HASH = /^\s*\|\s*#\s*\|\s*$/;
+const ROUND_TYPE_LABEL = {
+  2: 'Over/Under',
+  5: 'Game Show Style',
+  7: 'Mixing Things Up',
+};
 
-const OVER_UNDER_RE = /(?:Over|Under)\s*\(([^)]+)\)/i;
-const TARGET_NUMBER_RE = /[–\-]\s*(\d[\d,.\s]*)\s*$/m;
-const BOLD_RE = /\*\*([^*]+)\*\*/g;
-const LINK_RE = /\[([^\]]*)\]\([^)]*\)|<[^>\s]+[^>]*>|https?:\/\/[^\s)\]]+/gi;
-
-/**
- * Clean clue text for storage: remove leading table/list symbols and trailing markdown/artifact punctuation.
- * (Clues can be cleaned more aggressively than answers per project rules.)
- */
-function cleanClueForIngest(text) {
-  if (!text || typeof text !== 'string') return '';
-  let t = text
-    .replace(/\s+/g, ' ')
-    // Leading: pipe, bullet, dash, en-dash, asterisks, tab
-    .replace(/^[\s|\-\u2013•\t*]+/, '')
-    // Trailing: orphan asterisks and artifact punctuation (e.g. "clue**" or "clue**!")
-    .replace(/\s*\*+\s*[!?]*\s*$/, '')
-    .replace(/\s+$/, '')
-    .trim();
-  return t;
-}
-
-/**
- * Clean answer text for storage (gentler: trim and strip only leading/trailing markdown bold).
- */
-function cleanAnswerForIngest(text) {
-  if (!text || typeof text !== 'string') return '';
-  let t = text.replace(/\s+/g, ' ').trim();
-  t = t.replace(/^\*+/, '').replace(/\*+$/, '').trim();
-  return t;
-}
-
-const SUBTYPE_PATTERNS = [
-  { re: /To Tell the Truth/i, subType: 'To Tell the Truth' },
-  { re: /Name that tune|Name That Tune/i, subType: 'Name That Tune' },
-  { re: /Who Wants to be a Millionaire|Millionaire/i, subType: 'Millionaire' },
-  { re: /Family Feud/i, subType: 'Family Feud' },
-  { re: /Who am I\??/i, subType: 'Who am I' },
-  { re: /Size matters/i, subType: 'Size matters' },
-  { re: /spelling bee/i, subType: 'Spelling Bee' },
-  { re: /masked singer/i, subType: 'Masked Singer' },
-  { re: /Rapper or Senator|reliving the 80/i, subType: null },
-];
-
+/** Recursively find every .md file under a directory. */
 function discoverMarkdownFiles(dir, baseDir = dir, acc = []) {
   if (!fs.existsSync(dir)) return acc;
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  for (const e of entries) {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, e.name);
-    const rel = path.relative(baseDir, full);
-    const normalizedRel = rel.split(path.sep).join('/');
     if (e.isDirectory()) {
       discoverMarkdownFiles(full, baseDir, acc);
     } else if (e.isFile() && e.name.toLowerCase().endsWith('.md')) {
-      acc.push({ absolute: full, relative: normalizedRel });
+      acc.push({ absolute: full, relative: path.relative(baseDir, full).split(path.sep).join('/') });
     }
   }
   return acc;
 }
 
-function stripLinks(text) {
-  return String(text)
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/<(?!br\s*\/?)[^>]+>/gi, '')
-    .replace(/https?:\/\/[^\s)\]]+/gi, '')
+/** Normalize whitespace and strip HTML tags, URLs, and stray markdown markers. */
+function tidy(text) {
+  return String(text || '')
+    .replace(/<[^>]+>/g, ' ')          // raw HTML tags (<p>, <br>, etc.)
+    .replace(/https?:\/\/\S+/g, ' ')   // bare URLs
+    .replace(/\s+/g, ' ')
+    .replace(/^[\s|•\-–*]+/, '')
+    .replace(/\s*\*+\s*$/, '')
     .trim();
 }
 
-function extractBoldJoined(text) {
-  const segments = [];
-  let m;
-  const re = /\*\*([^*]+)\*\*/g;
-  while ((m = re.exec(text)) !== null) segments.push(m[1].trim());
-  if (segments.length === 0) return null;
-  return segments.join("'").replace(/"'/g, "'").replace(/'"/g, "'").trim();
+/**
+ * Walk the inline tokens of a table cell, separating the bold answer from the
+ * clue and discarding links. Returns { clue, answer, hadBold }.
+ */
+function splitCellTokens(tokens) {
+  const clueParts = [];
+  const boldParts = [];
+  for (const t of tokens || []) {
+    if (t.type === 'strong') {
+      boldParts.push(tidy(t.text));
+    } else if (t.type === 'link' || t.type === 'image') {
+      // drop URLs entirely
+    } else if (t.type === 'em') {
+      clueParts.push(tidy(t.text));
+    } else {
+      // text / escape / codespan / br etc.
+      const raw = (t.text ?? t.raw ?? '').replace(/https?:\/\/\S+/g, '');
+      clueParts.push(raw);
+    }
+  }
+  return {
+    clue: tidy(clueParts.join(' ')),
+    answer: tidy(boldParts.join(' ')),
+    hadBold: boldParts.length > 0,
+  };
 }
 
-function parseOverUnder(text) {
-  const match = text.match(OVER_UNDER_RE);
-  if (!match) return { overUnder: null, actualNumber: null };
-  const overUnder = text.toLowerCase().startsWith('over') ? 'Over' : 'Under';
-  const actualStr = match[1].replace(/,/g, '').trim();
-  const num = parseFloat(actualStr);
-  return { overUnder, actualNumber: Number.isFinite(num) ? num : null };
-}
-
-function extractTargetNumber(clue) {
-  const m = clue.match(TARGET_NUMBER_RE);
-  if (!m) return null;
-  const n = parseFloat(m[1].replace(/,/g, '').trim());
+function toNumber(s) {
+  const n = parseFloat(String(s).replace(/[,\s]/g, ''));
   return Number.isFinite(n) ? n : null;
 }
 
-function parseTableCell(cell, roundNumber) {
-  let raw = String(cell)
-    .replace(/<p>\s*/gi, ' ')
-    .replace(/\s*<\/p>/gi, ' ')
-    .replace(/<br\s*\/?>/gi, '<br>')
-    .trim();
-  const parts = raw.split('<br>').map((p) => stripLinks(p).trim()).filter(Boolean);
-  raw = stripLinks(raw.replace(/<br\s*\/?>/gi, ' '));
-
-  let clue = '';
-  let answer = '';
-  let actualNumber = null;
-  let targetNumber = null;
-  let overUnder = null;
+/**
+ * Turn one table cell into a question record for the given round.
+ * Works from the link-stripped token text so URL/markdown residue never leaks
+ * into a clue. Returns { question, dropped: reason|null }.
+ */
+function parseCell(cell, roundNumber) {
+  const { clue: tokenClue, answer: boldAnswer, hadBold } = splitCellTokens(cell.tokens);
+  const base = tidy(tokenClue);
+  if (!base && !boldAnswer) return { question: null, dropped: 'empty cell' };
 
   if (roundNumber === 2) {
-    const ou = parseOverUnder(raw);
-    overUnder = ou.overUnder;
-    actualNumber = ou.actualNumber;
-    targetNumber = extractTargetNumber(raw);
+    // Format: "clue – TARGET   Over/Under (ACTUAL)". The "Over/Under (n)" answer
+    // may be plain OR bold, so reconstruct the full cell from both parts.
+    const full = tidy([tokenClue, boldAnswer].filter(Boolean).join(' '));
+    const m = full.match(OVER_UNDER_RE);
+    if (!m) return { question: null, dropped: 'no Over/Under marker' };
+    const overUnder = /over/i.test(m[1]) ? 'Over' : 'Under';
+    const actualNumber = toNumber(m[2]);
+    const beforeMarker = full.slice(0, m.index);
+    const tm = beforeMarker.match(TARGET_NUMBER_RE);
+    const targetNumber = tm ? toNumber(tm[1]) : null;
+    const clue = tidy(tm ? beforeMarker.slice(0, tm.index) : beforeMarker).replace(/[\s\-–—:]+$/, '');
+    return {
+      question: {
+        clue,
+        answer: `${overUnder} (${actualNumber ?? ''})`,
+        actualNumber,
+        targetNumber,
+        overUnder,
+        lowConfidence: actualNumber == null || !clue,
+      },
+      dropped: null,
+    };
   }
 
-  if (roundNumber === 2 && overUnder && parts.length >= 1) {
-    const firstPart = parts[0];
-    const rest = parts.slice(1).join(' ');
-    const bold = extractBoldJoined(raw) || extractBoldJoined(rest) || rest;
-    clue = stripLinks(firstPart).replace(OVER_UNDER_RE, '').trim();
-    answer = bold || (rest || firstPart);
-    return { clue, answer, actualNumber, targetNumber, overUnder };
+  if (hadBold && boldAnswer) {
+    return { question: { clue: base, answer: boldAnswer, lowConfidence: !base }, dropped: null };
+  }
+  const text = base;
+
+  // Declarative True/False statements (To Tell the Truth) carry a trailing,
+  // often non-bold "True"/"False" answer with no question mark.
+  const tf = text.match(/\b(True|False)\b\s*(\([^)]*\))?\s*$/i);
+  if (tf && tf.index > 0) {
+    return { question: { clue: tidy(text.slice(0, tf.index)), answer: tidy(tf[0]), lowConfidence: false }, dropped: null };
   }
 
-  const bold = extractBoldJoined(raw);
-  if (bold) {
-    if (parts.length >= 2) {
-      clue = parts[0];
-      answer = bold;
-    } else {
-      const beforeBold = raw.replace(/\*\*[^*]+\*\*/g, '').replace(/\*\*/g, '').trim();
-      clue = beforeBold || raw.replace(/\*\*([^*]+)\*\*/g, '').trim();
-      answer = bold;
+  // Otherwise best-effort split on the sentence-final "?" so at least the clue
+  // is clean. Flag as low confidence so the report can surface it.
+  const qMark = text.lastIndexOf('?');
+  if (qMark !== -1 && qMark < text.length - 1) {
+    const guessAnswer = tidy(text.slice(qMark + 1));
+    if (guessAnswer) {
+      return { question: { clue: tidy(text.slice(0, qMark + 1)), answer: guessAnswer, lowConfidence: true }, dropped: null };
     }
-  } else {
-    if (parts.length >= 2) {
-      clue = parts[0];
-      answer = parts[parts.length - 1];
-    } else if (parts.length === 1) {
-      clue = '';
-      answer = parts[0];
-    }
   }
-
-  if (roundNumber === 2 && !overUnder) {
-    const ou = parseOverUnder(raw);
-    overUnder = ou.overUnder;
-    actualNumber = ou.actualNumber;
-    targetNumber = extractTargetNumber(raw);
-  }
-
-  return { clue: clue.trim(), answer: answer.trim(), actualNumber, targetNumber, overUnder };
+  return { question: null, dropped: 'no discernible answer' };
 }
 
-function extractSections(content) {
+/** Extract questions from every table token in a round's token slice. */
+function extractQuestions(tokens, roundNumber) {
+  const questions = [];
+  const drops = [];
+  for (const t of tokens) {
+    if (t.type !== 'table') continue;
+    // A table's header row holds the FIRST question; rows hold the rest.
+    const cells = [...t.header, ...t.rows.flat()];
+    for (const cell of cells) {
+      const { question, dropped } = parseCell(cell, roundNumber);
+      if (question && (question.clue || question.answer)) questions.push(question);
+      else if (dropped) drops.push(dropped);
+    }
+  }
+  return { questions, drops };
+}
+
+/** Text of a token, used for round-header and subtype detection. */
+function tokenText(t) {
+  return (t.text ?? t.raw ?? '').toString();
+}
+
+/**
+ * Split a token stream into round sections. Round headers can be markdown
+ * headings OR plain paragraphs (some example games drop the leading '#'), so we
+ * scan every top-level token's text for the "Round N" marker.
+ */
+function extractSections(tokens) {
   const sections = [];
-  const roundRe = /^#?\s*Round\s*([257])\s*[–\-:][^\n]*/gim;
-  let m;
-  while ((m = roundRe.exec(content)) !== null) {
-    const roundNum = parseInt(m[1], 10);
-    if (!TARGET_ROUNDS.has(roundNum)) continue;
-    const start = m.index;
-    const currentMatchLen = m[0].length;
-    const tail = content.slice(start + currentMatchLen);
-    const nextRoundRe = /^#?\s*Round\s*\d\s*[–\-:][^\n]*/gim;
-    nextRoundRe.lastIndex = 0;
-    let nextMatch;
-    let nextStart = -1;
-    while ((nextMatch = nextRoundRe.exec(tail)) !== null) {
-      nextStart = nextMatch.index;
-      break;
-    }
-    const end = nextStart === -1 ? content.length : start + currentMatchLen + nextStart;
-    const body = content.slice(start, end);
-    sections.push({ roundNumber: roundNum, body, start, end });
-  }
-  return sections;
-}
-
-function inferSubType(introText) {
-  const raw = introText.slice(0, 500);
-  for (const { re, subType } of SUBTYPE_PATTERNS) {
-    if (re.test(raw)) return { subType: subType || raw.match(re)[0].trim(), subTypeRaw: raw.slice(0, 200).trim() };
-  }
-  const m = raw.match(/This week['']?s? (?:game show is|we are (?:doing|playing)|we're)\s*[^.?!]+[.?!]?/i)
-    || raw.match(/Each week[^.]*\.\s*This week[^.]*\.?/is);
-  return { subType: null, subTypeRaw: m ? m[0].trim() : raw.slice(0, 200).trim() };
-}
-
-function parseTableSection(body, roundNumber) {
-  const lines = body.split(/\r?\n/);
-  let sepIndex = -1;
-  for (let i = 0; i < lines.length; i++) {
-    if (TABLE_SEP_RE.test(lines[i])) {
-      sepIndex = i;
-      break;
+  let current = null;
+  for (const t of tokens) {
+    const m = tokenText(t).match(ROUND_HEADER_RE);
+    if (m) {
+      if (current) sections.push(current);
+      current = { roundNumber: parseInt(m[1], 10), headerText: tokenText(t), tokens: [] };
+    } else if (current) {
+      current.tokens.push(t);
     }
   }
-  if (sepIndex === -1) return [];
-  const dataRows = lines.slice(sepIndex + 1).filter((l) => /^\|/.test(l) && !TABLE_SEP_RE.test(l));
-  const questions = [];
-  for (const row of dataRows) {
-    const cellMatch = row.match(/^\|(.+)\|$/);
-    if (!cellMatch) continue;
-    const cell = cellMatch[1]
-      .replace(/^\s*\|\s*/, '')
-      .replace(/\s*\|\s*$/, '')
-      .trim();
-    if (!cell) continue;
-    const q = parseTableCell(cell, roundNumber);
-    if (q.clue || q.answer) questions.push(q);
-  }
-  return questions;
+  if (current) sections.push(current);
+  return sections.filter((s) => TARGET_ROUNDS.has(s.roundNumber));
 }
 
-function parseNonTableSection(body, roundNumber) {
-  const questions = [];
-  const lines = body.split(/\r?\n/);
-  let i = 0;
-  while (i < lines.length) {
-    const line = lines[i];
-    const trimmed = line.trim();
-    const looksLikeQuestion =
-      trimmed.endsWith('?') ||
-      /^[\-\d.]\s+/.test(trimmed) ||
-      (/^[A-Z]/.test(trimmed) && trimmed.length > 20 && !trimmed.startsWith('**'));
-    const hasBold = /\*\*[^*]+\*\*/.test(trimmed);
-    const hasOverUnder = OVER_UNDER_RE.test(trimmed);
-    if (looksLikeQuestion && (hasBold || hasOverUnder)) {
-      const clue = trimmed.replace(/\*\*[^*]+\*\*/g, '').replace(/\*\*/g, '').trim();
-      const bold = extractBoldJoined(trimmed);
-      const ou = parseOverUnder(trimmed);
-      let answer = bold || (ou.overUnder ? `${ou.overUnder} (${trimmed.match(OVER_UNDER_RE)?.[1] || ''})` : '');
-      if (!answer && i + 1 < lines.length) {
-        const next = lines[i + 1].trim();
-        if (next.startsWith('**') || OVER_UNDER_RE.test(next)) {
-          answer = extractBoldJoined(next) || next.replace(/\*\*/g, '').trim();
-          i++;
-        }
-      }
-      if (answer) {
-        questions.push({
-          clue,
-          answer,
-          actualNumber: roundNumber === 2 ? ou.actualNumber : null,
-          targetNumber: roundNumber === 2 ? extractTargetNumber(trimmed) : null,
-          overUnder: roundNumber === 2 ? ou.overUnder : null,
-        });
-      }
-      i++;
-      continue;
+/** First paragraph text of a section, stored as the instructions snippet. */
+function introSnippet(section) {
+  const para = section.tokens.find((t) => t.type === 'paragraph');
+  return para ? tidy(tokenText(para)).slice(0, 500) : null;
+}
+
+/**
+ * All prose that precedes the first table in a section, joined together. The
+ * subtype-announcing sentence ("This week we're playing Who Am I") is often not
+ * the first paragraph — a generic preamble comes first — so subtype matching
+ * scans everything up to the questions.
+ */
+function subtypeHintText(section) {
+  const parts = [];
+  for (const t of section.tokens) {
+    if (t.type === 'table') break;
+    if (t.type === 'paragraph' || t.type === 'list' || t.type === 'heading') {
+      parts.push(tidy(tokenText(t)));
     }
-    if (hasBold || hasOverUnder) {
-      const clue = trimmed.replace(/\*\*[^*]+\*\*/g, '').replace(/\*\*/g, '').trim();
-      const bold = extractBoldJoined(trimmed);
-      const ou = parseOverUnder(trimmed);
-      const answer = bold || (ou.overUnder ? `${ou.overUnder} (${trimmed.match(OVER_UNDER_RE)?.[1] || ''})` : '');
-      if (answer && (clue || /^[A-Za-z]+:/.test(trimmed))) {
-        questions.push({
-          clue,
-          answer,
-          actualNumber: roundNumber === 2 ? ou.actualNumber : null,
-          targetNumber: roundNumber === 2 ? extractTargetNumber(trimmed) : null,
-          overUnder: roundNumber === 2 ? ou.overUnder : null,
-        });
-      }
-    }
-    i++;
   }
-  return questions;
+  return parts.join(' ');
 }
 
-function getInstructionsSnippet(body) {
-  const firstTableOrQuestion = body.search(/\|[^\n]*\|\s*\n\s*\|[\s\-:]+\|/m);
-  const firstList = body.search(/^\s*[-*]\s+/m);
-  let end = body.length;
-  if (firstTableOrQuestion !== -1) end = Math.min(end, firstTableOrQuestion);
-  if (firstList !== -1) end = Math.min(end, firstList);
-  const intro = body.slice(0, end).replace(/^#?\s*Round\s*\d\s*[–\-:][^\n]*\n?/i, '').trim();
-  return intro.slice(0, 500) || null;
-}
-
+/** Parse a single markdown file into structured rounds + a per-file report. */
 function parseFile(absolutePath, relativePath) {
   const content = fs.readFileSync(absolutePath, 'utf8');
+  const tokens = marked.lexer(content);
   const rounds = [];
-  const sections = extractSections(content);
-  for (const { roundNumber, body } of sections) {
-    const hasTable = /^\|[\s\-:|]+\|$/m.test(body) || TABLE_SEP_RE.test(body);
-    const questions = hasTable
-      ? parseTableSection(body, roundNumber)
-      : parseNonTableSection(body, roundNumber);
-    const roundType =
-      roundNumber === 2 ? 'Over/Under' : roundNumber === 5 ? 'Game Show Style' : 'Mixing Things Up';
-    const instructionsSnippet = getInstructionsSnippet(body);
+  const report = { file: relativePath, rounds: [], warnings: [] };
+
+  for (const section of extractSections(tokens)) {
+    const { roundNumber } = section;
+    const { questions, drops } = extractQuestions(section.tokens, roundNumber);
+    const intro = introSnippet(section);
+
     let subType = null;
-    let subTypeRaw = null;
     if (roundNumber === 5 || roundNumber === 7) {
-      const inferred = inferSubType(instructionsSnippet || body.slice(0, 600));
-      subType = inferred.subType;
-      subTypeRaw = inferred.subTypeRaw;
+      const hint = subtypeHintText(section);
+      subType = matchSubType(hint, roundNumber);
+      if (!subType) {
+        report.warnings.push(
+          `round ${roundNumber}: unrecognized subtype hint "${hint.slice(0, 60)}" — stored as null`
+        );
+      }
     }
+
+    const lowConf = questions.filter((q) => q.lowConfidence).length;
+    report.rounds.push({
+      roundNumber,
+      subType: subType ? SUBTYPE_LABELS[subType] : null,
+      questions: questions.length,
+      dropped: drops.length,
+      lowConfidence: lowConf,
+    });
+    for (const d of drops) report.warnings.push(`round ${roundNumber}: dropped a cell (${d})`);
+
     rounds.push({
       roundNumber,
-      roundType,
+      roundType: ROUND_TYPE_LABEL[roundNumber],
       subType,
-      subTypeRaw,
-      instructionsSnippet: instructionsSnippet || null,
+      subTypeRaw: intro,
+      instructionsSnippet: intro,
       questions,
     });
   }
-  return { sourceFile: relativePath, rounds };
+  return { sourceFile: relativePath, rounds, report };
 }
+
+// ---- Persistence ---------------------------------------------------------
 
 function ensureDataDir() {
   const dataDir = path.dirname(DB_PATH);
@@ -389,38 +326,30 @@ function deleteBySourceFile(db, sourceFile) {
   db.run('DELETE FROM source_games WHERE id = ?', [id]);
 }
 
-function insertGame(db, parsed) {
-  const now = new Date().toISOString();
+function lastInsertId(db) {
+  return db.exec('SELECT last_insert_rowid()')[0].values[0][0];
+}
+
+function insertGame(db, parsed, now) {
   deleteBySourceFile(db, parsed.sourceFile);
   db.run('INSERT INTO source_games (source_file, ingested_at) VALUES (?, ?)', [parsed.sourceFile, now]);
-  const sourceIdRow = db.exec('SELECT last_insert_rowid()');
-  const sourceGameId = sourceIdRow[0].values[0][0];
+  const sourceGameId = lastInsertId(db);
   for (const r of parsed.rounds) {
     db.run(
       `INSERT INTO llm_rounds (source_game_id, round_number, round_type, sub_type, sub_type_raw, instructions_snippet)
        VALUES (?, ?, ?, ?, ?, ?)`,
-      [
-        sourceGameId,
-        r.roundNumber,
-        r.roundType,
-        r.subType ?? null,
-        r.subTypeRaw ?? null,
-        r.instructionsSnippet ?? null,
-      ]
+      [sourceGameId, r.roundNumber, r.roundType, r.subType ?? null, r.subTypeRaw ?? null, r.instructionsSnippet ?? null]
     );
-    const roundIdRow = db.exec('SELECT last_insert_rowid()');
-    const llmRoundId = roundIdRow[0].values[0][0];
+    const llmRoundId = lastInsertId(db);
     r.questions.forEach((q, ordinal) => {
-      const clue = cleanClueForIngest(q.clue ?? '');
-      const answer = cleanAnswerForIngest(q.answer ?? '');
       db.run(
         `INSERT INTO llm_questions (llm_round_id, ordinal, clue, answer, actual_number, target_number, over_under, extra_json)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           llmRoundId,
           ordinal,
-          clue || null,
-          answer || null,
+          q.clue || null,
+          q.answer || null,
           q.actualNumber ?? null,
           q.targetNumber ?? null,
           q.overUnder ?? null,
@@ -431,16 +360,39 @@ function insertGame(db, parsed) {
   }
 }
 
+/** Print the per-file extraction report to stderr. */
+function printReport(reports) {
+  console.error('\n── Extraction report ──');
+  for (const rep of reports) {
+    const summary = rep.rounds
+      .map((r) => {
+        const st = r.subType ? ` ${r.subType}` : '';
+        const flags = [r.dropped ? `${r.dropped} dropped` : '', r.lowConfidence ? `${r.lowConfidence} low-conf` : '']
+          .filter(Boolean)
+          .join(', ');
+        return `R${r.roundNumber}${st}: ${r.questions}q${flags ? ` (${flags})` : ''}`;
+      })
+      .join(' · ');
+    console.error(`  ${rep.file}\n    ${summary || '(no target rounds)'}`);
+    for (const w of rep.warnings) console.error(`    ⚠ ${w}`);
+  }
+  console.error('───────────────────────\n');
+}
+
 async function main() {
   const files = discoverMarkdownFiles(EXAMPLE_GAMES_DIR);
   console.error(`Found ${files.length} .md files under example games/`);
-  const allParsed = [];
+
+  const parsed = [];
+  const reports = [];
   for (const { absolute, relative } of files) {
     try {
-      const parsed = parseFile(absolute, relative);
-      if (parsed.rounds.length) allParsed.push(parsed);
+      const result = parseFile(absolute, relative);
+      reports.push(result.report);
+      if (result.rounds.length) parsed.push(result);
     } catch (err) {
       console.error(`Parse error ${relative}:`, err.message);
+      reports.push({ file: relative, rounds: [], warnings: [`parse error: ${err.message}`] });
     }
   }
 
@@ -449,20 +401,26 @@ async function main() {
   const db = new SQL.Database(fs.existsSync(DB_PATH) ? fs.readFileSync(DB_PATH) : undefined);
   createSchema(db);
 
-  for (const p of allParsed) {
-    insertGame(db, p);
-  }
+  // Timestamp is passed in once so a single run is internally consistent.
+  const now = new Date().toISOString();
+  for (const p of parsed) insertGame(db, p, now);
 
-  const buf = db.export();
-  fs.writeFileSync(DB_PATH, Buffer.from(buf));
+  fs.writeFileSync(DB_PATH, Buffer.from(db.export()));
   db.close();
 
-  const totalRounds = allParsed.reduce((s, p) => s + p.rounds.length, 0);
-  const totalQuestions = allParsed.reduce((s, p) => s + p.rounds.reduce((t, r) => t + r.questions.length, 0), 0);
-  console.log(`Ingested ${allParsed.length} files, ${totalRounds} rounds, ${totalQuestions} questions → ${DB_PATH}`);
+  printReport(reports);
+  const totalRounds = parsed.reduce((s, p) => s + p.rounds.length, 0);
+  const totalQuestions = parsed.reduce((s, p) => s + p.rounds.reduce((t, r) => t + r.questions.length, 0), 0);
+  console.log(`Ingested ${parsed.length} files, ${totalRounds} rounds, ${totalQuestions} questions → ${DB_PATH}`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+// Only run when invoked directly, so tests can import the parser helpers.
+const invokedDirectly = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (invokedDirectly) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
+
+export { parseFile, parseCell, extractSections, extractQuestions };

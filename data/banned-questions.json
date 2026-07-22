@@ -1,9 +1,15 @@
 {
-  "questions": [],
-  "metadata": {
-    "description": "Tracking banned questions. Questions can be banned manually or via shuffle (replaced rounds).",
-    "lastUpdated": "2026-01-21",
-    "version": "1.0"
-  }
+  "questions": [
+    {
+      "gameId": "game-2026-02-22",
+      "roundNumber": 2,
+      "questionIndex": 2,
+      "clue": "How many days are there in a leap year?",
+      "answer": "366",
+      "reason": "manual",
+      "flaggedDate": "2026-02-20T13:30:50.207Z",
+      "bannedBy": "manual"
+    }
+  ],
+  "lastUpdated": "2026-07-22T17:39:59.042Z"
 }
-

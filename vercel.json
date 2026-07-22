@@ -1,19 +1,19 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "outputDirectory": ".",
+  "outputDirectory": "public",
   "rewrites": [
     {
-      "source": "/api/trigger-workflow",
-      "destination": "/api/trigger-workflow.js"
+      "source": "/api/generate",
+      "destination": "/api/generate.js"
     },
     {
-      "source": "/api/trigger-deploy",
-      "destination": "/api/trigger-deploy.js"
+      "source": "/api/sync-state",
+      "destination": "/api/sync-state.js"
     },
     {
       "source": "/api/sync-ui-data",
-      "destination": "/api/sync-ui-data.js"
+      "destination": "/api/sync-state.js"
     }
   ],
   "cleanUrls": true,
@@ -22,42 +22,23 @@
     {
       "source": "/data/games/(.*)",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate, max-age=0"
-        },
-        {
-          "key": "Pragma",
-          "value": "no-cache"
-        },
-        {
-          "key": "Expires",
-          "value": "0"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        }
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate, max-age=0" },
+        { "key": "Pragma", "value": "no-cache" },
+        { "key": "Expires", "value": "0" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
       ]
     },
     {
       "source": "/css/(.*)",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=300, must-revalidate"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" }
       ]
     },
     {
       "source": "/js/(.*)",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=300, must-revalidate"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" }
       ]
     }
   ]
 }
-

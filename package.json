@@ -4,13 +4,20 @@
   "description": "Weekly trivia game generator from J! Archive data",
   "type": "module",
   "scripts": {
-    "test": "node --test scripts/generate-game.test.js",
+    "test": "npm run test:fast",
+    "test:fast": "node --test scripts/shared-contracts.test.js scripts/browser-flow.test.js scripts/generator-contract.test.js scripts/generate-game.test.js scripts/ingest-llm-rounds.test.js scripts/round-definitions.test.js scripts/round-feedback.test.js scripts/question-quality.test.js",
+    "test:integration": "RUN_INTEGRATION=1 node --test scripts/generate-game.test.js",
+    "test:all": "npm run test:fast && npm run test:integration",
     "scrape": "node scripts/scrape-archive.js",
     "populate-archive": "bash scripts/populate-archive.sh",
     "db-to-archive": "node scripts/db-to-archive.js",
     "ingest-llm-rounds": "node scripts/ingest-llm-rounds-from-examples.js",
     "export-llm-rounds-jsonl": "node scripts/export-llm-rounds-jsonl.js",
+    "refresh-llm-train": "node scripts/ingest-llm-rounds-from-examples.js && node scripts/export-llm-rounds-jsonl.js",
     "generate": "node scripts/generate-game.js",
+    "generate:publish": "node scripts/generate-publish.js",
+    "migrate-ledger": "node scripts/migrate-ledger.js",
+    "eval-questions": "node scripts/eval-question-quality.js",
     "update-index": "node scripts/update-games-index.js",
     "clean-archive": "node scripts/clean-archive.js",
     "deploy": "vercel",
@@ -26,6 +33,7 @@
     "sql.js": "^1.10.0"
   },
   "devDependencies": {
+    "marked": "^18.0.6",
     "vercel": "^50.4.5"
   },
   "engines": {

@@ -15,12 +15,18 @@ Options:
 import argparse
 import gzip
 import os
+import ssl
 import sys
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
+
+try:
+    import certifi
+except ImportError:
+    certifi = None
 
 ERROR_MSG = b"ERROR: No game"
 BASE_URL = "https://j-archive.com/showgame.php?game_id=%s"
@@ -30,12 +36,21 @@ DEFAULT_WORKERS = 3
 REQUEST_TIMEOUT = 15  # shorter so we don't hang; 30s was still blocking on some systems
 
 
+def _ssl_context():
+    if certifi is not None:
+        return ssl.create_default_context(cafile=certifi.where())
+    return ssl.create_default_context()
+
+
+SSL_CONTEXT = _ssl_context()
+
+
 def _fetch_one(game_id, timeout=REQUEST_TIMEOUT):
     """Fetch one game page; return (raw_bytes or None, 'ok'|'end'|'error', error_msg or None). Decompresses gzip."""
     url = BASE_URL % game_id
     req = Request(url, headers={"Accept-Encoding": "gzip"})
     try:
-        with urlopen(req, timeout=timeout) as resp:
+        with urlopen(req, timeout=timeout, context=SSL_CONTEXT) as resp:
             if resp.status != 200:
                 return None, "error", "HTTP %s" % resp.status
             raw = resp.read()

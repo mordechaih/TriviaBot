@@ -1,5 +1,5 @@
 ---
-description: TriviaBot design context — minimal, beautiful, polished; Apple/OpenAI/Codex/Craft feel. Use for all UI, CSS, and frontend decisions.
+description: TriviaBot design context — minimal, beautiful, polished; Apple/OpenAI/Codex/Craft feel. Use for all UI, CSS, and frontend decisions. Full agent guide (architecture, testing, pitfalls) is in AGENTS.md at repo root.
 globs: "css/**/*,js/**/*,*.html"
 alwaysApply: false
 ---

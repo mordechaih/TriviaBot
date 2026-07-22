@@ -2,74 +2,51 @@ name: Generate Weekly Trivia Game
 
 on:
   schedule:
-    # Run every Monday at 9:00 AM UTC
     - cron: '0 9 * * 1'
-  workflow_dispatch: # Allow manual triggering
+  workflow_dispatch:
   repository_dispatch:
-    types: [generate-game] # Triggered by external API call
+    types: [generate-game]
 
 jobs:
   generate-game:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Needed to commit and push
-      actions: read # Needed to read workflow status
-    
+      contents: write
+      actions: read
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
-      - name: Sync with remote (prevent divergence)
+
+      - name: Sync with remote
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
-          # Fetch latest changes
           git fetch origin main
-          
-          # Reset to remote main to ensure we're starting from the latest
-          # This prevents divergence by always working from the latest remote state
           git reset --hard origin/main
-      
-      - name: Generate new game
-        run: npm run generate
+
+      - name: Generate and publish game
+        run: npm run generate:publish
         env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           NODE_ENV: production
-      
-      - name: Update games index
-        run: node scripts/update-games-index.js
-      
+
       - name: Commit and push changes
         run: |
-          # Stage game files
-          git add data/games/*.json data/games/index.json data/used-questions.json
-          
-          # Only commit if there are changes
+          git add data/games/*.json data/games/index.json data/question-ledger.json data/used-questions.json data/banned-questions.json public/data/games/
           if ! git diff --staged --quiet; then
             git commit -m "Generate weekly trivia game for $(date +%Y-%m-%d)"
-            
-            # Pull with rebase before pushing to handle any concurrent changes
-            git pull --rebase origin main || true
-            
-            # Push - retry up to 3 times if there are conflicts
             for i in 1 2 3; do
-              if git push origin main; then
-                echo "Successfully pushed on attempt $i"
-                break
-              else
-                echo "Push failed on attempt $i, pulling and retrying..."
-                git pull --rebase origin main || true
-                sleep 2
-              fi
+              git pull --rebase origin main && git push origin main && break || sleep 2
             done
           else
             echo "No changes to commit"

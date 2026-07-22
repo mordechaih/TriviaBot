@@ -1,6 +1,14 @@
 # TriviaBot
 
-A webapp that generates weekly trivia games from J! Archive data, hosted on GitHub Pages.
+A webapp that generates weekly trivia games from J! Archive data, hosted on **Vercel** with **GitHub Actions** as the generation data plane.
+
+## Architecture (simplified)
+
+- **Static UI** → `public/` (built via `npm run build`)
+- **Generate** → `POST /api/generate` → GitHub Actions → `npm run generate:publish`
+- **State sync** → `POST /api/sync-state` → `data/question-ledger.json` (used + bans)
+- **Shared domain** → `shared/` (round catalog, ledger, filters, alternates)
+- **Local dev** → `npm run dev` (same API contract, filesystem adapters)
 
 ## Features
 
@@ -107,14 +115,26 @@ To avoid differences between your environment and production (styling, icons, fe
 - **Assets**: CSS/JS are served as-is (no build step). Production uses the same files; Vercel sets short cache headers for `/css/*` and `/js/*` so deploys propagate.
 - **Icons**: Lucide is pinned to a specific version in the HTML so local and production use the same icon set.
 
+### Round generation review
+
+Use the standalone review page to inspect how rounds 1–8 and Final Trivia are actually generated, including sources, filters, difficulty calibration, LLM prompts, fallback behavior, output shapes, and failure risks:
+
+1. Start the dev server: `npm run dev`
+2. Open `/round-review.html`
+3. Request changes to individual or cross-round generation paths (feedback autosaves locally)
+4. Generate and copy or download the Markdown report
+5. Share the report with your coding agent as an implementation brief with code touchpoints
+
+Links to the review page are also available from the game list and game page navigation.
+
 ### Round types
 
 Some rounds use special data or LLM generation instead of the main archive:
 
-- **Round 2 (Over/Under)**: LLM-generated numeric questions. Requires `OPENAI_API_KEY`. When the key is missing, generation falls back to pool files if available.
+- **Round 2 (Over/Under)**: LLM-generated numeric questions with few-shot examples from `data/llm-train/round2.jsonl`. Requires `OPENAI_API_KEY`; initial game generation has no archive or pool fallback.
 - **Round 4 (List Round)**: One question with multiple answers, loaded from `data/list-round-questions.json` (not from the J! Archive backup). Add or edit that file to change list-round content.
 
-TODO: Document pool sources (over-under, game-show, mixing-things-up) and operator options for rounds 2 and 4 in more detail.
+The generation review page documents the exact per-round pool roles and fallback behavior; some themed JSON pools are append destinations or browser replacement sources rather than initial-generation inputs.
 
 ## Project Structure
 
@@ -122,11 +142,18 @@ TODO: Document pool sources (over-under, game-show, mixing-things-up) and operat
 TriviaBot/
 ├── index.html              # Game list page
 ├── game.html               # Game display page
+├── round-review.html       # Round generation review guide
 ├── css/
-│   └── styles.css         # Mobile-optimized styles
+│   ├── styles.css         # Mobile-optimized styles
+│   └── round-review.css   # Round review page layout
 ├── js/
 │   ├── game-list.js       # Game list logic
-│   └── game-display.js     # Game rendering logic
+│   ├── game-display.js     # Game rendering logic
+│   ├── round-review.js     # Round generation review page logic
+│   └── lib/
+│       └── round-feedback.js  # Feedback parsing and report export
+├── shared/
+│   └── round-definitions.js   # Canonical round metadata
 ├── data/
 │   ├── archive-backup.json    # J! Archive data (from parser: populate-archive + db-to-archive)
 │   ├── games/

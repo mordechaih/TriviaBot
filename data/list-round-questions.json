@@ -31,10 +31,70 @@
     {
       "clue": "Name the three branches of the U.S. federal government.",
       "answers": ["Legislative", "Executive", "Judicial"]
+    },
+    {
+      "clue": "Name the four seasons of the year.",
+      "answers": ["Spring", "Summer", "Fall", "Autumn", "Winter"]
+    },
+    {
+      "clue": "Name the six inhabited continents.",
+      "answers": ["Africa", "Asia", "Australia", "Europe", "North America", "South America"]
+    },
+    {
+      "clue": "Name the five senses.",
+      "answers": ["Sight", "Hearing", "Smell", "Taste", "Touch"]
+    },
+    {
+      "clue": "Name the four Teenage Mutant Ninja Turtles.",
+      "answers": ["Leonardo", "Michelangelo", "Donatello", "Raphael"]
+    },
+    {
+      "clue": "Name the seven dwarfs from Snow White.",
+      "answers": ["Doc", "Grumpy", "Happy", "Sleepy", "Bashful", "Sneezy", "Dopey"]
+    },
+    {
+      "clue": "Name the four Hogwarts houses in Harry Potter.",
+      "answers": ["Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin"]
+    },
+    {
+      "clue": "Name the three longest rivers in the world (any accepted common names).",
+      "answers": ["Nile", "Amazon", "Yangtze", "Mississippi", "Mississippi-Missouri"]
+    },
+    {
+      "clue": "Name the five boroughs of New York City.",
+      "answers": ["Manhattan", "Brooklyn", "Queens", "The Bronx", "Bronx", "Staten Island"]
+    },
+    {
+      "clue": "Name the four Beatles (first names).",
+      "answers": ["John", "Paul", "George", "Ringo"]
+    },
+    {
+      "clue": "Name the nine reindeer traditionally pulling Santa's sleigh (including Rudolph).",
+      "answers": ["Dasher", "Dancer", "Prancer", "Vixen", "Comet", "Cupid", "Donner", "Blitzen", "Rudolph"]
+    },
+    {
+      "clue": "Name the four main characters from Scooby-Doo (human members of Mystery Inc.).",
+      "answers": ["Fred", "Daphne", "Velma", "Shaggy"]
+    },
+    {
+      "clue": "Name the three stooges (core trio).",
+      "answers": ["Moe", "Larry", "Curly"]
+    },
+    {
+      "clue": "Name the four U.S. presidents on Mount Rushmore.",
+      "answers": ["Washington", "Jefferson", "Roosevelt", "Theodore Roosevelt", "Teddy Roosevelt", "Lincoln"]
+    },
+    {
+      "clue": "Name the six colors of the rainbow (traditional ROY G. BIV).",
+      "answers": ["Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet"]
+    },
+    {
+      "clue": "Name the five vowels in the English alphabet.",
+      "answers": ["A", "E", "I", "O", "U"]
     }
   ],
   "metadata": {
     "description": "List-round questions: one clue with multiple acceptable answers. 1 point per correct answer.",
-    "version": "1.0"
+    "version": "1.1"
   }
 }

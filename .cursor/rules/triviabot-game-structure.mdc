@@ -9,7 +9,7 @@ alwaysApply: false
 ## Data model
 
 - **Rounds**: 8 rounds + Final Trivia. Each round has `roundType`, `title`, `pointsPerQuestion`, `instructions`, and `questions`.
-- **Questions**: `clue`, `answer`, `category`, `isBanned` (client-side). Filter using `banned-questions.json`, `played-status.json`, and in-memory `used-questions` when generating.
+- **Questions**: `clue`, `answer`, `category`, `isBanned` (client-side). Archive and curated selectors filter with merged banned-question files and used-question ledgers; LLM paths use matching used-ID prefixes as prompt exclusions. Played status belongs to game-list/game-display UI state and does not filter question selection.
 - **Round types**: Rounds 1–4, 6, 8 are archive-based; rounds 5 and 7 are LLM (Game Show Style, Mixing Things Up) with subTypes. Use `ROUND_TEMPLATES` in `scripts/generate-game.js` for config.
 - **Game list**: `played-status.json` and `data/games/index.json`; games have `isPlayed`. Banned state is in `banned-questions.json` and localStorage.
 
@@ -21,7 +21,7 @@ alwaysApply: false
 
 ## Key files
 
-- `scripts/generate-game.js` – game generation, `ROUND_TEMPLATES`, selection, LLM rounds, banned/played filtering.
+- `scripts/generate-game.js` – game generation, `ROUND_TEMPLATES`, selection, LLM rounds, and banned/used-question filtering.
 - `js/game-display.js` – render rounds/questions, banned/played UI, shuffle handlers.
 - `js/game-list.js` – game list, filters (all/unplayed/played), played status.
 - `game.html` – game page; `index.html` – game list.

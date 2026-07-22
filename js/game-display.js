@@ -1,6 +1,21 @@
 // Game display functionality
 import { animate } from 'motion';
+import { ROUND_TEMPLATES } from '../shared/round-definitions.js';
+import { poolFilesMap } from '../shared/pool-registry.js';
+import { filterEntertainmentArchive } from './lib/archive-filters.js';
+import {
+  loadBannedFromStorage,
+  saveBannedToStorage,
+  loadUsedIdsFromStorage,
+  saveUsedIdsToStorage,
+  persistGameToStorage,
+  syncStateToServer,
+  markGamePlayedInStorage,
+  loadPlayedStatusFromStorage,
+} from './lib/storage.js';
+import { takeAlternateRound, hasAlternates } from './lib/alternate-consumer.js';
 
+const POOL_FILES = poolFilesMap();
 let currentGame = null;
 
 /** Spring config for accordion and chevron (sensible defaults, not converted from eases) */
@@ -11,44 +26,15 @@ let localStorageWriteTimeout = null;
 let pendingPlayedStatus = null;
 
 /**
- * Round templates configuration (mirrors server-side)
- */
-const ROUND_TEMPLATES = {
-  1: { type: 'standard', roundType: 'get-your-feet-wet', title: 'Get Your Feet Wet', points: 2, useLLM: false },
-  2: { type: 'over-under', roundType: 'over-under', title: 'Over/Under', points: 3, useLLM: false },
-  3: { type: 'standard', roundType: 'trifecta-trivia', title: 'Trifecta Trivia', points: 3, useLLM: false },
-  4: { type: 'list', roundType: 'list-round', title: 'The List Round', points: 'variable', useLLM: false },
-  5: { type: 'game-show-style', roundType: 'game-show-style', title: 'Game Show Style', points: 4, useLLM: true, subTypes: ['to-tell-the-truth', 'name-that-tune', 'millionaire', 'family-feud'] },
-  6: { type: 'entertainment', roundType: 'entertainment-trivia', title: 'Entertainment Trivia', points: 4, useLLM: false },
-  7: { type: 'mixing-things-up', roundType: 'mixing-things-up', title: 'Mixing Things Up', points: 5, useLLM: true, subTypes: ['who-am-i', 'size-matters', 'name-that-brand', 'name-that-sports-team'] },
-  8: { type: 'standard', roundType: 'game-changer', title: 'Game Changer Round', points: 6, useLLM: false }
-};
-
-const ENTERTAINMENT_KEYWORDS = [
-  'movie', 'film', 'cinema', 'tv', 'television', 'music', 'band', 'album', 'song', 'singer',
-  'actor', 'actress', 'oscar', 'grammy', 'emmy', 'netflix', 'broadway', 'hollywood',
-  'comedy', 'drama', 'sitcom', 'series', 'director', 'starring', 'soundtrack'
-];
-
-function filterEntertainmentArchive(archive) {
-  const lower = (s) => (s || '').toLowerCase();
-  return archive.filter(q => {
-    const cat = lower(q.category);
-    const clue = lower(q.clue || '');
-    return ENTERTAINMENT_KEYWORDS.some(kw => cat.includes(kw) || clue.includes(kw));
-  });
-}
-
-/**
  * Debounced localStorage write to prevent blocking main thread
  */
 function debouncedLocalStorageWrite(key, value) {
   pendingPlayedStatus = { key, value };
-  
+
   if (localStorageWriteTimeout) {
     clearTimeout(localStorageWriteTimeout);
   }
-  
+
   localStorageWriteTimeout = setTimeout(() => {
     if (pendingPlayedStatus) {
       try {
@@ -58,133 +44,36 @@ function debouncedLocalStorageWrite(key, value) {
         console.error('Error writing to localStorage:', error);
       }
     }
-  }, 100); // 100ms debounce
+  }, 100);
 }
 
-/**
- * Load banned questions from localStorage
- */
 function loadBannedQuestions() {
-  try {
-    const stored = localStorage.getItem('triviabot-banned-questions');
-    if (stored) {
-      const data = JSON.parse(stored);
-      return data.questions || [];
-    }
-  } catch (error) {
-    console.warn('Error loading banned questions:', error);
-  }
-  return [];
+  return loadBannedFromStorage();
 }
 
-/**
- * Load played games from localStorage
- */
-function loadPlayedGames() {
-  try {
-    const stored = localStorage.getItem('triviabot-played-status');
-    if (stored) {
-      const data = JSON.parse(stored);
-      // Handle both old and new formats
-      if (data.games) {
-        return Object.keys(data.games).filter(gameId => data.games[gameId].played === true);
-      }
-      // Old format
-      return Object.keys(data).filter(gameId => data[gameId] === true);
-    }
-  } catch (error) {
-    console.warn('Error loading played games:', error);
-  }
-  return [];
-}
-
-/**
- * Save banned questions to localStorage
- */
 function saveBannedQuestions(questions) {
-  try {
-    const data = {
-      questions: questions,
-      lastUpdated: new Date().toISOString()
-    };
-    localStorage.setItem('triviabot-banned-questions', JSON.stringify(data));
-  } catch (error) {
-    console.error('Error saving banned questions:', error);
-  }
+  saveBannedToStorage(questions);
 }
 
-/** Map roundType + subType to pool file path (without 'data/' prefix). Standard rounds use archive. */
-const POOL_FILES = {
-  'over-under': 'over-under-questions.json',
-  'game-show-style': {
-    'to-tell-the-truth': 'to-tell-the-truth-questions.json',
-    'name-that-tune': 'name-that-tune-questions.json',
-    'millionaire': 'millionaire-questions.json',
-    'family-feud': 'family-feud-questions.json'
-  },
-  'mixing-things-up': {
-    'who-am-i': 'who-am-i-questions.json',
-    'size-matters': 'size-matters-questions.json',
-    'name-that-brand': 'name-that-brand-questions.json',
-    'name-that-sports-team': 'name-that-sports-team-questions.json'
-  }
-};
+function loadPlayedGames() {
+  const status = loadPlayedStatusFromStorage();
+  return Object.keys(status.games).filter((gameId) => status.games[gameId]?.played === true);
+}
 
-/**
- * Persist the current modified game to localStorage so changes survive refresh.
- */
 function persistCurrentGame() {
-  if (!currentGame) return;
-  try {
-    localStorage.setItem(`triviabot-game-${currentGame.id}`, JSON.stringify(currentGame));
-  } catch (error) {
-    console.warn('Error persisting game:', error);
-  }
+  persistGameToStorage(currentGame);
 }
 
-/**
- * Sync banned questions and used questions to the server (data/ files) so the generator picks them up.
- * Falls back to localStorage-only if server is unavailable (e.g. deployed static site).
- */
 function syncUIDataToServer() {
-  try {
-    const banned = loadBannedQuestions();
-    const bannedPayload = { questions: banned, lastUpdated: new Date().toISOString() };
-
-    const stored = localStorage.getItem('triviabot-used-questions') || '[]';
-    const usedIds = JSON.parse(stored);
-
-    // Always persist to localStorage as fallback
-    localStorage.setItem('triviabot-banned-questions-export', JSON.stringify(bannedPayload, null, 2));
-    localStorage.setItem('triviabot-used-questions-export', JSON.stringify(usedIds));
-
-    // Try to write to server files via dev-server API
-    fetch('/api/sync-ui-data', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bannedQuestions: bannedPayload, usedQuestions: usedIds })
-    }).catch(() => {
-      // Silently ignore if server not available (static deploy)
-    });
-  } catch (error) {
-    console.warn('Error syncing UI data:', error);
-  }
+  syncStateToServer();
 }
 
-/**
- * Track a question as "used" in localStorage so the generator won't pick it again.
- */
 function trackUsedQuestion(question) {
-  try {
-    const stored = localStorage.getItem('triviabot-used-questions') || '[]';
-    const used = JSON.parse(stored);
-    const id = `${question.clue}|${question.answer || ''}`;
-    if (!used.includes(id)) {
-      used.push(id);
-      localStorage.setItem('triviabot-used-questions', JSON.stringify(used));
-    }
-  } catch (error) {
-    console.warn('Error tracking used question:', error);
+  const used = loadUsedIdsFromStorage();
+  const id = `${question.clue}|${question.answer || ''}`;
+  if (!used.includes(id)) {
+    used.push(id);
+    saveUsedIdsToStorage(used);
   }
 }
 
@@ -1321,53 +1210,11 @@ function renderFinalTrivia() {
  */
 async function markGameAsPlayed(gameId, manual = false) {
   try {
-    if (typeof perfLab !== 'undefined') perfLab.start('loadPlayedStatus');
-    // Load current played status
-    let playedStatus = { games: {} };
-    try {
-      const response = await fetch('data/played-status.json');
-      if (response.ok) {
-        playedStatus = await response.json();
-        if (!playedStatus.games) playedStatus.games = {};
-      }
-    } catch (error) {
-      // Fallback to localStorage
-      const stored = localStorage.getItem('triviabot-played-status');
-      if (stored) {
-        if (typeof perfLab !== 'undefined') perfLab.start('parseLocalStorage');
-        const parsed = JSON.parse(stored);
-        // Handle old format (direct boolean) and new format (games object)
-        if (parsed.games) {
-          playedStatus = parsed;
-        } else {
-          // Convert old format
-          playedStatus = { games: {} };
-          Object.keys(parsed).forEach(key => {
-            playedStatus.games[key] = { played: parsed[key], playedDate: new Date().toISOString() };
-          });
-        }
-        if (typeof perfLab !== 'undefined') perfLab.end('parseLocalStorage');
-      }
-    }
-    if (typeof perfLab !== 'undefined') perfLab.end('loadPlayedStatus');
-    
-    // Update status with new structure
-    playedStatus.games[gameId] = {
-      played: true,
-      playedDate: new Date().toISOString()
-    };
-    
-    // Also update game data
+    markGamePlayedInStorage(gameId);
     if (currentGame) {
       currentGame.isPlayed = true;
     }
-    
-    // Save to localStorage (debounced to prevent blocking)
-    if (typeof perfLab !== 'undefined') perfLab.start('saveToLocalStorage');
-    debouncedLocalStorageWrite('triviabot-played-status', playedStatus);
-    if (typeof perfLab !== 'undefined') perfLab.end('saveToLocalStorage');
-    
-    // Update UI if manually triggered
+
     if (manual) {
       const markPlayedBtn = document.getElementById('mark-played-btn');
       if (markPlayedBtn) {
@@ -1380,30 +1227,13 @@ async function markGameAsPlayed(gameId, manual = false) {
       }
       console.log(`Game ${gameId} manually marked as played`);
     }
-    
   } catch (error) {
     console.error('Error marking game as played:', error);
   }
 }
 
-/**
- * Check if a game is marked as played
- */
 function isGamePlayed(gameId) {
-  try {
-    const stored = localStorage.getItem('triviabot-played-status');
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      // Handle both old and new formats
-      if (parsed.games && parsed.games[gameId]) {
-        return parsed.games[gameId].played === true;
-      }
-      return parsed[gameId] === true;
-    }
-  } catch (error) {
-    console.warn('Error checking played status:', error);
-  }
-  return false;
+  return isGamePlayedInStorage(gameId);
 }
 
 /**
@@ -1493,6 +1323,26 @@ async function generateNewRound(roundDiv, roundNumber, targetDifficulty, current
   }
   
   try {
+    // Prefer precomputed alternates (static-host friendly)
+    if (hasAlternates(currentGame, roundNumber)) {
+      const alt = takeAlternateRound(currentGame, roundNumber);
+      if (alt?.questions?.length) {
+        alt.questions.forEach((q) => trackUsedQuestion(q));
+        syncUIDataToServer();
+        const content = roundDiv.querySelector('.round-content');
+        const instructionsEl = content?.querySelector('.round-instructions');
+        if (content) {
+          content.innerHTML = '';
+          if (instructionsEl) content.appendChild(instructionsEl);
+          alt.questions.forEach((question, index) => {
+            content.appendChild(createQuestionElement(question, index + 1, round));
+          });
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        return;
+      }
+    }
+
     // Check if this is an LLM-generated round
     if (template && template.useLLM) {
       // Try to generate via LLM

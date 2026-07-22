@@ -1,0 +1,51 @@
+# Full integration tests — run manually while building or before release.
+# Uses the real archive (Git LFS when configured). Does NOT run on every push.
+name: Integration
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  integration:
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'run-integration'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Verify archive present
+        run: |
+          if [ ! -f data/archive-backup.json ]; then
+            echo "::error::data/archive-backup.json missing. Add via Git LFS or run populate-archive locally and push."
+            exit 1
+          fi
+          node -e "const a=require('./data/archive-backup.json'); console.log('Archive clues:', a.length)"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fast tests
+        run: npm run test:fast
+
+      - name: Integration tests (real archive)
+        run: npm run test:integration
+        env:
+          FAST_GENERATION: '1'
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Dry-run generate publish
+        run: npm run generate:publish -- --date 2099-01-01 --force
+        env:
+          FAST_GENERATION: '1'
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

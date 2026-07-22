@@ -8,6 +8,6 @@ const GITHUB_CONFIG = {
   branch: 'main',                // Your default branch
   // API endpoint for your serverless function (Vercel or Netlify)
   // Set this after deploying the serverless function
-  apiEndpoint: '' // e.g., 'https://your-app.vercel.app/api/trigger-workflow' or 'https://your-app.netlify.app/.netlify/functions/trigger-workflow'
+  apiEndpoint: '/api/generate' // Production: same-origin POST triggers GitHub Actions via Vercel
 };
 

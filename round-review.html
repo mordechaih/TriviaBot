@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Review how TriviaBot generates every round and export implementation feedback">
+  <title>TriviaBot - Round Generation Review</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/round-review.css">
+  <script src="https://unpkg.com/lucide@0.564.0"></script>
+</head>
+<body>
+  <header>
+    <h1>TriviaBot</h1>
+    <p>Round Generation Review</p>
+  </header>
+
+  <main class="review-main">
+    <div class="legal-disclaimer">
+      <strong>Disclaimer:</strong> This site uses content from J! Archive, a fan-created archive of Jeopardy! games.
+      The Jeopardy! game show and all elements thereof are the property of Jeopardy Productions, Inc.
+      This website is not affiliated with, sponsored by, or operated by Jeopardy Productions, Inc.
+      This site is for non-commercial, educational, and entertainment purposes only.
+    </div>
+
+    <nav class="nav review-nav">
+      <a href="index.html" class="nav-btn" id="back-btn">
+        <i data-lucide="arrow-left"></i>
+        <span class="nav-btn-text">Back to Games</span>
+      </a>
+    </nav>
+
+    <section class="review-intro" aria-labelledby="review-intro-heading">
+      <h2 id="review-intro-heading">How each round is generated</h2>
+      <p>
+        Start with the complete generation flow, then inspect the real sources, filters, difficulty
+        rules, LLM prompts, fallbacks, output shapes, and failure conditions for rounds 1–8 and
+        Final Trivia. Add generation changes, then export an implementation-ready Markdown report.
+      </p>
+    </section>
+
+    <div class="review-layout">
+      <nav class="section-nav" aria-label="Generation review sections">
+        <ol id="section-nav-list" class="section-nav-list"></ol>
+      </nav>
+
+      <div class="review-content">
+        <section
+          id="generation-overview"
+          class="generation-overview"
+          aria-labelledby="generation-overview-heading"
+        >
+          <div class="generation-overview-header">
+            <p class="section-eyebrow">Shared pipeline</p>
+            <h2 id="generation-overview-heading">Overall generation flow</h2>
+            <p id="generation-flow-description">
+              Follow one generation run from shared source data through its parallel round paths,
+              final assembly, and written artifacts.
+            </p>
+          </div>
+          <div
+            id="generation-flow"
+            class="generation-flow"
+            aria-describedby="generation-flow-description"
+          ></div>
+        </section>
+
+        <div id="round-guide" class="round-guide" aria-label="Round generation paths"></div>
+
+        <section class="overall-section" aria-labelledby="overall-notes-heading">
+          <h2 id="overall-notes-heading">Cross-round generation changes</h2>
+          <label for="overall-notes" class="visually-hidden">Changes spanning multiple generation paths</label>
+          <textarea
+            id="overall-notes"
+            class="comment-field overall-field"
+            rows="4"
+            placeholder="Changes to shared sources, filtering, difficulty calibration, reuse tracking, prompts, or fallbacks…"
+          ></textarea>
+        </section>
+
+        <section class="report-actions" aria-labelledby="report-actions-heading">
+          <h2 id="report-actions-heading" class="visually-hidden">Report actions</h2>
+          <div class="report-buttons">
+            <button type="button" id="generate-report-btn" class="action-btn primary-btn">
+              Generate Report
+            </button>
+            <button type="button" id="copy-report-btn" class="action-btn" disabled>
+              Copy
+            </button>
+            <button type="button" id="download-report-btn" class="action-btn" disabled>
+              Download
+            </button>
+            <button type="button" id="clear-feedback-btn" class="action-btn danger-btn">
+              Clear
+            </button>
+          </div>
+          <p id="report-status" class="report-status" role="status" aria-live="polite"></p>
+        </section>
+
+        <section
+          id="report-preview-section"
+          class="report-preview-section"
+          hidden
+          aria-labelledby="report-preview-heading"
+        >
+          <h2 id="report-preview-heading" tabindex="-1">Report preview</h2>
+          <pre id="report-preview" class="report-preview" tabindex="-1"></pre>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/disclaimer.js"></script>
+  <script type="module" src="js/round-review.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

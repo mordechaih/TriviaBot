@@ -1,4 +1,9 @@
 // Game list functionality
+import {
+  loadPlayedStatusFromStorage,
+  savePlayedStatusToStorage,
+  isGamePlayedInStorage,
+} from './lib/storage.js';
 
 let allGames = [];
 let playedStatus = {};
@@ -47,50 +52,15 @@ function restoreIconButton(button, iconName) {
  */
 async function loadPlayedStatus() {
   if (typeof perfLab !== 'undefined') perfLab.start('loadPlayedStatus');
-  
-  try {
-    // Try to load from GitHub Pages (data/played-status.json)
-    if (typeof perfLab !== 'undefined') perfLab.start('fetchPlayedStatus');
-    const response = await fetch('data/played-status.json');
-    if (response.ok) {
-      playedStatus = await response.json();
-      console.log('Loaded played status from server');
-      if (typeof perfLab !== 'undefined') {
-        perfLab.end('fetchPlayedStatus');
-        perfLab.end('loadPlayedStatus');
-      }
-      return;
-    }
-    if (typeof perfLab !== 'undefined') perfLab.end('fetchPlayedStatus');
-  } catch (error) {
-    console.log('Could not load from server, trying localStorage');
-  }
-  
-  // Fallback to localStorage
-  if (typeof perfLab !== 'undefined') perfLab.start('loadFromLocalStorage');
-  const stored = localStorage.getItem('triviabot-played-status');
-  if (stored) {
-    if (typeof perfLab !== 'undefined') perfLab.start('parsePlayedStatus');
-    playedStatus = JSON.parse(stored);
-    if (typeof perfLab !== 'undefined') perfLab.end('parsePlayedStatus');
-    console.log('Loaded played status from localStorage');
-  }
-  if (typeof perfLab !== 'undefined') {
-    perfLab.end('loadFromLocalStorage');
-    perfLab.end('loadPlayedStatus');
-  }
+  playedStatus = loadPlayedStatusFromStorage().games;
+  console.log('Loaded played status from localStorage');
+  if (typeof perfLab !== 'undefined') perfLab.end('loadPlayedStatus');
 }
 
-/**
- * Save played status
- */
 async function savePlayedStatus() {
-  // Save to localStorage immediately
-  localStorage.setItem('triviabot-played-status', JSON.stringify(playedStatus));
-  
-  // Try to save to GitHub (this would require API integration, for now just localStorage)
-  // In a real implementation, you'd use GitHub API with a token
-  console.log('Saved played status to localStorage');
+  const current = loadPlayedStatusFromStorage();
+  current.games = { ...playedStatus };
+  savePlayedStatusToStorage(current);
 }
 
 /**
@@ -368,9 +338,9 @@ function renderGames() {
   if (typeof perfLab !== 'undefined') perfLab.start('filterGames');
   let filteredGames = allGames;
   if (currentFilter === 'played') {
-    filteredGames = allGames.filter(game => playedStatus[game.id] === true);
+    filteredGames = allGames.filter(game => playedStatus[game.id]?.played === true);
   } else if (currentFilter === 'unplayed') {
-    filteredGames = allGames.filter(game => playedStatus[game.id] !== true);
+    filteredGames = allGames.filter(game => playedStatus[game.id]?.played !== true);
   }
   if (typeof perfLab !== 'undefined') {
     perfLab.end('filterGames');
@@ -411,7 +381,7 @@ function renderGames() {
  */
 function createGameCard(game) {
   const card = document.createElement('div');
-  card.className = `game-card ${playedStatus[game.id] ? 'played' : ''}`;
+  card.className = `game-card ${isGamePlayedInStorage(game.id) ? 'played' : ''}`;
   card.onclick = () => {
     window.location.href = `game.html?id=${game.id}`;
   };
@@ -439,7 +409,7 @@ function createGameCard(game) {
   
   const status = document.createElement('div');
   status.className = 'status';
-  status.textContent = playedStatus[game.id] ? 'Played' : 'New';
+  status.textContent = isGamePlayedInStorage(game.id) ? 'Played' : 'New';
   
   card.appendChild(info);
   card.appendChild(status);
@@ -451,7 +421,11 @@ function createGameCard(game) {
  * Toggle played status for a game
  */
 async function togglePlayedStatus(gameId) {
-  playedStatus[gameId] = !playedStatus[gameId];
+  const current = playedStatus[gameId]?.played === true;
+  playedStatus[gameId] = {
+    played: !current,
+    playedDate: new Date().toISOString(),
+  };
   await savePlayedStatus();
   renderGames();
 }
@@ -544,6 +518,20 @@ function getGitHubRepoInfo() {
 
 
 /**
+ * Fetch games index snapshot (single cache-busted request for polling).
+ * @param {string} [baseUrl]
+ */
+async function fetchIndexSnapshot(baseUrl = '') {
+  const indexPath = 'data/games/index.json';
+  const indexUrl = baseUrl
+    ? `${baseUrl}/${indexPath}?t=${Date.now()}`
+    : `${indexPath}?t=${Date.now()}`;
+  const response = await fetch(indexUrl, { cache: 'no-store' });
+  if (!response.ok) return null;
+  return response.json();
+}
+
+/**
  * Trigger GitHub Actions workflow
  */
 async function triggerGameGeneration() {
@@ -574,22 +562,12 @@ async function triggerGameGeneration() {
     return;
   }
   
-  // Get API endpoint from config (required for Vercel deployment)
-  // Use the new deploy endpoint (trigger-deploy instead of trigger-workflow)
-  let apiEndpoint = typeof GITHUB_CONFIG !== 'undefined' && GITHUB_CONFIG.apiEndpoint 
-    ? GITHUB_CONFIG.apiEndpoint 
-    : null;
-  
-  // Update to use the new deploy endpoint
-  if (apiEndpoint && apiEndpoint.includes('/trigger-workflow')) {
-    apiEndpoint = apiEndpoint.replace('/trigger-workflow', '/trigger-deploy');
-  }
-  if (!apiEndpoint) {
-    showGenerateStatus('Error: API endpoint not configured. Please set apiEndpoint in js/config.js', 'error');
-    restoreIconButton(generateBtn, 'plus');
-    generateBtn.disabled = false;
-    generateBtn.style.opacity = '1';
-    return;
+  let apiEndpoint = typeof GITHUB_CONFIG !== 'undefined' && GITHUB_CONFIG.apiEndpoint
+    ? GITHUB_CONFIG.apiEndpoint
+    : '/api/generate';
+
+  if (apiEndpoint.includes('/trigger-deploy') || apiEndpoint.includes('/trigger-workflow')) {
+    apiEndpoint = '/api/generate';
   }
   
   console.log('Repo info:', repoInfo);
@@ -623,7 +601,7 @@ async function triggerGameGeneration() {
     if (response.ok && (responseData.success || response.status === 204)) {
       console.log('Workflow triggered successfully!');
       showGenerateStatus(
-        '🚀 Game generation triggered! Vercel is deploying your new game...',
+        'Game generation started. Waiting for the new game to appear…',
         'info'
       );
       
@@ -653,137 +631,65 @@ async function triggerGameGeneration() {
       const pollForNewGames = setInterval(async () => {
         pollCount++;
         console.log(`Polling for new games (attempt ${pollCount}/${maxPolls})...`);
-        
+
         try {
-          // Capture the timestamp BEFORE loading to compare properly
-          const timestampBeforeLoad = lastKnownIndexTimestamp;
-          const versionBeforeLoad = lastKnownIndexVersion;
-          const hadIndexBefore = timestampBeforeLoad !== null || versionBeforeLoad !== null;
-          
-          // Force reload games with cache-busting
-          // Clear the allGames array first to force fresh load
-          allGames = [];
-          // Use production base URL if available (for production workflow triggers)
-          await loadGames({ baseUrl: pollBaseUrl });
-          
-          // Get current game IDs
-          const currentGameIds = new Set(allGames.map(g => g.id));
-          console.log('Current games:', Array.from(currentGameIds));
-          console.log('Index timestamp before:', timestampBeforeLoad, 'after:', lastKnownIndexTimestamp);
-          console.log('Index version before:', versionBeforeLoad, 'after:', lastKnownIndexVersion);
-          
-          // Check if index appeared (was null, now has value)
-          const indexAppeared = !hadIndexBefore && (lastKnownIndexTimestamp !== null || lastKnownIndexVersion !== null);
-          
-          // Check if index version has changed (more reliable than timestamp)
-          const versionChanged = initialIndexVersion !== null && 
-                                lastKnownIndexVersion !== null &&
-                                lastKnownIndexVersion !== initialIndexVersion;
-          
-          // Check if index timestamp has changed
-          const indexUpdated = initialIndexTimestamp !== null && 
-                               lastKnownIndexTimestamp !== null &&
-                               lastKnownIndexTimestamp !== initialIndexTimestamp;
-          
-          // Check if we have new game IDs
-          const newGameIds = Array.from(currentGameIds).filter(id => !initialGameIds.has(id));
-          
-          // Also check if the count increased (even if IDs match, count change indicates update)
-          const initialCount = initialGameIds.size;
-          const currentCount = currentGameIds.size;
-          const countIncreased = currentCount > initialCount;
-          
-          console.log(`Game count: ${initialCount} -> ${currentCount}, New IDs: ${newGameIds.length}, Index appeared: ${indexAppeared}, Version changed: ${versionChanged}, Timestamp changed: ${indexUpdated}`);
-          
-          // If index was updated or we have new games, consider it a success
-          if (indexAppeared || versionChanged || indexUpdated || newGameIds.length > 0 || countIncreased) {
+          const index = await fetchIndexSnapshot(pollBaseUrl);
+          if (!index) {
+            if (pollCount >= maxPolls) {
+              clearInterval(pollForNewGames);
+              showGenerateStatus(
+                '⏱️ Generation may still be in progress. Refresh manually to check.',
+                'info',
+              );
+              restoreIconButton(generateBtn, 'plus');
+              generateBtn.disabled = false;
+              generateBtn.style.opacity = '1';
+            }
+            return;
+          }
+
+          const currentIds = index.games || [];
+          const versionChanged = Boolean(
+            index.version && initialIndexVersion && index.version !== initialIndexVersion,
+          );
+          const timestampChanged = Boolean(
+            index.lastUpdated && initialIndexTimestamp && index.lastUpdated !== initialIndexTimestamp,
+          );
+          const newGameIds = currentIds.filter((id) => !initialGameIds.has(id));
+          const countIncreased = currentIds.length > initialGameIds.size;
+
+          if (versionChanged || timestampChanged || newGameIds.length > 0 || countIncreased) {
             clearInterval(pollForNewGames);
-            if (indexAppeared) {
-              console.log('Index appeared! Was null, now has version:', lastKnownIndexVersion, 'timestamp:', lastKnownIndexTimestamp);
-            }
-            if (versionChanged) {
-              console.log('Index version changed detected! Version changed from', initialIndexVersion, 'to', lastKnownIndexVersion);
-            }
-            if (indexUpdated) {
-              console.log('Index updated detected! Timestamp changed from', initialIndexTimestamp, 'to', lastKnownIndexTimestamp);
-            }
-            if (newGameIds.length > 0) {
-              console.log('New games detected:', newGameIds);
-            }
-            if (countIncreased) {
-              console.log('Game count increased from', initialCount, 'to', currentCount);
-            }
-            
-            // Show success toast with deployment confirmation
-            showGenerateStatus(
-              `🎉 Vercel deployment complete! New game is ready. Refreshing...`,
-              'success'
-            );
-            
-            // Restore button state
+            showGenerateStatus('New game is ready. Refreshing…', 'success');
             restoreIconButton(generateBtn, 'plus');
             generateBtn.disabled = false;
             generateBtn.style.opacity = '1';
-            
-            // Auto-refresh after showing success message (give user time to see it)
-            setTimeout(() => {
-              window.location.reload();
-            }, 2500);
+            setTimeout(() => window.location.reload(), 1500);
           } else if (pollCount >= maxPolls) {
             clearInterval(pollForNewGames);
             showGenerateStatus(
-              '⏱️ Deployment may still be in progress. Please refresh the page manually to check.',
-              'info'
+              '⏱️ Generation may still be in progress. Refresh manually to check.',
+              'info',
             );
             restoreIconButton(generateBtn, 'plus');
             generateBtn.disabled = false;
             generateBtn.style.opacity = '1';
-            console.log('Polling timeout reached. Initial games:', Array.from(initialGameIds), 'Current games:', Array.from(currentGameIds));
           } else {
-            const elapsed = pollCount * 10;
-            const remaining = Math.max(0, (maxPolls - pollCount) * 10);
-            
-            // Show deployment progress with better messaging
-            if (pollCount <= 3) {
-              showGenerateStatus(
-                `🚀 Vercel is deploying your game... (${elapsed}s elapsed)`,
-                'info'
-              );
-            } else if (pollCount <= 9) {
-              showGenerateStatus(
-                `⏳ Deployment in progress... (${elapsed}s / ~${Math.ceil(remaining / 60)}min remaining)`,
-                'info'
-              );
-            } else {
-              showGenerateStatus(
-                `⏳ Still waiting for deployment... (${elapsed}s / ~${Math.ceil(remaining / 60)}min remaining)`,
-                'info'
-              );
-            }
-            console.log(`No new games yet. Still waiting... (${elapsed}s)`);
+            showGenerateStatus(
+              `Waiting for new game… (${pollCount * 10}s)`,
+              'info',
+            );
           }
         } catch (error) {
           console.error('Error polling for games:', error);
-          console.error('Error details:', error.message, error.stack);
-          
           if (pollCount >= maxPolls) {
             clearInterval(pollForNewGames);
-            showGenerateStatus(
-              `❌ Could not detect new game after ${maxPolls} attempts. Error: ${error.message}. Please refresh the page manually.`,
-              'error'
-            );
             restoreIconButton(generateBtn, 'plus');
             generateBtn.disabled = false;
             generateBtn.style.opacity = '1';
-          } else {
-            // Show error but continue polling
-            showGenerateStatus(
-              `⚠️ Error checking deployment (${pollCount}/${maxPolls}): ${error.message}. Retrying...`,
-              'info'
-            );
           }
         }
-      }, 10000); // Poll every 10 seconds
+      }, 10000);
     } else {
       const errorMessage = responseData.error || response.statusText || 'Failed to trigger workflow';
       console.error('API error:', errorMessage);
