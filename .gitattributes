@@ -1,0 +1,2 @@
+# J! Archive export — too large for plain git (>100 MB GitHub limit)
+data/archive-backup.json filter=lfs diff=lfs merge=lfs -text

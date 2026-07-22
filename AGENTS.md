@@ -54,7 +54,7 @@ Static UI on Vercel (`public/` via `npm run build`). Game generation: `POST /api
 | 4 | `data/list-round-questions.json` | Curated multi-answer pool — **not** J! Archive |
 | 2, 5, 7 | LLM (`OPENAI_API_KEY`) | Over/Under, Game Show, Mixing Things Up; pool append-only fallback |
 
-**Archive locally:** ~148 MB, ~563k clues — present after `populate-archive`, **not** in plain git (exceeds GitHub 100 MB file limit). Planned storage: Git LFS for CI/generation only; never ship to `public/`.
+**Archive:** ~148 MB, ~563k clues in `data/archive-backup.json`. Tracked with **Git LFS** (plain git exceeds GitHub’s 100 MB limit). Used by generation/CI only — never shipped in `public/`.
 
 **List-round exhaustion** is a small-pool / ledger issue, not missing archive.
 
@@ -90,7 +90,19 @@ npm run dev   # http://localhost:3000 (serves index.dev.html when present)
 | `integration.yml` | Manual dispatch, or PR label `run-integration` | LFS checkout, `test:fast`, `test:integration`, dry-run `generate:publish` |
 | `weekly-game.yml` | Weekly cron, manual, `repository_dispatch` | `npm run generate:publish` → commit games + ledger |
 
-Do **not** enable LFS on `test.yml` — bandwidth adds up on every push. LFS belongs on `integration.yml` and `weekly-game.yml` once the archive is tracked.
+Do **not** enable LFS on `test.yml` — bandwidth adds up on every push. LFS is enabled on `integration.yml` and `weekly-game.yml` only.
+
+### Git LFS (archive)
+
+One-time on each machine:
+
+```bash
+brew install git-lfs   # or your OS package manager
+git lfs install
+git lfs pull           # after clone, fetches data/archive-backup.json
+```
+
+`.gitattributes` tracks `data/archive-backup.json` via LFS. After `populate-archive`, add with `git add data/archive-backup.json` (Git LFS must be installed).
 
 ## Shared domain (prefer over duplicating)
 

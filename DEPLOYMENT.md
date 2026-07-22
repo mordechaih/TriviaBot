@@ -30,6 +30,28 @@ TriviaBot uses **Vercel** for the static UI and **GitHub Actions** for game gene
 
 Required secret: `OPENAI_API_KEY`
 
+## Git LFS (J! Archive)
+
+`data/archive-backup.json` (~148 MB) is stored with **Git LFS** — it exceeds GitHub’s 100 MB plain-git limit.
+
+**One-time setup:**
+
+```bash
+brew install git-lfs
+git lfs install
+bash scripts/install-hooks.sh   # chains LFS + CODE_MAP post-commit hooks
+git lfs pull                    # after clone
+```
+
+**After refreshing the archive** (`npm run populate-archive`):
+
+```bash
+git add data/archive-backup.json   # stored via LFS automatically
+git commit -m "Update J! Archive export"
+```
+
+GitHub Actions `weekly-game.yml` and `integration.yml` check out with `lfs: true`. `test.yml` does not — keeps every push fast.
+
 ## Local Development
 
 ```bash
