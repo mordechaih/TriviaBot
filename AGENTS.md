@@ -58,6 +58,64 @@ Static UI on Vercel (`public/` via `npm run build`). Game generation: `POST /api
 
 **List-round exhaustion** is a small-pool / ledger issue, not missing archive.
 
+## Git LFS (J! Archive)
+
+The J! Archive export **`data/archive-backup.json`** (~148 MB, ~563k clues) is **committed via Git LFS**. Plain git cannot push it to GitHub (100 MB per-file limit). The static site never includes this file — generation and CI read it from the repo checkout only.
+
+### What uses LFS
+
+| Path | In LFS? | Notes |
+|------|---------|--------|
+| `data/archive-backup.json` | **Yes** | Generator input for archive rounds + Final |
+| `data/clues.db` | No | Local parser intermediate; regenerate with `populate-archive` |
+| `public/` | No | Build output; archive explicitly excluded |
+| `data/disqualify-cache.json` | No | Regenerable; gitignored |
+
+Configured in **`.gitattributes`**:
+
+```
+data/archive-backup.json filter=lfs diff=lfs merge=lfs -text
+```
+
+### One-time setup (each machine)
+
+```bash
+brew install git-lfs          # macOS; use OS package manager elsewhere
+git lfs install
+bash scripts/install-hooks.sh # chains LFS post-commit + CODE_MAP hook
+git lfs pull                  # after clone — materializes the archive file
+```
+
+Verify: `git lfs ls-files` should list `data/archive-backup.json`.
+
+### Refreshing the archive
+
+```bash
+npm run populate-archive      # download j-archive → clues.db → archive-backup.json
+git add data/archive-backup.json
+git commit -m "Update J! Archive export"
+git push                      # uploads LFS blob to GitHub on first push
+```
+
+### CI workflows and LFS
+
+| Workflow | `lfs: true` on checkout? | Why |
+|----------|--------------------------|-----|
+| `test.yml` | **No** | Fast tests use fixtures only; avoids 148 MB on every push |
+| `integration.yml` | **Yes** | Full generate + integration tests |
+| `weekly-game.yml` | **Yes** | Production game generation |
+
+Do **not** add LFS to `test.yml` — bandwidth adds up quickly during active development.
+
+### Agent pitfalls (LFS)
+
+1. **Missing archive after clone** → run `git lfs pull`, not `populate-archive` (unless refreshing data).
+2. **`git add` without LFS installed** → may commit a pointer incorrectly; install LFS first.
+3. **Round 4 list errors** → not an LFS/archive problem; check `data/list-round-questions.json` + ledger.
+4. **Browser shuffle fallbacks** → cannot `fetch('data/archive-backup.json')` on Vercel; use game `alternates`.
+
+More detail: `DEPLOYMENT.md`.
+
 ## Testing while building
 
 Use **three tiers** — thorough local testing without pulling 148 MB on every push.
@@ -90,19 +148,7 @@ npm run dev   # http://localhost:3000 (serves index.dev.html when present)
 | `integration.yml` | Manual dispatch, or PR label `run-integration` | LFS checkout, `test:fast`, `test:integration`, dry-run `generate:publish` |
 | `weekly-game.yml` | Weekly cron, manual, `repository_dispatch` | `npm run generate:publish` → commit games + ledger |
 
-Do **not** enable LFS on `test.yml` — bandwidth adds up on every push. LFS is enabled on `integration.yml` and `weekly-game.yml` only.
-
-### Git LFS (archive)
-
-One-time on each machine:
-
-```bash
-brew install git-lfs   # or your OS package manager
-git lfs install
-git lfs pull           # after clone, fetches data/archive-backup.json
-```
-
-`.gitattributes` tracks `data/archive-backup.json` via LFS. After `populate-archive`, add with `git add data/archive-backup.json` (Git LFS must be installed).
+Do **not** enable LFS on `test.yml` — bandwidth adds up on every push. LFS is enabled on `integration.yml` and `weekly-game.yml` only (see **Git LFS** above).
 
 ## Shared domain (prefer over duplicating)
 
@@ -119,6 +165,7 @@ git lfs pull           # after clone, fetches data/archive-backup.json
 3. **Browser cannot fetch `archive-backup.json`** in production (excluded from `public/`). Shuffle/replace uses game `alternates` or pool JSON files.
 4. **`npm test`** aliases to `test:fast` — not full integration.
 5. **Round 4 errors** → list pool / ledger, not missing J! Archive.
+6. **After clone, generation fails “archive empty”** → `git lfs pull` (see Git LFS section).
 
 ## Key commands
 
