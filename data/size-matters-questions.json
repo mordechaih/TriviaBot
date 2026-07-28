@@ -39,6 +39,21 @@
       "clue": "Which is taller: The Burj Khalifa or the Shanghai Tower?",
       "answer": "The Burj Khalifa",
       "details": "Burj Khalifa: 2,717 ft, Shanghai Tower: 2,073 ft"
+    },
+    {
+      "clue": "Which is taller: The Willis Tower or the One World Trade Center?",
+      "answer": "One World Trade Center",
+      "details": "Willis Tower: 1,450 ft, One World Trade Center: 1,776 ft"
+    },
+    {
+      "clue": "Which is taller: The Sydney Opera House or the Space Needle?",
+      "answer": "Space Needle",
+      "details": "Sydney Opera House: 213 ft, Space Needle: 605 ft"
+    },
+    {
+      "clue": "Which is taller: The Colosseum or the Leaning Tower of Pisa?",
+      "answer": "Colosseum",
+      "details": "Colosseum: 157 ft, Leaning Tower of Pisa: 56 ft"
     }
   ]
 }

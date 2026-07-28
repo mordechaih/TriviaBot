@@ -1,0 +1,585 @@
+{
+  "id": "game-2026-07-22",
+  "date": "2026-07-22",
+  "isPlayed": false,
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "roundType": "get-your-feet-wet",
+      "title": "Get Your Feet Wet",
+      "pointsPerQuestion": 2,
+      "instructions": "Generally VERY easy questions to ease into the game.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "In a 1941 hit song \"You leave the Pennsylvania Station 'bout a quarter to four\" aboard this title train",
+          "answer": "\"Chattanooga Choo Choo\"",
+          "category": "1941",
+          "isBanned": false
+        },
+        {
+          "clue": "You'll find this country between Cambodia & Canada",
+          "answer": "Cameroon",
+          "category": "COUNTRIES ALPHABETICALLY",
+          "isBanned": false
+        },
+        {
+          "clue": "\"I've never turned\" this color \"in somebody else's bathroom, I consider that the height of bad manners\"",
+          "answer": "blue",
+          "category": "THE QUOTABLE KEITH RICHARDS",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 2,
+      "roundType": "over-under",
+      "title": "Over/Under",
+      "pointsPerQuestion": 3,
+      "subType": null,
+      "instructions": "Numeric guessing questions. Pick a number close to the actual answer.",
+      "difficulty": "easy",
+      "questions": [
+        {
+          "clue": "The number of countries that participated in the first modern Olympic Games in 1896.",
+          "answer": "13",
+          "actualNumber": 13,
+          "targetNumber": 15,
+          "overOrUnder": "Under",
+          "isBanned": false
+        },
+        {
+          "clue": "The year in which the first commercial passenger flight took place.",
+          "answer": "1914",
+          "actualNumber": 1914,
+          "targetNumber": 1910,
+          "overOrUnder": "Over",
+          "isBanned": false
+        },
+        {
+          "clue": "The approximate number of languages spoken in the world today.",
+          "answer": "7000",
+          "actualNumber": 7000,
+          "targetNumber": 6000,
+          "overOrUnder": "Over",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 3,
+      "roundType": "trifecta-trivia",
+      "title": "Trifecta Trivia",
+      "pointsPerQuestion": 3,
+      "instructions": "First \"trivia in earnest\" round. Still easy questions.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "The name of this shoulder muscle comes from the Greek letter it resembles",
+          "answer": "deltoid",
+          "category": "SCIENCE",
+          "isBanned": false
+        },
+        {
+          "clue": "The NFL'sSaints",
+          "answer": "New Orleans",
+          "category": "SPORTS HOME CITIES",
+          "isBanned": false
+        },
+        {
+          "clue": "(Jon of the Clue Crew shows some animated blood cell models on the monitor.)  Instead of being biconcave discs, red blood cells are distorted into a particular shape & don't carry oxygen well in patients with this disease",
+          "answer": "sickle cell anemia",
+          "category": "HEALTH MATTERS",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 4,
+      "roundType": "list-round",
+      "title": "The List Round",
+      "pointsPerQuestion": "variable",
+      "instructions": "One question with multiple answers. 1 point per correct answer.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Name the four Beatles (first names).",
+          "answers": [
+            "John",
+            "Paul",
+            "George",
+            "Ringo"
+          ],
+          "pointsAvailable": 4,
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 5,
+      "roundType": "game-show-style",
+      "title": "Game Show Style",
+      "pointsPerQuestion": 4,
+      "subType": "millionaire",
+      "instructions": "Varies weekly: True/False, Name That Tune, Multiple Choice, or Family Feud.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "What ancient civilization is credited with the invention of the first known writing system called cuneiform?",
+          "options": [
+            "A) Sumerians",
+            "B) Egyptians",
+            "C) Phoenicians",
+            "D) Minoans"
+          ],
+          "correctAnswer": "A",
+          "explanation": "Cuneiform was developed by the Sumerians around 3200 BCE in Mesopotamia, making them the first to create a writing system.",
+          "isBanned": false
+        },
+        {
+          "clue": "Which famous artist was known for creating a series of paintings featuring the same subject during different times of day and seasons, notably in his work called 'The Haystacks'?",
+          "options": [
+            "A) Claude Monet",
+            "B) Vincent van Gogh",
+            "C) Edgar Degas",
+            "D) Paul Cézanne"
+          ],
+          "correctAnswer": "A",
+          "explanation": "Claude Monet created a series of 'Haystacks' paintings, exploring the effects of light and atmosphere on the same subject.",
+          "isBanned": false
+        },
+        {
+          "clue": "What is the name of the deep-sea trench located in the Pacific Ocean, known as the deepest part of the world's oceans?",
+          "options": [
+            "A) Mariana Trench",
+            "B) Tonga Trench",
+            "C) Puerto Rico Trench",
+            "D) Java Trench"
+          ],
+          "correctAnswer": "A",
+          "explanation": "The Mariana Trench reaches a depth of about 36,000 feet, making it the deepest known part of the Earth's oceans.",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 6,
+      "roundType": "entertainment-trivia",
+      "title": "Entertainment Trivia",
+      "pointsPerQuestion": 4,
+      "instructions": "Movies, music, and TV from 1980s onward. Books can be older (early 1900s).",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Paul Newman's only win for Best Actor was for the second time he played this character",
+          "answer": "\"Fast Eddie\" Felson",
+          "category": "THE OSCARS",
+          "isBanned": false
+        },
+        {
+          "clue": "Dolores Umbridge in the \"Harry Potter\" films, Imelda Staunton has won several Oliviers, including as Mama Rose in this musical",
+          "answer": "Gypsy",
+          "category": "OLIVIER AWARD WINNERS",
+          "isBanned": false
+        },
+        {
+          "clue": "1996:\"Twister\",\"Mission: Impossible\",\"Independence Day\"",
+          "answer": "Independence Day",
+          "category": "HOLLYWOOD'S BIGGEST GROSSERS",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 7,
+      "roundType": "mixing-things-up",
+      "title": "Mixing Things Up",
+      "pointsPerQuestion": 5,
+      "subType": "size-matters",
+      "instructions": "Varies weekly: Who Am I, Size Matters, Name That Brand, or Sports Team.",
+      "difficulty": "medium",
+      "questions": [
+        {
+          "clue": "Which is taller: The Willis Tower or the One World Trade Center?",
+          "answer": "One World Trade Center",
+          "details": "Willis Tower: 1,450 ft, One World Trade Center: 1,776 ft",
+          "isBanned": false
+        },
+        {
+          "clue": "Which is taller: The Sydney Opera House or the Space Needle?",
+          "answer": "Space Needle",
+          "details": "Sydney Opera House: 213 ft, Space Needle: 605 ft",
+          "isBanned": false
+        },
+        {
+          "clue": "Which is taller: The Colosseum or the Leaning Tower of Pisa?",
+          "answer": "Colosseum",
+          "details": "Colosseum: 157 ft, Leaning Tower of Pisa: 56 ft",
+          "isBanned": false
+        }
+      ]
+    },
+    {
+      "roundNumber": 8,
+      "roundType": "game-changer",
+      "title": "Game Changer Round",
+      "pointsPerQuestion": 6,
+      "instructions": "Medium difficulty standard questions. No shared theme.",
+      "difficulty": "hard",
+      "questions": [
+        {
+          "clue": "Greeks founded this French port in about 600 B.C. & named it Massalia",
+          "answer": "Marseille",
+          "category": "WORLD CITIES",
+          "isBanned": false
+        },
+        {
+          "clue": "In the 1970s Alexander Haig was supreme commander of this transatlantic alliance ready to fend off the USSR",
+          "answer": "NATO",
+          "category": "PEOPLE NAMED ALEX",
+          "isBanned": false
+        },
+        {
+          "clue": "Avgolemono, a classic sauce from this Mediterranean country, is made from eggs & lemon juice",
+          "answer": "Greece",
+          "category": "INTERNATIONAL CUISINE",
+          "isBanned": false
+        }
+      ]
+    }
+  ],
+  "finalTrivia": {
+    "category": "PERFORMING ARTS",
+    "question": "1 of the 6 performers who received Kennedy Center honors December 7, 1986",
+    "answer": "(1 of) Lucille Ball, Ray Charles, Yehudi Menuhin, Hume Cronyn, Jessica Tandy & Antony Tudor",
+    "isBanned": false
+  },
+  "alternates": {
+    "1": [
+      [
+        {
+          "clue": "Seen here, South Africa's Umhlanga Pier has an archway named for this animal's bones",
+          "answer": "a whale",
+          "category": "PIER 5",
+          "isBanned": false
+        },
+        {
+          "clue": "When cooking, to get the number of these in a given number of cups, multiply by 16",
+          "answer": "tablespoons",
+          "category": "MULTIPLY",
+          "isBanned": false
+        },
+        {
+          "clue": "Both the 1972 & 1976 Olympic light-welterwight gold medalists had this \"sweet\" nickname",
+          "answer": "Sugar Ray",
+          "category": "OLYMPIC BOXERS",
+          "isBanned": false
+        }
+      ],
+      [
+        {
+          "clue": "On April 10, 2006 The New York Times said he \"works magic for second Masters\"",
+          "answer": "(Phil) Mickelson",
+          "category": "THE NEW YORK TIMES SPORTS",
+          "isBanned": false
+        },
+        {
+          "clue": "While B.A. means bachelor of arts, B.F.A. means bachelor of this",
+          "answer": "fine arts",
+          "category": "HIGHER EDUCATION",
+          "isBanned": false
+        },
+        {
+          "clue": "Prue brought the family's one of these to every fire in town & passed it down the line to the fire",
+          "answer": "a bucket",
+          "category": "AROUND THE COLONY WITH PRUDENCE",
+          "isBanned": false
+        }
+      ]
+    ],
+    "2": [
+      [
+        {
+          "clue": "A cluster, or hand, of this fruit consists of 10-20 fingers",
+          "answer": "bananas",
+          "category": "FRUIT",
+          "isBanned": false
+        },
+        {
+          "clue": "(Jimmy of the Clue Crew walks by an exhibit in the Freud Museum in Vienna, Austria.)  In 1896, Freud created this word for the technique we associate with couches",
+          "answer": "psychoanalysis",
+          "category": "SIGMUND FREUD",
+          "isBanned": false
+        },
+        {
+          "clue": "He said, \"War is cruelty... the crueler it is, the sooner it will be over\" before he marched to the sea",
+          "answer": "Sherman",
+          "category": "CIVIL WAR PEOPLE",
+          "isBanned": false
+        }
+      ],
+      [
+        {
+          "clue": "Quebec first decreed that all these signs must say \"arret\", then decided to allow this as a French word",
+          "answer": "stop",
+          "category": "FRENCH LESSONS",
+          "isBanned": false
+        },
+        {
+          "clue": "Double your fun & tell us the name of this 1967 James Bond film",
+          "answer": "You Only Live Twice",
+          "category": "WHAT ARE \"YOU\" DOING?",
+          "isBanned": false
+        },
+        {
+          "clue": "After entering Holland, this river divides into 3 branches: the Waal, the Lek & the Ijssel",
+          "answer": "Rhine",
+          "category": "WORLD GEOGRAPHY",
+          "isBanned": false
+        }
+      ]
+    ],
+    "3": [
+      [
+        {
+          "clue": "In \"Police Woman\", Sgt. Suzanne Anderson was better known by this \"hot\" nickname",
+          "answer": "Pepper",
+          "category": "TV COPS",
+          "isBanned": false
+        },
+        {
+          "clue": "Bears executive Ed McCaskey asked Gale Sayers & this man to be the NFL's first interracial roommates",
+          "answer": "Brian Piccolo",
+          "category": "NOT A MUSICAL INSTRUMENT",
+          "isBanned": false
+        },
+        {
+          "clue": "Amos Alonzo Stagg was no dummy; he invented the football tackling dummy at this New Haven university",
+          "answer": "Yale",
+          "category": "AMERICAN HODGEPODGE",
+          "isBanned": false
+        }
+      ],
+      [
+        {
+          "clue": "Hail, this 6-letter cut seen here",
+          "answer": "Caesar",
+          "category": "HAIRSTYLES",
+          "isBanned": false
+        },
+        {
+          "clue": "Belgian city whose name has come to mean \"defeat\" because Napoleon was defeated there",
+          "answer": "Waterloo",
+          "category": "\"W\"ORLD GEOGRAPHY",
+          "isBanned": false
+        },
+        {
+          "clue": "Once a year the Venice Simplon-Orient-Express re-creates the original Orient Express route from Paris to this city",
+          "answer": "Istanbul",
+          "category": "PLANES, TRAINS",
+          "isBanned": false
+        }
+      ]
+    ],
+    "4": [
+      [
+        {
+          "clue": "Name the six inhabited continents.",
+          "answers": [
+            "Africa",
+            "Asia",
+            "Australia",
+            "Europe",
+            "North America",
+            "South America"
+          ],
+          "pointsAvailable": 6,
+          "isBanned": false
+        }
+      ],
+      [
+        {
+          "clue": "Name the four U.S. presidents on Mount Rushmore.",
+          "answers": [
+            "Washington",
+            "Jefferson",
+            "Roosevelt",
+            "Theodore Roosevelt",
+            "Teddy Roosevelt",
+            "Lincoln"
+          ],
+          "pointsAvailable": 6,
+          "isBanned": false
+        }
+      ]
+    ],
+    "5": [
+      [
+        {
+          "clue": "With 82 copies of this alliterative collection, the Folger is the world's largest Shakespearean library",
+          "answer": "the First Folio",
+          "category": "THE FOLGER LIBRARY",
+          "isBanned": false
+        },
+        {
+          "clue": "Tanzania's capital Dar es Salaam was founded in 1862 by the sultan of this island that's now part of Tanzania",
+          "answer": "Zanzibar",
+          "category": "THE SULTANS",
+          "isBanned": false
+        },
+        {
+          "clue": "This Indian confederacy that controlled Upstate New York sided with the British",
+          "answer": "the Iroquois",
+          "category": "THE FRENCH & INDIAN WAR",
+          "isBanned": false
+        }
+      ],
+      [
+        {
+          "clue": "In the original language, this film about an aging professor is called \"Smultronstället\"",
+          "answer": "Wild Strawberries",
+          "category": "A STRAWBERRY FESTIVAL",
+          "isBanned": false
+        },
+        {
+          "clue": "Try some borscht, traditionally made with these root vegetables",
+          "answer": "beets",
+          "category": "GRAB A \"B\"ITE",
+          "isBanned": false
+        },
+        {
+          "clue": "Petropavlovsk-Kamchatsky is the major city of this peninsula in far eastern Russia",
+          "answer": "Kamchatka",
+          "category": "ASIA",
+          "isBanned": false
+        }
+      ]
+    ],
+    "6": [
+      [
+        {
+          "clue": "It's the French name for a movie theater that specializes in classic or avant-garde films",
+          "answer": "cinémathèque",
+          "category": "12-LETTER WORDS",
+          "isBanned": false
+        },
+        {
+          "clue": "Sadly for moviegoers, the \"Nightmares\" are over with the passing of this horrormeister at age 76",
+          "answer": "Wes Craven",
+          "category": "IN MEMORIAM 2015",
+          "isBanned": false
+        },
+        {
+          "clue": "Anthony Mackie's character Sam Wilson was introduced to the MCU in this 2014 \"Captain America\" sequel",
+          "answer": "The Winter Soldier",
+          "category": "A SEASONED FILM",
+          "isBanned": false
+        }
+      ],
+      [
+        {
+          "clue": "1940:Jiminy Cricket",
+          "answer": "Pinocchio",
+          "category": "DISNEY MOVIES BY CHARACTER",
+          "isBanned": false
+        },
+        {
+          "clue": "These \"words that go together well\" with the title aren't referring to the phone company",
+          "answer": "\"Ma Belle\"",
+          "category": "ONE   SONG",
+          "isBanned": false
+        },
+        {
+          "clue": "\"The Phil Silvers Show\" character who got his name because the producers said he looked like a dog",
+          "answer": "Doberman",
+          "category": "TV TRIVIA",
+          "isBanned": false
+        }
+      ]
+    ],
+    "7": [
+      [
+        {
+          "clue": "In 1977 PBS's \"Black Journal\" was renamed for him, its executive producer & host",
+          "answer": "Tony Brown",
+          "category": "BLACK AMERICA",
+          "isBanned": false
+        },
+        {
+          "clue": "Since \"Changes\" in 1983 she's had at least one book in the Top 10 fiction sellers for at least 10 years",
+          "answer": "Danielle Steel",
+          "category": "BOOKS & AUTHORS",
+          "isBanned": false
+        },
+        {
+          "clue": "He's the ex-First Brother pictured here",
+          "answer": "Jeb Bush",
+          "category": "PICTURE THE POLITICAN",
+          "isBanned": false
+        }
+      ],
+      [
+        {
+          "clue": "HLT is Hilton; H by itself is this hotels corporation",
+          "answer": "Hyatt",
+          "category": "STOCK SYMBOLS",
+          "isBanned": false
+        },
+        {
+          "clue": "Since 1826 Lord & this has been augmenting America's shopping experience",
+          "answer": "Taylor",
+          "category": "LORD",
+          "isBanned": false
+        },
+        {
+          "clue": "Did a regular stint as a commentator for \"Monday Night Football\"",
+          "answer": "Dennis Miller",
+          "category": "THE SNL ALUMNUS WHO...",
+          "isBanned": false
+        }
+      ]
+    ],
+    "8": [
+      [
+        {
+          "clue": "A lumpy bunk",
+          "answer": "a bad bed",
+          "category": "THEY DIFFER BY ONE LETTER",
+          "isBanned": false
+        },
+        {
+          "clue": "They'll treat you like a \"king\" in Petal, Mississippi, home to the International Hall of Fame for this board game",
+          "answer": "checkers",
+          "category": "GAMES",
+          "isBanned": false
+        },
+        {
+          "clue": "It's become popular to place single-use ones on each table to let guests help capture the event",
+          "answer": "cameras",
+          "category": "WEDDINGS",
+          "isBanned": false
+        }
+      ],
+      [
+        {
+          "clue": "It's the award for which Jean-Louis was nominated 14 times or De La Renta's first name",
+          "answer": "Oscar",
+          "category": "FASHION DESIGNERS",
+          "isBanned": false
+        },
+        {
+          "clue": "This villain from \"Sleeping Beauty\" got her own movie in 2014, with Angelina Jolie in the title role",
+          "answer": "Maleficent",
+          "category": "MOVIES",
+          "isBanned": false
+        },
+        {
+          "clue": "If \"Sister Act\" star Goldberg wed British actor Peter, known for '60s horror films, she'd be...",
+          "answer": "Whoopi Cushing",
+          "category": "IF THEY MARRIED...",
+          "isBanned": false
+        }
+      ]
+    ]
+  }
+}

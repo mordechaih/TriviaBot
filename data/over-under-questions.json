@@ -104,6 +104,132 @@
       "actualNumber": 7,
       "targetNumber": 6,
       "overOrUnder": "Over"
+    },
+    {
+      "clue": "The year in which the first Harry Potter book was published in the UK.",
+      "answer": "1997",
+      "actualNumber": 1997,
+      "targetNumber": 1995,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "The percentage of the world's population that lives in urban areas as of 2020.",
+      "answer": "56",
+      "actualNumber": 56,
+      "targetNumber": 60,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "The number of active volcanoes in Indonesia.",
+      "answer": "127",
+      "actualNumber": 127,
+      "targetNumber": 120,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "In what year did the United States first land humans on the Moon?",
+      "answer": "1969",
+      "actualNumber": 1969,
+      "targetNumber": 1970,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "What percentage of the human brain is composed of water?",
+      "answer": "75.0",
+      "actualNumber": 75,
+      "targetNumber": 70,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "How many episodes are there in the original run of the TV show 'Friends'?",
+      "answer": "236",
+      "actualNumber": 236,
+      "targetNumber": 250,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "What year did the first Earth Day take place?",
+      "answer": "1970",
+      "actualNumber": 1970,
+      "targetNumber": 1971,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "What is the approximate percentage of the world's freshwater that is held in glaciers and ice caps?",
+      "answer": "68.7",
+      "actualNumber": 68.7,
+      "targetNumber": 70,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "How many years did the Hundred Years' War actually last?",
+      "answer": "116",
+      "actualNumber": 116,
+      "targetNumber": 120,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "What year did the United States officially adopt the National Anthem, 'The Star-Spangled Banner'?",
+      "answer": "1931",
+      "actualNumber": 1931,
+      "targetNumber": 1930,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "How many official languages are recognized by the United Nations?",
+      "answer": "6",
+      "actualNumber": 6,
+      "targetNumber": 7,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "In what year was the first email sent?",
+      "answer": "1971",
+      "actualNumber": 1971,
+      "targetNumber": 1970,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "The approximate number of languages spoken in Papua New Guinea.",
+      "answer": "840",
+      "actualNumber": 840,
+      "targetNumber": 800,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "The number of years the Great Wall of China was built over.",
+      "answer": "2000",
+      "actualNumber": 2000,
+      "targetNumber": 1800,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "The year that the first successful human organ transplant took place.",
+      "answer": "1954",
+      "actualNumber": 1954,
+      "targetNumber": 1960,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "The number of countries that participated in the first modern Olympic Games in 1896.",
+      "answer": "13",
+      "actualNumber": 13,
+      "targetNumber": 15,
+      "overOrUnder": "Under"
+    },
+    {
+      "clue": "The year in which the first commercial passenger flight took place.",
+      "answer": "1914",
+      "actualNumber": 1914,
+      "targetNumber": 1910,
+      "overOrUnder": "Over"
+    },
+    {
+      "clue": "The approximate number of languages spoken in the world today.",
+      "answer": "7000",
+      "actualNumber": 7000,
+      "targetNumber": 6000,
+      "overOrUnder": "Over"
     }
   ]
 }

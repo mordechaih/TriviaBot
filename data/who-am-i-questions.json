@@ -1,9 +1,36 @@
 {
   "questions": [
-    { "clue": "I was the first person to walk on the Moon. Who am I?", "answer": "Neil Armstrong" },
-    { "clue": "I wrote 'Romeo and Juliet' and 'Hamlet'. Who am I?", "answer": "William Shakespeare" },
-    { "clue": "I invented the light bulb and held over 1,000 patents. Who am I?", "answer": "Thomas Edison" },
-    { "clue": "I was the lead singer of Queen and wrote 'Bohemian Rhapsody'. Who am I?", "answer": "Freddie Mercury" },
-    { "clue": "I painted the Mona Lisa and The Last Supper. Who am I?", "answer": "Leonardo da Vinci" }
+    {
+      "clue": "I was the first person to walk on the Moon. Who am I?",
+      "answer": "Neil Armstrong"
+    },
+    {
+      "clue": "I wrote 'Romeo and Juliet' and 'Hamlet'. Who am I?",
+      "answer": "William Shakespeare"
+    },
+    {
+      "clue": "I invented the light bulb and held over 1,000 patents. Who am I?",
+      "answer": "Thomas Edison"
+    },
+    {
+      "clue": "I was the lead singer of Queen and wrote 'Bohemian Rhapsody'. Who am I?",
+      "answer": "Freddie Mercury"
+    },
+    {
+      "clue": "I painted the Mona Lisa and The Last Supper. Who am I?",
+      "answer": "Leonardo da Vinci"
+    },
+    {
+      "clue": "I was born in the late 1800s in Germany, and my early career was in the field of mathematics.",
+      "answer": "Albert Einstein"
+    },
+    {
+      "clue": "I was a revolutionary figure in the world of literature and am often associated with a famous 1960s counterculture movement.",
+      "answer": "Jack Kerouac"
+    },
+    {
+      "clue": "I was a prominent figure in the 1960s civil rights movement and later became a U.S. senator, often advocating for healthcare reform.",
+      "answer": "Edward Kennedy"
+    }
   ]
 }

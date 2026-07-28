@@ -1,10 +1,64 @@
 {
   "questions": [
-    { "clue": "University of Oregon", "answer": "Ducks", "league": "College" },
-    { "clue": "University of Alabama", "answer": "Crimson Tide", "league": "College" },
-    { "clue": "University of Michigan", "answer": "Wolverines", "league": "College" },
-    { "clue": "Green Bay (NFL)", "answer": "Packers", "league": "NFL" },
-    { "clue": "Boston (NBA)", "answer": "Celtics", "league": "NBA" },
-    { "clue": "New York (MLB)", "answer": "Yankees", "league": "MLB" }
+    {
+      "clue": "University of Oregon",
+      "answer": "Ducks",
+      "league": "College"
+    },
+    {
+      "clue": "University of Alabama",
+      "answer": "Crimson Tide",
+      "league": "College"
+    },
+    {
+      "clue": "University of Michigan",
+      "answer": "Wolverines",
+      "league": "College"
+    },
+    {
+      "clue": "Green Bay (NFL)",
+      "answer": "Packers",
+      "league": "NFL"
+    },
+    {
+      "clue": "Boston (NBA)",
+      "answer": "Celtics",
+      "league": "NBA"
+    },
+    {
+      "clue": "New York (MLB)",
+      "answer": "Yankees",
+      "league": "MLB"
+    },
+    {
+      "clue": "University of California Santa Cruz",
+      "answer": "Banana Slugs",
+      "league": "College"
+    },
+    {
+      "clue": "University of North Carolina School of the Arts",
+      "answer": "Fighting Pickles",
+      "league": "College"
+    },
+    {
+      "clue": "Florida Institute of Technology",
+      "answer": "Panthers",
+      "league": "College"
+    },
+    {
+      "clue": "University of New Hampshire",
+      "answer": "Wildcats",
+      "league": "College"
+    },
+    {
+      "clue": "University of Idaho",
+      "answer": "Vandals",
+      "league": "College"
+    },
+    {
+      "clue": "Winston-Salem State University",
+      "answer": "Rams",
+      "league": "College"
+    }
   ]
 }

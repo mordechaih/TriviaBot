@@ -39,6 +39,21 @@
       "clue": "The shortest war in history lasted only 38 minutes.",
       "answer": "True",
       "explanation": "The Anglo-Zanzibar War fought between the United Kingdom and the Sultanate of Zanzibar on August 27, 1896, is recognized as the shortest war in history, officially lasting only 38 minutes before a decisive British victory."
+    },
+    {
+      "clue": "Bananas grow on trees.",
+      "answer": "False",
+      "explanation": "Bananas grow on large herbaceous plants, not trees. The structure often mistaken for a trunk is actually a 'pseudostem' made of tightly packed leaf bases."
+    },
+    {
+      "clue": "Octopuses have three hearts.",
+      "answer": "True",
+      "explanation": "Octopuses possess three hearts: two pump blood to the gills, while the third pumps it to the rest of the body. This unique circulatory system supports their active lifestyle in the ocean."
+    },
+    {
+      "clue": "The shortest war in history was between Britain and France.",
+      "answer": "False",
+      "explanation": "The shortest war in history was between Britain and Zanzibar on August 27, 1896, lasting only 38 minutes. France was not involved in this conflict."
     }
   ]
 }

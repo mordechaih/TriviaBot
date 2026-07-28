@@ -2,38 +2,135 @@
   "questions": [
     {
       "clue": "Which treaty ended the Thirty Years' War in 1648?",
-      "options": ["A) Treaty of Westphalia", "B) Treaty of Versailles", "C) Treaty of Paris", "D) Treaty of Tordesillas"],
+      "options": [
+        "A) Treaty of Westphalia",
+        "B) Treaty of Versailles",
+        "C) Treaty of Paris",
+        "D) Treaty of Tordesillas"
+      ],
       "correctAnswer": "A",
       "answer": "A",
       "explanation": "The Treaty of Westphalia ended the Thirty Years' War in Europe."
     },
     {
       "clue": "What is the chemical symbol for the element gold?",
-      "options": ["A) Go", "B) Gd", "C) Au", "D) Ag"],
+      "options": [
+        "A) Go",
+        "B) Gd",
+        "C) Au",
+        "D) Ag"
+      ],
       "correctAnswer": "C",
       "answer": "C",
       "explanation": "Au comes from the Latin 'aurum' for gold."
     },
     {
       "clue": "In which year did the Berlin Wall fall?",
-      "options": ["A) 1987", "B) 1989", "C) 1991", "D) 1985"],
+      "options": [
+        "A) 1987",
+        "B) 1989",
+        "C) 1991",
+        "D) 1985"
+      ],
       "correctAnswer": "B",
       "answer": "B",
       "explanation": "The Berlin Wall fell in November 1989."
     },
     {
       "clue": "What is the smallest prime number?",
-      "options": ["A) 0", "B) 1", "C) 2", "D) 3"],
+      "options": [
+        "A) 0",
+        "B) 1",
+        "C) 2",
+        "D) 3"
+      ],
       "correctAnswer": "C",
       "answer": "C",
       "explanation": "2 is the only even prime number."
     },
     {
       "clue": "Which planet has the most moons in our solar system?",
-      "options": ["A) Jupiter", "B) Saturn", "C) Uranus", "D) Neptune"],
+      "options": [
+        "A) Jupiter",
+        "B) Saturn",
+        "C) Uranus",
+        "D) Neptune"
+      ],
       "correctAnswer": "B",
       "answer": "B",
       "explanation": "Saturn has over 80 known moons."
+    },
+    {
+      "clue": "What is the only country that has a flag that is not rectangular or square?",
+      "answer": "A",
+      "explanation": "Nepal's flag is unique in that it consists of two stacked triangles, making it the only non-rectangular national flag.",
+      "options": [
+        "A) Nepal",
+        "B) Bhutan",
+        "C) Switzerland",
+        "D) Vatican City"
+      ],
+      "correctAnswer": "A"
+    },
+    {
+      "clue": "Which scientist is known for proposing the theory of punctuated equilibrium in evolution?",
+      "answer": "A",
+      "explanation": "Stephen Jay Gould, along with Niles Eldredge, introduced the theory of punctuated equilibrium, which suggests that evolution occurs in rapid bursts followed by long periods of stability.",
+      "options": [
+        "A) Stephen Jay Gould",
+        "B) Richard Dawkins",
+        "C) Ernst Mayr",
+        "D) Theodosius Dobzhansky"
+      ],
+      "correctAnswer": "A"
+    },
+    {
+      "clue": "Which film, released in 1998, features a character named 'The Dude' who is a devotee of bowling?",
+      "answer": "A",
+      "explanation": "The character 'The Dude' is in 'The Big Lebowski', a cult classic film by the Coen Brothers that blends elements of comedy and noir.",
+      "options": [
+        "A) The Big Lebowski",
+        "B) Office Space",
+        "C) The Royal Tenenbaums",
+        "D) Rushmore"
+      ],
+      "correctAnswer": "A"
+    },
+    {
+      "clue": "What ancient civilization is credited with the invention of the first known writing system called cuneiform?",
+      "answer": "A",
+      "explanation": "Cuneiform was developed by the Sumerians around 3200 BCE in Mesopotamia, making them the first to create a writing system.",
+      "options": [
+        "A) Sumerians",
+        "B) Egyptians",
+        "C) Phoenicians",
+        "D) Minoans"
+      ],
+      "correctAnswer": "A"
+    },
+    {
+      "clue": "Which famous artist was known for creating a series of paintings featuring the same subject during different times of day and seasons, notably in his work called 'The Haystacks'?",
+      "answer": "A",
+      "explanation": "Claude Monet created a series of 'Haystacks' paintings, exploring the effects of light and atmosphere on the same subject.",
+      "options": [
+        "A) Claude Monet",
+        "B) Vincent van Gogh",
+        "C) Edgar Degas",
+        "D) Paul Cézanne"
+      ],
+      "correctAnswer": "A"
+    },
+    {
+      "clue": "What is the name of the deep-sea trench located in the Pacific Ocean, known as the deepest part of the world's oceans?",
+      "answer": "A",
+      "explanation": "The Mariana Trench reaches a depth of about 36,000 feet, making it the deepest known part of the Earth's oceans.",
+      "options": [
+        "A) Mariana Trench",
+        "B) Tonga Trench",
+        "C) Puerto Rico Trench",
+        "D) Java Trench"
+      ],
+      "correctAnswer": "A"
     }
   ]
 }
