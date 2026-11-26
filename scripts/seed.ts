@@ -33,7 +33,12 @@ for (const q of await load("starter.json")) {
 }
 
 // Themes for the themed rounds: Jeopardy! categories rewritten as spoken questions.
-type SeedTheme = { theme: string; topic: NewQuestion["topic"]; source_url: string; questions: { prompt: string; answer: string; difficulty: number; notes?: string }[] };
+type SeedTheme = {
+  theme: string;
+  topic: NewQuestion["topic"];
+  source_url: string;
+  questions: { prompt: string; answer: string; difficulty: number; notes?: string }[];
+};
 for (const t of (await load("themes.json")) as SeedTheme[]) {
   for (const q of t.questions) {
     questions.push({ format: "standard", ...q, theme: t.theme, topic: t.topic, source: "J! Archive", source_url: t.source_url });
@@ -47,7 +52,13 @@ for (const [file, format] of SIMPLE) {
 }
 
 for (const q of await legacy("over-under")) {
-  questions.push({ format: "over_under", prompt: q.clue, answer: String(q.actualNumber), data: { line: q.targetNumber }, source: "legacy" });
+  questions.push({
+    format: "over_under",
+    prompt: q.clue,
+    answer: String(q.actualNumber),
+    data: { line: q.targetNumber },
+    source: "legacy",
+  });
 }
 
 for (const q of await legacy("list-round")) {

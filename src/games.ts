@@ -115,7 +115,11 @@ function fillRound(db: Db, def: RoundDef, picked: Set<number>, ctx: PickContext)
   const ready = options.filter((o) => o.questions.length === o.v.count);
   if (ready.length === 0) {
     const detail = options
-      .map((o) => (o.v.themed ? `needs a theme with ${o.v.count} approved questions that fit` : `${describeVariant(o.v)} ${o.questions.length}/${o.v.count}`))
+      .map((o) =>
+        o.v.themed
+          ? `needs a theme with ${o.v.count} approved questions that fit`
+          : `${describeVariant(o.v)} ${o.questions.length}/${o.v.count}`,
+      )
       .join(", ");
     return { shortage: `Round ${def.number} (${def.title}): ${detail}.` };
   }
@@ -183,7 +187,10 @@ export function replaceQuestion(db: Db, gameId: number, round: number, position:
 
     const def = roundDef(round);
     const variant = def.variants.find((v) => v.format === current.format) ?? def.variants[0]!;
-    const inGame = db.query("SELECT question_id FROM game_questions WHERE game_id = ?").values(gameId).map((r) => r[0] as number);
+    const inGame = db
+      .query("SELECT question_id FROM game_questions WHERE game_id = ?")
+      .values(gameId)
+      .map((r) => r[0] as number);
     const roundTopics = new Set(
       db
         .query("SELECT q.topic FROM game_questions gq JOIN questions q ON q.id = gq.question_id WHERE gq.game_id = ? AND gq.round = ?")

@@ -160,7 +160,11 @@ const server = Bun.serve({
         if (action === "skip") return redirect(back(id));
 
         const text = (name: string) => String(form.get(name) ?? "").trim();
-        const lines = (name: string) => text(name).split("\n").map((l) => l.trim()).filter(Boolean);
+        const lines = (name: string) =>
+          text(name)
+            .split("\n")
+            .map((l) => l.trim())
+            .filter(Boolean);
         const data = { ...question.data };
         if (form.has("line")) data.line = Number(text("line"));
         if (form.has("options")) data.options = lines("options");
@@ -215,7 +219,8 @@ function formatParam(req: Request): Format | null {
 
 function reviewProblem(format: Format, answer: string, data: { line?: number; options?: string[] }): string | null {
   if (!answer) return "An answer is required.";
-  if (format === "over_under" && (Number.isNaN(Number(answer)) || !Number.isFinite(data.line))) return "Over/Under needs a numeric answer and line.";
+  if (format === "over_under" && (Number.isNaN(Number(answer)) || !Number.isFinite(data.line)))
+    return "Over/Under needs a numeric answer and line.";
   if (format === "multiple_choice" && !data.options?.includes(answer)) return "The answer must match one of the options exactly.";
   if (format === "true_false" && !["True", "False"].includes(answer)) return 'The answer must be "True" or "False".';
   return null;

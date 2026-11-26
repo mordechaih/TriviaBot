@@ -1,0 +1,8 @@
+node_modules
+data
+bun.lock
+.claude
+.impeccable
+seed
+public/fonts
+*.md

@@ -10,7 +10,17 @@ const shortDate = (sqlDate: string) =>
   new Date(`${sqlDate.replace(" ", "T")}Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
 /** Index-card stock per round: two rounds share a colour, the Final gets its own. */
-const STOCK: Record<number, string> = { 1: "ochre", 2: "ochre", 3: "sage", 4: "sage", 5: "slate", 6: "slate", 7: "rose", 8: "rust", 9: "brick" };
+const STOCK: Record<number, string> = {
+  1: "ochre",
+  2: "ochre",
+  3: "sage",
+  4: "sage",
+  5: "slate",
+  6: "slate",
+  7: "rose",
+  8: "rust",
+  9: "brick",
+};
 const tabLabel = (n: number) => (n === 9 ? "F" : String(n));
 const roundName = (n: number) => (n === 9 ? "Final" : `Round ${n}`);
 
@@ -47,15 +57,18 @@ export function homePage(games: GameSummary[], stock: StockLine[], pending: numb
 
       <form method="post" action="/games" class="new-game">
         <button class="button primary wide" ${short.length ? "disabled" : ""}>${icon("plus")} New game</button>
-        ${short.length
-          ? html`<p class="hint">Not enough approved questions for a full game. The question bank below shows what's short.</p>`
-          : ""}
+        ${
+          short.length
+            ? html`<p class="hint">Not enough approved questions for a full game. The question bank below shows what's short.</p>`
+            : ""
+        }
       </form>
 
       <section aria-labelledby="games-h">
         <h2 id="games-h">Games</h2>
-        ${games.length
-          ? html`<ul class="game-list">
+        ${
+          games.length
+            ? html`<ul class="game-list">
               ${games.map(
                 (g) => html`<li>
                   <a href="/games/${g.id}">
@@ -66,7 +79,8 @@ export function homePage(games: GameSummary[], stock: StockLine[], pending: numb
                 </li>`,
               )}
             </ul>`
-          : html`<p class="empty-line">No games yet. Generate one when the bank has enough approved questions.</p>`}
+            : html`<p class="empty-line">No games yet. Generate one when the bank has enough approved questions.</p>`
+        }
       </section>
 
       <section aria-labelledby="bank-h">
@@ -110,7 +124,8 @@ export function gamePage(game: Game, error: string | null): Html {
 
       <nav class="tabs" aria-label="Rounds">
         ${game.rounds.map(
-          (r) => html`<a href="#r-${r.def.number}" data-stock="${STOCK[r.def.number]}" data-round="${r.def.number}" aria-label="${roundName(r.def.number)}: ${r.def.title}">${tabLabel(r.def.number)}</a>`,
+          (r) =>
+            html`<a href="#r-${r.def.number}" data-stock="${STOCK[r.def.number]}" data-round="${r.def.number}" aria-label="${roundName(r.def.number)}: ${r.def.title}">${tabLabel(r.def.number)}</a>`,
         )}
       </nav>
 
@@ -224,8 +239,9 @@ export function presenterPage(game: Game, joinUrl: string | null, qrSvg: string 
   return layout(
     `Game ${game.id} · Screen`,
     html`<main class="stage" data-game="${game.id}" aria-live="polite">
-      ${joinUrl && qrSvg
-        ? html`<div class="stage-join">
+      ${
+        joinUrl && qrSvg
+          ? html`<div class="stage-join">
             <div class="qr">${new Html(qrSvg)}</div>
             <div>
               <p class="join-title">Scan with your phone to host Game ${game.id}</p>
@@ -233,7 +249,8 @@ export function presenterPage(game: Game, joinUrl: string | null, qrSvg: string 
               <p class="join-note">Your phone needs to be on the same network as this laptop. This screen follows your cards once you start.</p>
             </div>
           </div>`
-        : html`<p class="stage-wait">Waiting for the host…</p>`}
+          : html`<p class="stage-wait">Waiting for the host…</p>`
+      }
     </main>`,
     { page: "present" },
   );
@@ -249,9 +266,11 @@ export function screenCard(game: Game, item: string, reveal: boolean): Html {
     // On a themed round the theme is what the room needs to know, so it gets the big line.
     return html`<article class="screen screen-title" data-stock="${stock}">
       <div class="screen-body">
-        ${round.theme
-          ? html`<h2 class="screen-theme">${round.theme}</h2><p class="screen-variant">${round.def.title}</p>`
-          : html`<h2>${round.def.title}</h2>${round.variant.label ? html`<p class="screen-variant">${round.variant.label}</p>` : ""}`}
+        ${
+          round.theme
+            ? html`<h2 class="screen-theme">${round.theme}</h2><p class="screen-variant">${round.def.title}</p>`
+            : html`<h2>${round.def.title}</h2>${round.variant.label ? html`<p class="screen-variant">${round.variant.label}</p>` : ""}`
+        }
       </div>
       <footer class="screen-foot"><span>${roundName(round.def.number)}</span><span>${round.def.points}</span></footer>
     </article>`;
@@ -286,7 +305,8 @@ export function reviewPage(q: Question | null, counts: { format: Format; n: numb
       <nav class="filters" aria-label="Filter by format">
         <a href="/review" ${filter ? "" : html`aria-current="page"`}>All <span>${total}</span></a>
         ${counts.map(
-          (c) => html`<a href="/review?format=${c.format}" ${filter === c.format ? html`aria-current="page"` : ""}>${FORMAT_LABELS[c.format]} <span>${c.n}</span></a>`,
+          (c) =>
+            html`<a href="/review?format=${c.format}" ${filter === c.format ? html`aria-current="page"` : ""}>${FORMAT_LABELS[c.format]} <span>${c.n}</span></a>`,
         )}
       </nav>
       ${q ? reviewForm(q, filter) : emptyQueue()}
@@ -307,7 +327,13 @@ function emptyQueue(): Html {
 
 function reviewForm(q: Question, filter: Format | null): Html {
   const lines = (xs?: string[]) => (xs ?? []).join("\n");
-  const source = q.source?.startsWith("jarchive") ? "J! Archive rewrite" : q.source === "claude" ? "Written by Claude" : q.source?.startsWith("protoqa") ? "ProtoQA survey" : "Old question pool";
+  const source = q.source?.startsWith("jarchive")
+    ? "J! Archive rewrite"
+    : q.source === "claude"
+      ? "Written by Claude"
+      : q.source?.startsWith("protoqa")
+        ? "ProtoQA survey"
+        : "Old question pool";
   return html`<form class="review" method="post" action="/review/${q.id}${filter ? `?format=${filter}` : ""}">
     <div class="card review-card" data-stock="slate">
       <div class="face">
@@ -315,12 +341,15 @@ function reviewForm(q: Question, filter: Format | null): Html {
         <label class="field">Question <textarea name="prompt" rows="3" required>${q.prompt}</textarea></label>
         ${q.format === "over_under" ? html`<label class="field">Line <input name="line" type="number" step="any" inputmode="decimal" value="${q.data.line ?? ""}" /></label>` : ""}
         ${q.format === "multiple_choice" ? html`<label class="field">Options, one per line <textarea name="options" rows="4">${lines(q.data.options)}</textarea></label>` : ""}
-        ${q.format === "list"
-          ? html`<label class="field">Items, one per line <textarea name="items" rows="6">${lines(q.data.items)}</textarea></label>`
-          : html`<label class="field">Answer <input name="answer" value="${q.answer}" required /></label>`}
+        ${
+          q.format === "list"
+            ? html`<label class="field">Items, one per line <textarea name="items" rows="6">${lines(q.data.items)}</textarea></label>`
+            : html`<label class="field">Answer <input name="answer" value="${q.answer}" required /></label>`
+        }
         ${q.format === "name_the_team" ? html`<label class="field">League <input name="league" value="${q.data.league ?? ""}" /></label>` : ""}
-        ${q.format === "standard"
-          ? html`<div class="field-row">
+        ${
+          q.format === "standard"
+            ? html`<div class="field-row">
               <label class="field">Topic
                 <select name="topic">${TOPICS.map((t) => html`<option ${q.topic === t ? "selected" : ""}>${t}</option>`)}</select>
               </label>
@@ -329,7 +358,8 @@ function reviewForm(q: Question, filter: Format | null): Html {
               </label>
             </div>
             <label class="field">Theme <input name="theme" value="${q.theme ?? ""}" placeholder="Leave empty if it stands alone" /></label>`
-          : ""}
+            : ""
+        }
         <label class="field">Notes for you <textarea name="notes" rows="2">${q.notes ?? ""}</textarea></label>
         <label class="field">Source link <input name="source_url" type="url" inputmode="url" value="${q.source_url ?? ""}" /></label>
         ${q.source_url ? html`<p><a class="source" href="${q.source_url}" target="_blank" rel="noreferrer">Check the source ${icon("external")}</a></p>` : ""}
@@ -358,6 +388,9 @@ export function loginPage(error: boolean): Html {
         </div>
       </form>
     </main>`,
-    { flash: error ? "That password didn't match. Try again." : authEnabled ? null : "No APP_PASSWORD is set, so every page is open.", page: "login" },
+    {
+      flash: error ? "That password didn't match. Try again." : authEnabled ? null : "No APP_PASSWORD is set, so every page is open.",
+      page: "login",
+    },
   );
 }

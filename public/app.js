@@ -11,7 +11,10 @@ function initDeck(host) {
   const button = (go) => host.querySelector(`[data-go="${go}"]`);
   const cards = () => [...deck.querySelectorAll(":scope > .card")];
   const still = matchMedia("(prefers-reduced-motion: reduce)");
-  let index = Math.max(0, cards().findIndex((c) => `#${c.id}` === location.hash));
+  let index = Math.max(
+    0,
+    cards().findIndex((c) => `#${c.id}` === location.hash),
+  );
 
   // Where a card rests in each place. The thrown card rises toward you (translateZ) and turns a little on
   // both axes as it goes, so it always passes in front of the card coming forward and never cuts through it.

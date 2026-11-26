@@ -43,8 +43,8 @@ It fetches the games, then Claude renames each usable category plainly ("POTENT 
 | `bun run dev` | Server with reload on change |
 | `bun run start` | Server |
 | `bun run bar` | Server that keeps the Mac and its screen awake (game night) |
-| `bun test` | Generator tests |
-| `bun run typecheck` | TypeScript check |
+| `bun run check` | Typecheck, formatting and tests (what CI runs) |
+| `bun run demo` | Build `data/demo.db` with a playable game, leaving your bank alone |
 | `bun run seed` | Import `seed/` into the database (safe to re-run) |
 | `bun run stock <format> [count] [--difficulty 1-3] [--topic <topic>]` | Ask Claude for new questions; they arrive pending in Review |
 | `bun run jarchive <game_id ...> \| --season <n> [--limit <n>] [--dry-run]` | Turn J! Archive categories into themes (pending in Review) |

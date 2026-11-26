@@ -20,7 +20,9 @@ export function stockLevels(db: Db): StockLine[] {
       if (existing) existing.perGame += need;
       else
         lines.set(key, {
-          label: v.themed ? `Themed round · ${(v.difficulty ?? []).map((d) => ["", "easy", "medium", "hard"][d]).join(" to ")}` : describeVariant(v),
+          label: v.themed
+            ? `Themed round · ${(v.difficulty ?? []).map((d) => ["", "easy", "medium", "hard"][d]).join(" to ")}`
+            : describeVariant(v),
           available: 0,
           perGame: need,
           rotating: def.variants.length > 1,
@@ -44,9 +46,10 @@ export function stockLevels(db: Db): StockLine[] {
 }
 
 export function pendingCounts(db: Db): { format: Format; n: number }[] {
-  return db
-    .query("SELECT format, COUNT(*) AS n FROM questions WHERE status = 'pending' GROUP BY format ORDER BY n DESC")
-    .all() as { format: Format; n: number }[];
+  return db.query("SELECT format, COUNT(*) AS n FROM questions WHERE status = 'pending' GROUP BY format ORDER BY n DESC").all() as {
+    format: Format;
+    n: number;
+  }[];
 }
 
 /** The next pending question after `afterId` (wrapping around), optionally of one format. */

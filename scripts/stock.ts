@@ -127,9 +127,10 @@ function toNewQuestion(d: Draft): NewQuestion {
 }
 
 const db = openDb();
-const existing = db
-  .query("SELECT prompt, answer FROM questions WHERE format = ? ORDER BY id DESC LIMIT 200")
-  .all(format) as { prompt: string; answer: string }[];
+const existing = db.query("SELECT prompt, answer FROM questions WHERE format = ? ORDER BY id DESC LIMIT 200").all(format) as {
+  prompt: string;
+  answer: string;
+}[];
 
 const guide = await Bun.file(new URL("../docs/round-guide.md", import.meta.url)).text();
 const system = `You write questions for a weekly pub trivia night. The host reads them from a phone.
