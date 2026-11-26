@@ -1,34 +1,24 @@
 {
   "name": "triviabot",
-  "version": "1.0.0",
-  "description": "Weekly trivia game generator from J! Archive data",
+  "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test scripts/generate-game.test.js",
-    "scrape": "node scripts/scrape-archive.js",
-    "populate-archive": "bash scripts/populate-archive.sh",
-    "db-to-archive": "node scripts/db-to-archive.js",
-    "ingest-llm-rounds": "node scripts/ingest-llm-rounds-from-examples.js",
-    "export-llm-rounds-jsonl": "node scripts/export-llm-rounds-jsonl.js",
-    "generate": "node scripts/generate-game.js",
-    "update-index": "node scripts/update-games-index.js",
-    "clean-archive": "node scripts/clean-archive.js",
-    "deploy": "vercel",
-    "build": "node scripts/build.js",
-    "dev": "node server.js"
+    "dev": "bun --watch src/server.ts",
+    "start": "bun src/server.ts",
+    "bar": "caffeinate -dis bun src/server.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "seed": "bun scripts/seed.ts",
+    "stock": "bun scripts/stock.ts",
+    "jarchive": "bun scripts/jarchive.ts"
   },
   "dependencies": {
-    "cheerio": "^1.0.0",
-    "dotenv": "^17.3.1",
-    "motion": "^11.11.17",
-    "node-fetch": "^3.3.2",
-    "openai": "^4.20.0",
-    "sql.js": "^1.10.0"
+    "@anthropic-ai/sdk": "^1.14.0",
+    "qrcode": "1.5.4"
   },
   "devDependencies": {
-    "vercel": "^50.4.5"
-  },
-  "engines": {
-    "node": "20.x"
+    "@types/bun": "^1.3.0",
+    "@types/qrcode": "^1.5.6",
+    "typescript": "^5.9.0"
   }
 }

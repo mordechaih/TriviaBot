@@ -1,0 +1,524 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-26T15:44:31.873717+00:00",
+  "title": "Design System: TriviaBot",
+  "extensions": {
+    "colorMeta": {
+      "ground": {
+        "role": "neutral",
+        "displayName": "Bar Top",
+        "canonical": "#131416",
+        "tonalRamp": [
+          "#060607",
+          "#0a0a0b",
+          "#0d0e0f",
+          "#111213",
+          "#2b2c2d",
+          "#5a5a5c",
+          "#959596",
+          "#d0d0d0"
+        ]
+      },
+      "ground-raised": {
+        "role": "neutral",
+        "displayName": "Raised Ground",
+        "canonical": "#1b1c1f",
+        "tonalRamp": [
+          "#080809",
+          "#0e0e10",
+          "#131416",
+          "#18191b",
+          "#323335",
+          "#5f6062",
+          "#98999a",
+          "#d1d2d2"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#2b2d32",
+        "tonalRamp": [
+          "#0d0e0f",
+          "#161619",
+          "#1e1f23",
+          "#26282c",
+          "#404246",
+          "#6b6c70",
+          "#a0a0a3",
+          "#d5d5d6"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Chalk",
+        "canonical": "#ededef",
+        "tonalRamp": [
+          "#474748",
+          "#767678",
+          "#a6a6a7",
+          "#d1d1d2",
+          "#efeff1",
+          "#f2f2f4",
+          "#f7f7f8",
+          "#fbfbfc"
+        ]
+      },
+      "text-2": {
+        "role": "neutral",
+        "displayName": "Smoke",
+        "canonical": "#a7a9b0",
+        "tonalRamp": [
+          "#323335",
+          "#545458",
+          "#75767b",
+          "#93959b",
+          "#b0b2b8",
+          "#c1c3c8",
+          "#d7d8db",
+          "#edeeef"
+        ]
+      },
+      "header-rule": {
+        "role": "tertiary",
+        "displayName": "Header Red",
+        "canonical": "#a9474a",
+        "tonalRamp": [
+          "#331516",
+          "#542425",
+          "#763234",
+          "#953e41",
+          "#b2595c",
+          "#c37e80",
+          "#d8acae",
+          "#eedadb"
+        ]
+      },
+      "focus": {
+        "role": "primary",
+        "displayName": "Cue Yellow",
+        "canonical": "#e3cf86",
+        "tonalRamp": [
+          "#443e28",
+          "#726843",
+          "#9f915e",
+          "#c8b676",
+          "#e6d492",
+          "#ebddaa",
+          "#f2e9c9",
+          "#f9f5e7"
+        ]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Warning Coral",
+        "canonical": "#e58b84",
+        "tonalRamp": [
+          "#452a28",
+          "#724642",
+          "#a0615c",
+          "#ca7a74",
+          "#e89790",
+          "#edaea9",
+          "#f3cbc8",
+          "#fae8e6"
+        ]
+      },
+      "card-default": {
+        "role": "neutral",
+        "displayName": "Card Default",
+        "canonical": "#26272b",
+        "tonalRamp": [
+          "#0b0c0d",
+          "#131416",
+          "#1b1b1e",
+          "#212226",
+          "#3c3d40",
+          "#67686b",
+          "#9d9ea0",
+          "#d4d4d5"
+        ]
+      },
+      "on-ink": {
+        "role": "neutral",
+        "displayName": "Ink Black",
+        "canonical": "#141310",
+        "tonalRamp": [
+          "#060605",
+          "#0a0a08",
+          "#0e0d0b",
+          "#12110e",
+          "#2c2b28",
+          "#5a5a58",
+          "#959593",
+          "#d0d0cf"
+        ]
+      },
+      "ochre-card": {
+        "role": "secondary",
+        "displayName": "Ochre card",
+        "canonical": "#2c2819",
+        "tonalRamp": [
+          "#0d0c08",
+          "#16140c",
+          "#1f1c12",
+          "#272316",
+          "#413e30",
+          "#6b685e",
+          "#a09e98",
+          "#d5d4d1"
+        ]
+      },
+      "ochre-ink": {
+        "role": "secondary",
+        "displayName": "Ochre ink",
+        "canonical": "#e3cf86",
+        "tonalRamp": [
+          "#443e28",
+          "#726843",
+          "#9f915e",
+          "#c8b676",
+          "#e6d492",
+          "#ebddaa",
+          "#f2e9c9",
+          "#f9f5e7"
+        ]
+      },
+      "sage-card": {
+        "role": "secondary",
+        "displayName": "Sage card",
+        "canonical": "#1d2a22",
+        "tonalRamp": [
+          "#090d0a",
+          "#0e1511",
+          "#141d18",
+          "#1a251e",
+          "#343f38",
+          "#616a64",
+          "#999f9c",
+          "#d2d4d3"
+        ]
+      },
+      "sage-ink": {
+        "role": "secondary",
+        "displayName": "Sage ink",
+        "canonical": "#a8d6b3",
+        "tonalRamp": [
+          "#324036",
+          "#546b5a",
+          "#76967d",
+          "#94bc9e",
+          "#b1dabb",
+          "#c2e2ca",
+          "#d8eddd",
+          "#eef7f0"
+        ]
+      },
+      "slate-card": {
+        "role": "secondary",
+        "displayName": "Slate card",
+        "canonical": "#1c2532",
+        "tonalRamp": [
+          "#080b0f",
+          "#0e1219",
+          "#141a23",
+          "#19212c",
+          "#333b46",
+          "#606670",
+          "#999da3",
+          "#d2d3d6"
+        ]
+      },
+      "slate-ink": {
+        "role": "secondary",
+        "displayName": "Slate ink",
+        "canonical": "#a3c6e8",
+        "tonalRamp": [
+          "#313b46",
+          "#526374",
+          "#728ba2",
+          "#8faecc",
+          "#acccea",
+          "#bfd7ef",
+          "#d6e5f5",
+          "#edf4fa"
+        ]
+      },
+      "rose-card": {
+        "role": "secondary",
+        "displayName": "Dusk Rose card",
+        "canonical": "#2d1f28",
+        "tonalRamp": [
+          "#0e090c",
+          "#161014",
+          "#1f161c",
+          "#281b23",
+          "#42353e",
+          "#6c6268",
+          "#a09a9e",
+          "#d5d2d4"
+        ]
+      },
+      "rose-ink": {
+        "role": "secondary",
+        "displayName": "Dusk Rose ink",
+        "canonical": "#e8abc4",
+        "tonalRamp": [
+          "#46333b",
+          "#745662",
+          "#a27889",
+          "#cc96ac",
+          "#eab3ca",
+          "#efc4d6",
+          "#f5d9e4",
+          "#faeef3"
+        ]
+      },
+      "rust-card": {
+        "role": "secondary",
+        "displayName": "Rust card",
+        "canonical": "#31231a",
+        "tonalRamp": [
+          "#0f0b08",
+          "#18120d",
+          "#221812",
+          "#2b1f17",
+          "#463931",
+          "#6f655f",
+          "#a29c98",
+          "#d6d3d1"
+        ]
+      },
+      "rust-ink": {
+        "role": "secondary",
+        "displayName": "Rust ink",
+        "canonical": "#ebb68c",
+        "tonalRamp": [
+          "#47372a",
+          "#765b46",
+          "#a47f62",
+          "#cfa07b",
+          "#edbd98",
+          "#f1ccae",
+          "#f6decb",
+          "#fbf0e8"
+        ]
+      },
+      "brick-card": {
+        "role": "secondary",
+        "displayName": "Muted Brick card",
+        "canonical": "#331c1c",
+        "tonalRamp": [
+          "#0f0808",
+          "#1a0e0e",
+          "#241414",
+          "#2d1919",
+          "#473333",
+          "#706060",
+          "#a39999",
+          "#d6d2d2"
+        ]
+      },
+      "brick-ink": {
+        "role": "secondary",
+        "displayName": "Muted Brick ink",
+        "canonical": "#f0a197",
+        "tonalRamp": [
+          "#48302d",
+          "#78504c",
+          "#a8716a",
+          "#d38e85",
+          "#f2aaa1",
+          "#f4bdb6",
+          "#f8d5d0",
+          "#fcecea"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Round titles on title cards."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "The question prompt on a card."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Page headings and game name."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Options, lines, notes on the card line pitch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Header-rule text and field labels."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-rest",
+        "value": "0 1px 0 rgb(255 255 255 / 0.04) inset, 0 12px 28px -12px rgb(0 0 0 / 0.7)",
+        "purpose": "Cards on the ground."
+      },
+      {
+        "name": "deck-face",
+        "value": "0 1px 0 rgb(255 255 255 / 0.04) inset, 0 18px 36px -16px rgb(0 0 0 / 0.75)",
+        "purpose": "The current card on the host deck."
+      },
+      {
+        "name": "toast",
+        "value": "0 12px 28px -8px rgb(0 0 0 / 0.7)",
+        "purpose": "Inline error toast."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-card",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Flip (460ms), throw and bring-forward between cards (420ms), presenter reveal (420ms)."
+      },
+      {
+        "name": "ease-ui",
+        "value": "ease-out 140ms",
+        "purpose": "Button and tab colour changes."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "opacity crossfade 160ms",
+        "purpose": "Replaces flip and deal when prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "26rem"
+      },
+      {
+        "name": "wide-card",
+        "value": "48rem"
+      },
+      {
+        "name": "large-type",
+        "value": "1000px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Pill filled in the current stock ink; the one main action on a surface.",
+      "html": "<button class=\"ds-btn-primary\">Flip</button>",
+      "css": ".ds-btn-primary{font:inherit;font-size:.95rem;font-weight:600;min-height:2.75rem;padding:0 1rem;border-radius:999px;border:1px solid #e3cf86;background:#e3cf86;color:#141310;cursor:pointer}.ds-btn-primary:hover{filter:brightness(1.08)}.ds-btn-primary:focus-visible{outline:2px solid #e3cf86;outline-offset:3px}"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Transparent pill for secondary actions such as Swap, Prev and Mark played.",
+      "html": "<button class=\"ds-btn-quiet\">Swap</button>",
+      "css": ".ds-btn-quiet{font:inherit;font-size:.95rem;font-weight:600;min-height:2.75rem;padding:0 1rem;border-radius:999px;border:1px solid transparent;background:transparent;color:#a7a9b0;cursor:pointer}.ds-btn-quiet:hover{color:#ededef;background:#1b1c1f}.ds-btn-quiet:focus-visible{outline:2px solid #e3cf86;outline-offset:3px}"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Coral text on transparent; Ban, Reject, Delete game.",
+      "html": "<button class=\"ds-btn-danger\">Ban</button>",
+      "css": ".ds-btn-danger{font:inherit;font-size:.95rem;font-weight:600;min-height:2.75rem;padding:0 1rem;border-radius:999px;border:1px solid transparent;background:transparent;color:#e58b84;cursor:pointer}.ds-btn-danger:hover{background:rgb(229 139 132/.1)}.ds-btn-danger:focus-visible{outline:2px solid #e3cf86;outline-offset:3px}"
+    },
+    {
+      "name": "Round Tabs",
+      "kind": "nav",
+      "refersTo": "card-tab",
+      "description": "Index-card tabs, one per round, in stock colour; the current round is lit with solid ink.",
+      "html": "<nav class=\"ds-tabs\"><a>1</a><a aria-current=\"true\">2</a><a class=\"s\">3</a><a class=\"s\">4</a><a class=\"r\">7</a><a class=\"b\">F</a></nav>",
+      "css": ".ds-tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:.25rem;font-family:inherit}.ds-tabs a{height:2.75rem;display:grid;place-items:center;border-radius:6px 6px 3px 3px;background:#2c2819;color:#b9aa6d;font-weight:700;border-bottom:2px solid transparent}.ds-tabs a.s{background:#1d2a22;color:#87ad91}.ds-tabs a.r{background:#2d1f28;color:#b98aa0}.ds-tabs a.b{background:#331c1c;color:#c0827a}.ds-tabs a[aria-current=true]{background:#e3cf86;color:#141310}"
+    },
+    {
+      "name": "Question Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The signature card: header rule with position and points, ruled body, unruled foot with Swap and Ban.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-rule\"><span>Round 1 · Question 1 of 3</span><span>2</span></div><p class=\"ds-prompt\">Which planet has the most moons?</p><div class=\"ds-foot\"><button class=\"ds-q\">Swap</button><button class=\"ds-q ds-ban\">Ban</button></div></article>",
+      "css": ".ds-card{position:relative;box-sizing:border-box;width:20rem;height:16rem;padding:3.25rem 1.25rem 1.25rem;border-radius:10px;color:#ededef;font-family:inherit;display:flex;flex-direction:column;background-color:#2c2819;background-image:repeating-linear-gradient(to bottom,transparent 0 calc(2rem - 1px),rgb(130 160 210/.11) calc(2rem - 1px) 2rem);background-repeat:no-repeat;background-position:0 3.25rem;background-size:100% calc(100% - 7.25rem);box-shadow:0 1px 0 rgb(255 255 255/.04) inset,0 12px 28px -12px rgb(0 0 0/.7)}.ds-rule{position:absolute;inset:0 1.25rem auto;height:2.6rem;display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:.4rem;border-bottom:2px solid #a9474a;color:#bdaf78;font-size:.88rem;font-weight:600}.ds-prompt{margin:0;font-size:1.55rem;line-height:2rem;font-weight:600}.ds-foot{margin-top:auto;display:flex;gap:1.25rem}.ds-q{font:inherit;font-weight:600;min-height:2.75rem;padding:0 1rem;border-radius:999px;border:0;background:transparent;color:#bdaf78}.ds-q:hover{color:#e3cf86;background:rgb(255 255 255/.05)}.ds-q:focus-visible{outline:2px solid #e3cf86;outline-offset:3px}"
+    },
+    {
+      "name": "Answer Face",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Back of the card: header reads Answer, the answer in stock ink.",
+      "html": "<article class=\"ds-back\"><div class=\"ds-rule\"><span>Answer</span><span>Question 1 of 3</span></div><p class=\"ds-answer\">Saturn</p></article>",
+      "css": ".ds-back{position:relative;box-sizing:border-box;width:20rem;height:10rem;padding:3.25rem 1.25rem 1.25rem;border-radius:10px;background:#1d2a22;font-family:inherit;box-shadow:0 1px 0 rgb(255 255 255/.04) inset,0 12px 28px -12px rgb(0 0 0/.7)}.ds-back .ds-rule{position:absolute;inset:0 1.25rem auto;height:2.6rem;display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:.4rem;border-bottom:2px solid #a9474a;color:#87ad91;font-size:.88rem;font-weight:600}.ds-answer{margin:0;font-size:1.7rem;font-weight:700;line-height:1.25;color:#a8d6b3}"
+    },
+    {
+      "name": "Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Review form input: dark translucent fill, hairline border, yellow caret.",
+      "html": "<label class=\"ds-field\">Answer<input value=\"Saturn\"></label>",
+      "css": ".ds-field{display:block;font-family:inherit;font-size:.88rem;font-weight:600;color:#a3c6e8}.ds-field input{display:block;width:100%;box-sizing:border-box;margin-top:.25rem;font:inherit;font-size:1.05rem;font-weight:400;color:#ededef;background:rgb(0 0 0/.28);border:1px solid rgb(255 255 255/.1);border-radius:8px;padding:.6rem .75rem;caret-color:#e3cf86}.ds-field input:hover{border-color:rgb(255 255 255/.2)}.ds-field input:focus-visible{outline:2px solid #e3cf86;outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Host Cue Cards",
+    "overview": "Every question is the index card in the host's hand: question on the front, answer on the back. The interface is a near-black bar top with cards laid on it, and nothing else competes with the card. On the host view one card fills the deck and the next two cards wait behind it.\n\nThe material is muted dark stock: six tints (ochre, sage, slate, dusk rose, rust, and brick for the Final), each with a light ink in the same hue, faint blue ruling every baseline sits on and a muted red header rule. One typeface, Atkinson Hyperlegible Next, for legibility at arm's length in low light. The presenter screen is plain text on the ground, not a card.",
+    "keyCharacteristics": [
+      "One near-black ground; colour lives on the cards, never on the page.",
+      "Stock colour is the wayfinding: round tabs, card ink, the Flip button and primary actions all take the current round's stock.",
+      "Ruling and header rule are card furniture, present on every card including forms and sign-in.",
+      "One typeface, one icon set (Lucide, inlined), pill buttons, 10px cards.",
+      "The answer is on the back of the card, and on the presenter screen it does not exist in the markup until the host reveals it."
+    ],
+    "rules": [
+      {
+        "name": "The Stock Is the Round Rule",
+        "body": "A round's colour is its stock, and the same stock tints its tabs, its cards, and the primary button while its card is showing. Do not introduce a colour for state; use stock ink, or Warning Coral for danger.",
+        "section": "colors"
+      },
+      {
+        "name": "The Colour Lives on Cards Rule",
+        "body": "The ground and chrome stay neutral. Colour appears on cards and on things that belong to a card.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ruled Line Rule",
+        "body": "Text on a card sits on the ruling: card line pitch (--lh) is 2rem, 2.5rem on the host deck at 48rem and up, and body lines inside a card take that pitch.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Voice Rule",
+        "body": "One family. Hierarchy comes from size, weight and ink, not a second typeface.",
+        "section": "typography"
+      },
+      {
+        "name": "The Real Hand Rule",
+        "body": "Depth on the deck is the actual next cards, not a drawn edge or a bigger shadow. Never more than two behind.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do set every card header as a ruled line: label left, points or context right, 2px Header Red beneath.",
+      "Do colour by stock: use the round's stock for tabs, card ink and the primary action on that card.",
+      "Do keep text on the ruling by using the card line pitch (2rem, 2.5rem on the wide deck).",
+      "Do keep action rows on the unruled foot of the card.",
+      "Do confirm permanent actions (Ban) and keep them apart from reversible ones (Swap).",
+      "Do keep the answer out of the presenter markup until the host reveals it.",
+      "Do give every flip and deal a reduced-motion crossfade alternative.",
+      "Do use Lucide icons from src/icons.ts and the single typeface."
+    ],
+    "donts": [
+      "Don't replace the card with a row, a disclosure arrow, or a scrolling list on the host view.",
+      "Don't put an eyebrow or small label above a heading; the header rule carries that information.",
+      "Don't colour the ground or the page chrome with stock colours; they belong to cards.",
+      "Don't use Header Red for anything but the card header rule and the revealed-answer rule.",
+      "Don't add a second typeface or a glyph or emoji in place of an icon.",
+      "Don't draw fake card edges; the cards behind are the real next cards.",
+      "Don't shrink tab hit areas to the visible tab; they extend across the gaps."
+    ]
+  }
+}

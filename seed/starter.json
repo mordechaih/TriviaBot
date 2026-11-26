@@ -1,0 +1,18 @@
+[
+  { "prompt": "In what '90s comedy do two metalheads bow down chanting \"We're not worthy! We're not worthy!\"?", "answer": "Wayne's World", "topic": "entertainment", "difficulty": 1, "source": "jarchive:188500" },
+  { "prompt": "What Ford sedan shares its name with the zodiac sign of the bull?", "answer": "Taurus", "topic": "general", "difficulty": 1, "source": "jarchive:220031" },
+  { "prompt": "Near-Earth, Trojan and main-belt are all types of what space rock, which also names a classic Atari arcade game?", "answer": "Asteroid(s)", "topic": "science", "difficulty": 1, "source": "jarchive:209090" },
+  { "prompt": "What metal, as strong as steel but about 45% lighter, is the title of a 2011 David Guetta hit featuring Sia?", "answer": "Titanium", "topic": "science", "difficulty": 1, "source": "jarchive:203052" },
+  { "prompt": "Sarah Chalke played Dr. Elliot Reid alongside J.D. and Turk on which 2000s hospital sitcom?", "answer": "Scrubs", "topic": "entertainment", "difficulty": 1, "source": "jarchive:233212" },
+  { "prompt": "What nationality was Vasco da Gama, the first European to reach India by sea?", "answer": "Portuguese", "topic": "history", "difficulty": 1, "source": "jarchive:241111" },
+  { "prompt": "Which Canadian singer's first Top 40 hit asked, \"Why'd you have to go and make things so complicated?\"", "answer": "Avril Lavigne", "notes": "The song is \"Complicated\" (2002).", "topic": "entertainment", "difficulty": 1, "source": "jarchive:228808" },
+  { "prompt": "In 1605, who was caught in a cellar beneath the House of Lords guarding barrels of gunpowder meant to blow up Parliament?", "answer": "Guy Fawkes", "topic": "history", "difficulty": 2, "source": "jarchive:206262" },
+  { "prompt": "Which MLB team finished dead last in the NL West in 2007, then won the World Series three years later?", "answer": "San Francisco Giants", "topic": "sports", "difficulty": 2, "source": "jarchive:186542" },
+  { "prompt": "What is the common name of Israel's national intelligence agency, officially the Institute for Intelligence and Special Operations?", "answer": "Mossad", "topic": "general", "difficulty": 2, "source": "jarchive:233616" },
+  { "prompt": "Which Rolling Stones song asks \"Who killed the Kennedys?\" and answers \"After all, it was you and me\"?", "answer": "Sympathy for the Devil", "topic": "entertainment", "difficulty": 2, "source": "jarchive:233877" },
+  { "prompt": "Julia Roberts played Tinkerbell in which 1991 Steven Spielberg film?", "answer": "Hook", "topic": "entertainment", "difficulty": 2, "source": "jarchive:199869" },
+  { "prompt": "In 1783, Nassau Hall at which Ivy League university briefly served as the meeting place of the U.S. Congress?", "answer": "Princeton", "topic": "history", "difficulty": 2, "source": "jarchive:200600" },
+  { "prompt": "Which of Henry VIII's six wives was cruelly nicknamed \"the Flanders Mare\"?", "answer": "Anne of Cleves", "topic": "history", "difficulty": 2, "source": "jarchive:234580" },
+  { "prompt": "The 1853 purchase of land from Mexico to build a southern railroad route is named after which U.S. minister?", "answer": "(James) Gadsden", "notes": "The Gadsden Purchase.", "topic": "history", "difficulty": 3, "source": "jarchive:189946" },
+  { "prompt": "Which Robert Bolt play, later a Best Picture winner, dramatizes Sir Thomas More's refusal to bless Henry VIII's marriage to Anne Boleyn?", "answer": "A Man for All Seasons", "topic": "arts & literature", "difficulty": 3, "source": "jarchive:251017" }
+]

@@ -1,289 +1,73 @@
 # TriviaBot
 
-A webapp that generates weekly trivia games from J! Archive data, hosted on GitHub Pages.
+A small website for running a weekly bar trivia night. It keeps a bank of questions in SQLite, deals a fresh game from it (8 rounds plus a Final, following [docs/round-guide.md](docs/round-guide.md)), and never reuses a question that has been in a game.
 
-## Features
-
-- **Weekly Trivia Games**: Automatically generates new trivia games every week
-- **8 Rounds + Final**: Each game contains 8 rounds with 3 questions each, plus a Final Trivia question
-- **Progressive Difficulty**: Questions increase in difficulty from easy to expert
-- **Mobile-Optimized**: Responsive design optimized for mobile devices
-- **Game Tracking**: Mark games as played to track your progress
+- **Host deck** (`/games/:id`): one question per card on your phone. Tap or press Flip for the answer; swipe or Prev/Next to move. Swap or Ban a question in place.
+- **Room screen** (`/games/:id/present`): open it on the laptop driving the projector. It follows the card you're on and shows the answer only when you press "Reveal on screen". Double-click or press F for full screen.
+- **Review** (`/review`): approve, edit, or reject new questions before they can appear in a game. Keys: A approve, R reject, S skip.
 
 ## Setup
 
-### Prerequisites
-
-- Node.js 18 or higher
-- npm
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd TriviaBot
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. (Optional) Set up OpenAI API key for question filtering and rewriting:
-```bash
-export OPENAI_API_KEY=your-api-key-here
-```
-
-   If you don't set the API key, the system will use basic pattern matching to filter questions, but LLM-powered filtering and rewriting will be disabled.
-
-### Populate J! Archive (parser — recommended)
-
-Before generating games, populate the question archive from J! Archive using the Python parser pipeline. This produces cleaner data than the deprecated Node scraper.
+Needs [Bun](https://bun.sh) 1.3 or later.
 
 ```bash
-# One-time: clone parser, download HTML (parallel), parse into clues.db, then export to archive
-npm run populate-archive
-
-# Or run steps manually: after clues.db exists,
-npm run db-to-archive
+bun install
 ```
-
-Download uses a parallel script (default 3 workers, 1.5s between requests, gzip) to avoid overloading j-archive.com. To tune: run the script directly with `-w` and `--delay` (e.g. `data/jeopardy-parser/.venv/bin/python scripts/download-archive-parallel.py -d data/jeopardy-parser -w 4 --delay 1`). Use higher values only if the site is clearly fine with it; aggressive rates can lead to connection refused or IP blocks.
-
-This writes `data/archive-backup.json` from `data/clues.db` (created by [iamsix/jeopardy-parser](https://github.com/iamsix/jeopardy-parser) and `scripts/parser-with-memory.py`).
-
-**If your archive was ever from the old scraper** and you want clean parser-only data, delete it and re-parse:
 
 ```bash
-rm data/archive-backup.json
-npm run populate-archive
+bun run seed
 ```
-
-To re-download and re-parse everything from scratch (e.g. fresh `clues.db`), also remove the parser output and DB, then run populate again:
 
 ```bash
-rm -rf data/archive-backup.json data/clues.db data/jeopardy-parser
-npm run populate-archive
+bun run dev
 ```
 
-### Family Feud (ProtoQA)
+Open http://localhost:3000. `seed` loads the starter questions, starter themes and the old question pools into `data/trivia.db` as **pending**; approve them on the Review page before a game can be dealt. The home page's question bank table shows which rounds are short.
 
-Family Feud questions come from [ProtoQA](https://github.com/iesl/protoqa-data). To populate `data/family-feud-questions.json`:
+## Themed rounds
+
+Rounds 1, 3 and 8 are themed: each takes three questions from one theme (say "Boston Landmarks"), easiest first, and the theme is announced on the round's title card and the room screen. A theme is usually one Jeopardy! category. Rounds 1 and 3 draw easy-to-medium themes, round 8 medium-to-hard, and one game never uses a theme twice. Swapping a question in a themed round swaps within the theme.
+
+To add themes from J! Archive:
 
 ```bash
-# Download dev set from GitHub and convert (~979 questions)
-node scripts/convert-protoqa-to-family-feud.js --fetch
-
-# Or use a local clone: pass a path to get more questions (e.g. train set)
-node scripts/convert-protoqa-to-family-feud.js ./protoqa-data/data/train/train.jsonl
+bun run jarchive --season 42 --limit 3
 ```
 
-Using `train.jsonl` (e.g. after cloning protoqa-data) gives many more questions than the default dev set.
+It fetches the games, then Claude renames each usable category plainly ("POTENT POTABLES" becomes "Cocktails & Spirits"), rewrites its clues as spoken questions, and drops wordplay categories and dated or obscure clues. Results arrive pending in Review, where you can edit the theme name. Add `--dry-run` to see the categories and clues without calling Claude.
 
-### Generate a Game
+## Commands
 
-```bash
-# Generate game for today
-npm run generate
+| Command | What it does |
+|---|---|
+| `bun run dev` | Server with reload on change |
+| `bun run start` | Server |
+| `bun run bar` | Server that keeps the Mac and its screen awake (game night) |
+| `bun test` | Generator tests |
+| `bun run typecheck` | TypeScript check |
+| `bun run seed` | Import `seed/` into the database (safe to re-run) |
+| `bun run stock <format> [count] [--difficulty 1-3] [--topic <topic>]` | Ask Claude for new questions; they arrive pending in Review |
+| `bun run jarchive <game_id ...> \| --season <n> [--limit <n>] [--dry-run]` | Turn J! Archive categories into themes (pending in Review) |
 
-# Generate game for a specific date
-npm run generate -- --date 2024-01-15
-```
+Formats for `stock`: `standard`, `over_under`, `list`, `true_false` (To Tell the Truth), `multiple_choice` (Millionaire), `name_that_tune`, `who_am_i`, `size_matters`, `name_the_brand`, `name_the_team`. Family Feud is seeded from survey data, not generated.
 
-### Update Games Index
+## Settings
 
-After generating games, update the index:
+Put these in `.env` (Bun loads it automatically):
 
-```bash
-npm run update-index
-```
+| Variable | Default | Purpose |
+|---|---|---|
+| `APP_PASSWORD` | none | Optional shared password. Worth setting if you run it on a network other people are on. |
+| `DB_PATH` | `data/trivia.db` | SQLite file |
+| `PORT` | `3000` | HTTP port |
+| `ANTHROPIC_API_KEY` | none | Only for `bun run stock` and `bun run jarchive` |
 
-### Local testing (matching production)
+## Running it at the bar
 
-To avoid differences between your environment and production (styling, icons, fetch):
+The laptop that drives the projector is the server; there's no hosting.
 
-- **Use the dev server**: `npm run dev` then open the app at the URL it prints (e.g. `http://localhost:3000`). Avoid opening `game.html` or `index.html` via `file://` so paths and CORS match production.
-- **Assets**: CSS/JS are served as-is (no build step). Production uses the same files; Vercel sets short cache headers for `/css/*` and `/js/*` so deploys propagate.
-- **Icons**: Lucide is pinned to a specific version in the HTML so local and production use the same icon set.
+1. On the laptop, `bun run bar`. It keeps the laptop and its screen awake while it runs, and prints an "On your phone" address.
+2. Put the phone and laptop on the same network. Bar Wi-Fi often blocks devices from seeing each other, so the reliable setup is the phone's hotspot with the laptop joined to it.
+3. Open that address on the phone for the host deck, and `/games/:id/present` on the laptop for the room (double-click or press F for full screen).
 
-### Round types
-
-Some rounds use special data or LLM generation instead of the main archive:
-
-- **Round 2 (Over/Under)**: LLM-generated numeric questions. Requires `OPENAI_API_KEY`. When the key is missing, generation falls back to pool files if available.
-- **Round 4 (List Round)**: One question with multiple answers, loaded from `data/list-round-questions.json` (not from the J! Archive backup). Add or edit that file to change list-round content.
-
-TODO: Document pool sources (over-under, game-show, mixing-things-up) and operator options for rounds 2 and 4 in more detail.
-
-## Project Structure
-
-```
-TriviaBot/
-├── index.html              # Game list page
-├── game.html               # Game display page
-├── css/
-│   └── styles.css         # Mobile-optimized styles
-├── js/
-│   ├── game-list.js       # Game list logic
-│   └── game-display.js     # Game rendering logic
-├── data/
-│   ├── archive-backup.json    # J! Archive data (from parser: populate-archive + db-to-archive)
-│   ├── games/
-│   │   ├── index.json         # Games index
-│   │   └── game-YYYY-MM-DD.json  # Generated games
-│   └── played-status.json     # Played status tracking
-├── scripts/
-│   ├── populate-archive.sh   # Clone parser, run download + parse → clues.db
-│   ├── db-to-archive.js      # clues.db → archive-backup.json
-│   ├── scrape-archive.js     # (Deprecated) J! Archive scraper
-│   ├── generate-game.js      # Game generator
-│   └── update-games-index.js # Index updater
-└── .github/
-    └── workflows/
-        └── weekly-game.yml    # GitHub Actions automation
-```
-
-## Deployment
-
-### Vercel (Recommended)
-
-The project is configured to deploy to Vercel, which hosts both the static site and the serverless function:
-
-1. **Import your GitHub repository to Vercel**:
-   - Go to https://vercel.com
-   - Click "Add New" → "Project"
-   - Import your GitHub repository
-   - Vercel will auto-detect the settings
-
-2. **Set environment variables**:
-   - In Vercel dashboard → Your project → Settings → Environment Variables
-   - **Required**: `GITHUB_TOKEN` - Your Personal Access Token (with `repo` scope)
-   - **Optional**: 
-     - `GITHUB_OWNER` - Your GitHub username (defaults to 'mordechaih')
-     - `GITHUB_REPO` - Repository name (defaults to 'TriviaBot')
-     - `API_ENDPOINT` - Custom API endpoint URL (if not set, uses VERCEL_URL automatically)
-   
-   **Note**: `js/config.js` is automatically generated at build time from these environment variables, so you don't need to create it manually.
-
-3. **Deploy**:
-   - Vercel will automatically deploy on every push to `main`
-   - Your site will be available at `https://your-project.vercel.app`
-   - **When are changes on production?** Production runs whatever is deployed from this repo. If you deploy from Vercel linked to GitHub, that is usually the latest `main` after each push. Uncommitted or unpushed changes (e.g. in `scripts/generate-game.js`) are not on production until you commit, push to `main`, and Vercel finishes the deploy.
-
-### GitHub Pages (Alternative)
-
-If you prefer GitHub Pages instead:
-1. Push the repository to GitHub
-2. Enable GitHub Pages in repository settings (Settings > Pages)
-3. Select `GitHub Actions` as the source
-4. The site will be available at `https://<username>.github.io/TriviaBot`
-
-## Automated Weekly Generation
-
-The GitHub Actions workflow (`weekly-game.yml`) automatically:
-- Runs every Monday at 9:00 AM UTC
-- Generates a new trivia game
-- Updates the games index
-- Commits and pushes changes
-
-To manually trigger:
-- **From the webapp**: Click the "Generate New Game" button on the main page
-- **From GitHub**: Go to Actions tab in GitHub, select "Generate Weekly Trivia Game", click "Run workflow"
-
-### Generating Games from the Webapp
-
-The webapp includes a "Generate New Game" button that allows you to trigger game generation remotely. This uses a secure serverless function to protect your GitHub token - the token never leaves the server and is never exposed in the browser.
-
-#### Setup (One-time):
-
-1. **Deploy the serverless function** (choose one):
-   
-   **Option A: Vercel (Recommended)**
-   - Vercel CLI is already installed locally in the project
-   - In your project directory, run: `npm run deploy` (or `npx vercel`)
-   - Follow the prompts to deploy
-   - After deployment, go to your Vercel dashboard
-   - Navigate to your project → Settings → Environment Variables
-   - Add these environment variables:
-     - `GITHUB_TOKEN` - Your GitHub Personal Access Token (with `repo` scope)
-     - `GITHUB_OWNER` - Your GitHub username (optional, can be in config.js)
-     - `GITHUB_REPO` - Repository name (optional, can be in config.js)
-   - Copy your function URL (e.g., `https://your-app.vercel.app/api/trigger-workflow`)
-   
-   **Option B: Netlify**
-   - Install Netlify CLI: `npm i -g netlify-cli`
-   - In your project directory, run: `netlify deploy --prod`
-   - Follow the prompts to deploy
-   - After deployment, go to your Netlify dashboard
-   - Navigate to Site settings → Environment variables
-   - Add the same environment variables as above
-   - Copy your function URL (e.g., `https://your-app.netlify.app/.netlify/functions/trigger-workflow`)
-
-2. **Create a GitHub Personal Access Token** (for the serverless function):
-   - Go to https://github.com/settings/tokens
-   - Click "Generate new token (classic)"
-   - Give it a name like "TriviaBot Game Generation"
-   - Select the `repo` scope
-   - Click "Generate token" and copy it
-   - Add it as `GITHUB_TOKEN` in your serverless function's environment variables
-
-3. **Configure the webapp**:
-   - Edit `js/config.js` and fill in:
-     ```javascript
-     const GITHUB_CONFIG = {
-       owner: 'your-username',
-       repo: 'TriviaBot',
-       branch: 'main',
-       apiEndpoint: 'https://your-app.vercel.app/api/trigger-workflow'
-     };
-     ```
-   - **Important**: `js/config.js` is gitignored and won't be committed
-   - **Security**: The token is stored server-side in your hosting platform, never in the browser
-
-#### How it works:
-- **Frontend**: Calls your serverless function (no token exposed)
-- **Serverless function**: Uses the token (stored as environment variable) to trigger the workflow
-- **Workflow**: Uses `GITHUB_TOKEN` (automatically provided by GitHub Actions) for all operations
-- **Security**: Your PAT is stored server-side and never exposed to the browser
-
-#### Using the button:
-- Click "Generate New Game" on the main page
-- The workflow will be triggered securely via your serverless function
-- You'll see a status message confirming the trigger
-- The page will auto-refresh after 30 seconds to check for the new game
-- Note: Game generation takes a few minutes to complete
-
-## Legal Disclaimer
-
-This site uses content from J! Archive, a fan-created archive of Jeopardy! games. The Jeopardy! game show and all elements thereof are the property of Jeopardy Productions, Inc. This website is not affiliated with, sponsored by, or operated by Jeopardy Productions, Inc. This site is for non-commercial, educational, and entertainment purposes only.
-
-## Development
-
-### Scraping Considerations
-
-- The scraper respects J! Archive's robots.txt and rate limits
-- Use `--test` flag for development/testing
-- Scraped data is stored locally and not re-scraped
-
-### Game Generation
-
-- Questions are selected based on difficulty scores
-- Difficulty is calculated from dollar values and round types
-- Questions are tracked to avoid duplicates across games
-- **Question Filtering**: Questions are automatically filtered to remove:
-  - Anagram and wordplay categories that don't work for pub trivia
-  - Category-themed questions (e.g., "I'm in Sephora without my glasses")
-- **Question Rewriting**: Category-themed questions are rewritten to focus on content rather than the category theme
-- Uses OpenAI GPT-4o-mini for intelligent filtering and rewriting (if API key is set)
-
-### Played Status
-
-- Played status is stored in `localStorage` by default
-- For GitHub storage, you would need to implement GitHub API integration
-- The current implementation uses localStorage as a fallback
-
-## License
-
-This project is for educational and non-commercial use only.
-
+Allow Bun through the macOS firewall the first time it asks. Everything lives in `data/trivia.db` on the laptop, so keep a copy somewhere else: `/backup` downloads one.

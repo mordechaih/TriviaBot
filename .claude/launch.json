@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "trivia",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["--watch", "src/server.ts"],
+      "port": 3000
+    },
+    {
+      "name": "trivia-demo",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["DB_PATH=data/demo.db", "PORT=3001", "bun", "--watch", "src/server.ts"],
+      "port": 3001
+    }
+  ]
+}

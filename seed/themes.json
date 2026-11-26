@@ -1,0 +1,141 @@
+[
+  {
+    "theme": "African Capitals",
+    "topic": "geography",
+    "source_url": "https://j-archive.com/showgame.php?game_id=9384",
+    "questions": [
+      { "prompt": "Nigeria moved its capital away from Lagos in 1991. What city did it pick for its central location?", "answer": "Abuja", "difficulty": 1 },
+      { "prompt": "Kinshasa, the largest city in Central Africa, sits on the banks of what river?", "answer": "The Congo", "difficulty": 1 },
+      { "prompt": "What West African capital is named after the fifth U.S. president?", "answer": "Monrovia", "difficulty": 2, "notes": "Liberia; named for James Monroe." },
+      { "prompt": "What is the capital of Ghana?", "answer": "Accra", "difficulty": 2 }
+    ]
+  },
+  {
+    "theme": "Borrowed Words",
+    "topic": "arts & literature",
+    "source_url": "https://j-archive.com/showgame.php?game_id=9384",
+    "questions": [
+      { "prompt": "What number puzzle gets its name from a Japanese phrase meaning the digits must stay single?", "answer": "Sudoku", "difficulty": 1 },
+      { "prompt": "What French word do we use for a drink before dinner, meant to work up your appetite?", "answer": "Apéritif", "difficulty": 1 },
+      { "prompt": "What word for a remote backwater comes from the Tagalog word for \"mountain\"?", "answer": "Boondocks", "difficulty": 2 },
+      { "prompt": "What German word for a fast, overwhelming attack literally means \"lightning war\"?", "answer": "Blitzkrieg", "difficulty": 2 }
+    ]
+  },
+  {
+    "theme": "Famous Conductors",
+    "topic": "arts & literature",
+    "source_url": "https://j-archive.com/showgame.php?game_id=9384",
+    "questions": [
+      { "prompt": "What composer, by then deaf, insisted on leading the premiere of his own Ninth Symphony while the orchestra followed another conductor?", "answer": "Beethoven", "difficulty": 1 },
+      { "prompt": "Bradley Cooper's film \"Maestro\" is about what American conductor?", "answer": "Leonard Bernstein", "difficulty": 2 },
+      { "prompt": "Billy Joel first met his half brother, the conductor Alexander Joel, in what European city that is also the title of a Billy Joel song?", "answer": "Vienna", "difficulty": 2 }
+    ]
+  },
+  {
+    "theme": "Words from Greek",
+    "topic": "arts & literature",
+    "source_url": "https://j-archive.com/showgame.php?game_id=9385",
+    "questions": [
+      { "prompt": "What singing voice gets its name from the Greek for \"deep pitch\"?", "answer": "Baritone", "difficulty": 1 },
+      { "prompt": "What kind of diet takes its name from the Greek for \"large life\"?", "answer": "Macrobiotic", "difficulty": 1 },
+      { "prompt": "What word for a remedy comes from the Greek for \"given against\"?", "answer": "Antidote", "difficulty": 2 },
+      { "prompt": "What old counting frame gets its name from the Greek for \"slab\" or \"board\"?", "answer": "Abacus", "difficulty": 2 },
+      { "prompt": "What word for an emotional release comes from the Greek for \"to cleanse\"?", "answer": "Catharsis", "difficulty": 3 }
+    ]
+  },
+  {
+    "theme": "Boston Landmarks",
+    "topic": "history",
+    "source_url": "https://j-archive.com/showgame.php?game_id=9385",
+    "questions": [
+      { "prompt": "Boston's 221-foot granite obelisk commemorates what Revolutionary War battle?", "answer": "Bunker Hill", "difficulty": 1 },
+      { "prompt": "What 2.5-mile red line through Boston links 16 historic sites?", "answer": "The Freedom Trail", "difficulty": 1 },
+      { "prompt": "The Frog Pond is in what 50-acre park, the oldest public park in America?", "answer": "Boston Common", "difficulty": 2 },
+      { "prompt": "What Boston marketplace and meeting hall, built in 1742, is named for the merchant who paid for it?", "answer": "Faneuil Hall", "difficulty": 2 },
+      { "prompt": "The Boston Marathon finishes in what alliteratively named neighborhood?", "answer": "Back Bay", "difficulty": 3 }
+    ]
+  },
+  {
+    "theme": "College & Pro Basketball",
+    "topic": "sports",
+    "source_url": "https://j-archive.com/showgame.php?game_id=9385",
+    "questions": [
+      { "prompt": "Scottie Pippen won six NBA titles in the 1990s alongside Michael Jordan on what team?", "answer": "The Chicago Bulls", "difficulty": 1 },
+      { "prompt": "Brent Musburger made what two-word phrase synonymous with the men's college basketball tournament?", "answer": "March Madness", "difficulty": 2 },
+      { "prompt": "What school, based in the village of Storrs, has won 12 NCAA women's basketball titles?", "answer": "UConn", "difficulty": 3, "notes": "As of February 2026." }
+    ]
+  },
+  {
+    "theme": "Science",
+    "topic": "science",
+    "source_url": "https://j-archive.com/showgame.php?game_id=9385",
+    "questions": [
+      { "prompt": "What chemicals do animals give off, mostly detected by smell, to attract mates and mark territory?", "answer": "Pheromones", "difficulty": 2 },
+      { "prompt": "What Russian chemist presented his periodic law in 1869?", "answer": "Dmitri Mendeleev", "difficulty": 3 },
+      { "prompt": "Canopus is the second-brightest star in the night sky. What star is the brightest?", "answer": "Sirius", "difficulty": 3 },
+      { "prompt": "What geological epoch came right after the dinosaurs died out?", "answer": "The Paleocene", "difficulty": 3 }
+    ]
+  },
+  {
+    "theme": "Airports",
+    "topic": "geography",
+    "source_url": "https://j-archive.com/showgame.php?game_id=9385",
+    "questions": [
+      { "prompt": "Washington's DCA airport has carried which president's name since 1998?", "answer": "Ronald Reagan", "difficulty": 2 },
+      { "prompt": "Liverpool John Lennon Airport's slogan, \"Above us only sky\", comes from what song?", "answer": "Imagine", "difficulty": 2 },
+      { "prompt": "Alaska Airlines' main hub is at what airport in the Pacific Northwest?", "answer": "Seattle-Tacoma (Sea-Tac)", "difficulty": 3 },
+      { "prompt": "The world's busiest airport named for a woman honors which prime minister?", "answer": "Indira Gandhi", "difficulty": 3 },
+      { "prompt": "North Macedonia removed Alexander the Great's name from the airport in what capital city?", "answer": "Skopje", "difficulty": 3 }
+    ]
+  },
+  {
+    "theme": "Classic Literature",
+    "topic": "arts & literature",
+    "source_url": "https://j-archive.com/showgame.php?game_id=9385",
+    "questions": [
+      { "prompt": "\"Some people seemed to get all sunshine, and some all shadow\" is a line from what Louisa May Alcott novel?", "answer": "Little Women", "difficulty": 2 },
+      { "prompt": "In \"Wuthering Heights\", Cathy says that whatever their souls are made of, hers and whose are the same?", "answer": "Heathcliff", "difficulty": 2 },
+      { "prompt": "\"Hell is empty and all the devils are here\" comes from what Shakespeare play?", "answer": "The Tempest", "difficulty": 3 },
+      { "prompt": "\"My head is bloody, but unbowed\" is from what poem by William Ernest Henley?", "answer": "Invictus", "difficulty": 3 }
+    ]
+  },
+  {
+    "theme": "World History",
+    "topic": "history",
+    "source_url": "https://j-archive.com/showgame.php?game_id=9384",
+    "questions": [
+      { "prompt": "Confucius' followers collected his sayings into a book known in English by what name?", "answer": "The Analects", "difficulty": 2 },
+      { "prompt": "The North American part of the War of the Spanish Succession was named for which queen?", "answer": "Queen Anne", "difficulty": 2 },
+      { "prompt": "What explorer, whose first name went on two continents, wrote of finding a \"new world\" in the early 1500s?", "answer": "Amerigo Vespucci", "difficulty": 3 },
+      { "prompt": "What Silk Road city in Uzbekistan was Tamerlane's capital?", "answer": "Samarkand", "difficulty": 3 },
+      { "prompt": "What king of England, Denmark and Norway is famous for ordering the tide not to come in?", "answer": "Cnut (Canute)", "difficulty": 3 }
+    ]
+  },
+  {
+    "theme": "Vitamins & Minerals",
+    "topic": "science",
+    "source_url": "https://j-archive.com/showgame.php?game_id=9384",
+    "questions": [
+      { "prompt": "Your body can't make which vitamin, found in grapefruit, that it needs to build collagen?", "answer": "Vitamin C", "difficulty": 2 },
+      { "prompt": "Zinc and copper are what kind of minerals, needed only in very small amounts?", "answer": "Trace minerals", "difficulty": 2 },
+      { "prompt": "What is the skincare name for vitamin A?", "answer": "Retinol", "difficulty": 3 },
+      { "prompt": "Vitamins fall into two groups by how the body stores them. What are they?", "answer": "Fat-soluble and water-soluble", "difficulty": 3 }
+    ]
+  },
+  {
+    "theme": "Europe",
+    "topic": "geography",
+    "source_url": "https://j-archive.com/showgame.php?game_id=9384",
+    "questions": [
+      { "prompt": "Thomas Mann set \"The Magic Mountain\" in what Swiss resort town, now home to the World Economic Forum's annual meeting?", "answer": "Davos", "difficulty": 3 }
+    ]
+  },
+  {
+    "theme": "Colonial America",
+    "topic": "history",
+    "source_url": "https://j-archive.com/showgame.php?game_id=9385",
+    "questions": [
+      { "prompt": "Besides rice, South Carolina's big cash crop in the late 1700s was what blue dye plant?", "answer": "Indigo", "difficulty": 3 }
+    ]
+  }
+]

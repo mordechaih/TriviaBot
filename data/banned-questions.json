@@ -1,9 +1,0 @@
-{
-  "questions": [],
-  "metadata": {
-    "description": "Tracking banned questions. Questions can be banned manually or via shuffle (replaced rounds).",
-    "lastUpdated": "2026-01-21",
-    "version": "1.0"
-  }
-}
-

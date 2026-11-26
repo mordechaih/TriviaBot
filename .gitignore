@@ -1,12 +1,7 @@
 node_modules/
-.venv/
+data/
+.env
+.env.local
 .DS_Store
 *.log
-.env
-js/config.js
-js/config.dev.js
-todo.txt
-index.dev.html
-scripts/__tests__/fixtures/temp-family-feud-test.json
-data/jeopardy-parser/
-
+.claude/settings.local.json

@@ -1,28 +1,23 @@
-# TriviaBot – Project context for AI
+# TriviaBot
 
-> **Cursor**: This design context is also in `.cursor/rules/design-context.mdc` so Cursor Agent applies it when working on `css/`, `js/`, and `*.html`. Cursor does not read CLAUDE.md.
+Weekly bar-trivia host tool for one host. A Bun server on the host's laptop deals games from a SQLite question bank; the host runs them from a phone on the laptop's network, and the laptop shows the room screen on the projector. There is no hosting.
 
-## Design Context
+## Stack and commands
 
-### Users
-- **Primary**: Solo use (you) for weekly trivia games from J! Archive.
-- **Future**: May generalize to paid pub hosts who run trivia nights.
-- **Job to be done**: Browse games, play through rounds (reveal answers), track what's played; optionally trigger new game generation. Experience should feel minimal and refined, not cluttered or "AI slop."
+- Bun only: `Bun.serve` routes, `bun:sqlite`, `bun test`. No framework, no bundler, no client build step.
+- `bun run dev` (port 3000), `bun run bar` (game night: keeps the Mac awake), `bun test`, `bun run typecheck`, `bun run seed`, `bun run stock <format> ...`.
+- Run `bun test` and `bun run typecheck` after any change to `src/`.
+- `bun run stock` and `bun run jarchive` (without `--dry-run`) call the Claude API and cost money: never run them without the user's OK.
 
-### Brand Personality
-- **Three words**: Minimal, beautiful, polished.
-- **Feel**: Like Apple or OpenAI product design—restrained, high craft, clear hierarchy. Reference vibes: Codex, Craft Docs. Explicitly **not** like Claude's UI (avoid that look and feel).
-- **Voice**: Calm, confident, unobtrusive. The content (questions, rounds) leads; the UI supports.
+## Layout
 
-### Aesthetic Direction
-- **Visual tone**: Minimal, spacious, refined. Generous whitespace, clear typography, subtle depth. Dark-only theme.
-- **References**: Codex, Craft Docs—clean layouts, thoughtful typography, restrained color, purposeful motion.
-- **Anti-references**: Claude's interface (don't mimic that style).
-- **Theme**: Dark mode only. Current orange/red accent palette can stay as a signature but should feel intentional and polished, not noisy.
+- `src/db.ts`: schema, formats, topics. A question is "used" when a `game_questions` row points at it; deleting a game frees its questions.
+- `src/rounds.ts`: the round lineup. `docs/round-guide.md` is the host's spec for it; keep them in step.
+- `src/games.ts`: dealing a game (all-or-nothing, lists every shortage), swap/ban. Rounds 1, 3 and 8 are themed: one theme per round (`questions.theme`, usually a Jeopardy! category), never twice in a game; other rounds avoid breaking into untouched themes.
+- `src/views.ts`: all HTML, server-rendered through the escaping `html` tag in `src/html.ts`. Never build markup by string concatenation.
+- `public/app.js`: progressive enhancement only. Every page must still work without it (forms post, cards list in order).
+- `scripts/`: seed import, Claude stocking, and the J! Archive theme importer. `seed/` holds the import data (`themes.json` is the starter themes).
 
-### Design Principles
-1. **Minimal first** – Remove before adding. Every element should earn its place. No decorative clutter.
-2. **Beautiful and polished** – Typography, spacing, and motion should feel considered and high-quality (Apple/OpenAI/Codex/Craft level).
-3. **Content leads** – Trivia content is the hero; UI frames and supports it without competing.
-4. **Accessible by default** – WCAG AA and solid screen reader support so the product is future-proof and inclusive as you open to more users (e.g. pub hosts).
-5. **Restrained motion** – Animations and transitions should feel purposeful and smooth, not flashy or distracting.
+## Design
+
+The UI follows the Impeccable direction in `.impeccable/surfaces/src-views-ts.md` (Host Cue Cards, muted dark) and `PRODUCT.md`; `DESIGN.md` records the system once written. Use the existing tokens in `public/styles.css`, one font (Atkinson Hyperlegible Next, self-hosted), Lucide icons via `src/icons.ts`. The presenter screen must never show an answer the host hasn't revealed.
